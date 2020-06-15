@@ -1,0 +1,9 @@
+{% markdown %}
+{{ content }}
+{% endmarkdown %}
+
+<ul>
+{%- for category in data.category %}
+  <li>{{category}}</li>
+{%- endfor %}
+</ul>
