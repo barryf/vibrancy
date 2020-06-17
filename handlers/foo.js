@@ -1,4 +1,3 @@
-const AWS = require('aws-sdk')
 const dynamodb = require('../lib/dynamodb')
 
 async function create(item, table='posts') {
@@ -13,7 +12,7 @@ async function scan(table='posts') {
 }
 
 module.exports.foo = async (event) => {
-  await create({ slug: 'foo', content: 'baz' })
+  await create({ slug: 'bar', content: 'baz' })
   const posts = await scan()
   return {
     statusCode: 200,
