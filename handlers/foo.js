@@ -1,17 +1,22 @@
 const AWS = require('aws-sdk')
-const dynamodb = require('serverless-dynamodb-client').doc
+const dynamodb = require('../lib/dynamodb')
 
-function create(item, table='posts') {
-  dynamodb.put({
+async function create(item, table='posts') {
+  await dynamodb.put({
     TableName: table,
     Item: item
-  })
+  }).promise()
+}
+
+async function scan(table='posts') {
+  return await dynamodb.scan({ TableName: table }).promise()
 }
 
 module.exports.foo = async (event) => {
-  create({ slug: 'foo', content: 'bar' })
+  await create({ slug: 'foo', content: 'baz' })
+  const posts = await scan()
   return {
     statusCode: 200,
-    body: 'ok'
+    body: posts.Items
   }
 }
