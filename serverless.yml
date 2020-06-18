@@ -1,6 +1,7 @@
 service: vibrancy
-app: vibrancy
-org: barryf
+#app: vibrancy
+#org: barryf
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -18,20 +19,28 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/*"
 
 functions:
-  foo:
-    handler: handlers/foo.foo
-  transform:
-    handler: handlers/transform.transform
+  render:
+    handler: handlers/render.process
     events:
       - http:
           path: /{slug+}
           method: get
   list:
-    handler: handlers/list.list
+    handler: handlers/list.process
     events:
       - http:
           path: /
           method: get
+  webhook:
+    handler: handlers/webhook.process
+    events:
+      - http:
+          path: /webhook
+          method: post
+  download:
+    handler: handlers/download.process
+  upsert:
+    handler: handlers/upsert.process
 
 resources:
   Resources:
