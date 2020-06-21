@@ -1,0 +1,9 @@
+{% markdown %}
+{{ content[0] }}
+{% endmarkdown %}
+
+<ul>
+{%- for cat in category %}
+  <li>{{cat}}</li>
+{%- endfor %}
+</ul>

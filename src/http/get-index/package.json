@@ -1,6 +1,8 @@
 {
-  "name": "vibrancy-http-get-000slug",
   "dependencies": {
-    "@architect/functions": "^3.12.1"
+    "@architect/functions": "^3.12.1",
+    "marked": "^1.1.0",
+    "nunjucks": "^3.2.1",
+    "nunjucks-markdown": "^2.0.1"
   }
 }
