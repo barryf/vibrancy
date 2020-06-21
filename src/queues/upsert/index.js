@@ -7,8 +7,8 @@ const arc = require('@architect/functions')
 
 exports.handler = async function queue (event) {
   const data = await arc.tables()
-  for (const record in event.Records) {
+  event.Records.forEach(async record => {
     const post = JSON.parse(record.body)
     await data.posts.put(post)
-  }
+  })
 }

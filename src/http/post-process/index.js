@@ -8,17 +8,16 @@ const arc = require('@architect/functions')
 
 async function queueDownloads(commits) {
   let slugs = []
-  for (const commit in commits) {
-    for (const method in ['added', 'modified']) {
-      for (const filename in commit[method]) {
+  commits.forEach(commit => {
+    ['added', 'modified'].forEach(method => {
+      commit[method].forEach(commit => {
         const slug = filename.slice(0,-3)
-        console.log(`slug to queue=${slug}`)
         slugs.push(slug)
         const payload = { slug, method } 
         await arc.queues.publish({ name: 'download', payload })
-      }
-    }
-  }
+      })
+    })
+  })
   return slugs
 }
 
