@@ -1,5 +1,4 @@
 {
-  "name": "vibrancy-http-process",
   "dependencies": {
     "@architect/functions": "^3.12.1"
   }
