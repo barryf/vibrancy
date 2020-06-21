@@ -31,11 +31,10 @@ exports.handler = async function queue (event) {
     slug: slug,
     published: post.data.published[0],
     kind: post.data.kind[0],
-    properties: {
+    properties: JSON.stringify({
       ...post.data,
       content: [post.content]
-    }
+    })
   }
   await arc.queues.publish({ name: 'upsert', payload })
-  return
 }
