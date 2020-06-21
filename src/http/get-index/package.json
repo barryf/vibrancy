@@ -1,0 +1,6 @@
+{
+  "name": "vibrancy-http-get-000slug",
+  "dependencies": {
+    "@architect/functions": "^3.12.1"
+  }
+}

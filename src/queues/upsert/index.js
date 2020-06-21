@@ -1,5 +1,14 @@
-// learn more about queue functions here: https://arc.codes/primitives/queues
+// `upsert`
+// * Creates/updates post in DynamoDB via MF2 JSON in message
+// * Columns for slug, kind, content, properties
+// * Sends SQS `ping` messages with new/updated URL
+
+const arc = require('@architect/functions')
+
 exports.handler = async function queue (event) {
-  console.log(JSON.stringify(event, null, 2))
-  return
+  const data = await arc.tables()
+  for (const record in event.Records) {
+    const post = JSON.parse(record.body)
+    await data.posts.put(post)
+  }
 }

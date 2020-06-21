@@ -1,12 +1,11 @@
 @app
-vibrancy
+vibrancy-arc
 
 @aws
 region eu-west-2
 
 @http
 get /
-get /:slug
 post /process
 post /micropub
 
