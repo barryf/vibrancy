@@ -1,7 +1,8 @@
 const arc = require('@architect/functions')
 
 exports.handler = async function http (req) {
-  console.log(req)
+  if (req.path === '/favicon.ico') { return }
+
   const slug = req.path.substr(1)
   const data = await arc.tables()
   const post = await data.posts.get({slug})
