@@ -1,5 +1,10 @@
-// learn more about queue functions here: https://arc.codes/primitives/queues
+const arc = require('@architect/functions')
+const { Octokit } = require("@octokit/rest");
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
+  userAgent: 'vibrancy'
+})
+
 exports.handler = async function queue (event) {
-  console.log(JSON.stringify(event, null, 2))
-  return
+  console.log(`event=${event}`)
 }
