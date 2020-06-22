@@ -17,8 +17,3 @@ ping
 @tables
 posts
   slug *String
-
-@indexes
-posts
-  published *String
-  kind *String
