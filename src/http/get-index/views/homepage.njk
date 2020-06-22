@@ -1,0 +1,5 @@
+<ul>
+{%- for properties in posts %}
+  <li><a href="/{{ properties.slug[0] }}">{{ properties.published[0] }}</a></li>
+{%- endfor %}
+</ul>

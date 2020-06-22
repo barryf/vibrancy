@@ -7,7 +7,25 @@ const njkEnv = nunjucks.configure('views')
 markdown.register(njkEnv, marked)
 
 async function renderIndex() {
-  return "Index"
+  const data = await arc.tables()
+  const result = await data.posts.scan({ TableName: 'posts' })
+  const posts = result.Items.map(item => JSON.parse(item.properties))
+  const html = nunjucks.render('homepage.njk', { posts })
+  return html
+}
+
+async function renderKind(kind) {
+  const data = await arc.tables()
+  const result = await data.posts.scan({
+    TableName: 'posts',
+    FilterExpression: "kind = :kind",
+    ExpressionAttributeValues: {
+      ':kind': kind
+    }
+  })
+  const posts = result.Items.map(item => JSON.parse(item.properties))
+  const html = nunjucks.render('homepage.njk', { posts })
+  return html
 }
 
 async function renderPost(slug) {
@@ -44,7 +62,10 @@ exports.handler = async function http (req) {
   const slug = req.path.substr(1).replace('staging/','')
   switch (slug) {
     case 'favicon.ico':
-      return send404()
+      return
+    case 'articles':
+      body = await renderKind('article')
+      return send200(body)
     case '':
       body = await renderIndex()
       return send200(body)
