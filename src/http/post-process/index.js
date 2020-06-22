@@ -1,9 +1,3 @@
-// `process`
-// * barryfrost.com/process
-// * Receives webhook with payload from GitHub and processes via Lambda
-// * Secures POST request via secret token
-// * Sends `download` SQS message with path of file
-
 const arc = require('@architect/functions')
 
 async function queueDownloads(commits) {
@@ -13,7 +7,7 @@ async function queueDownloads(commits) {
       commit[method].forEach(commit => {
         const slug = filename.slice(0,-3)
         slugs.push(slug)
-        const payload = { slug, method } 
+        const payload = { slug, method }
         await arc.queues.publish({ name: 'download', payload })
       })
     })
@@ -29,7 +23,7 @@ exports.handler = async function http (req) {
   const slugs = await queueDownloads(req.commits)
 
   return {
-    statusCode: 201,
-    body: `Received webhook and queued download of: ${slugs.join(', ')}`
+    statusCode: 202,
+    body: `Queued download of: ${slugs.join(', ')}`
   }
 }

@@ -11,9 +11,14 @@ post /micropub
 
 @queues
 download
-upsert
+upload
 ping
 
 @tables
 posts
   slug *String
+
+@indexes
+posts
+  published *String
+  kind *String
