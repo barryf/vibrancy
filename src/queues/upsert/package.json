@@ -1,6 +1,0 @@
-{
-  "name": "vibrancy-queues-upsert",
-  "dependencies": {
-    "@architect/functions": "^3.12.1"
-  }
-}
