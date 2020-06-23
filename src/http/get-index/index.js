@@ -9,7 +9,15 @@ markdown.register(njkEnv, marked)
 async function renderIndex() {
   const data = await arc.tables()
   const result = await data.posts.scan({ TableName: 'posts' })
-  const posts = result.Items.map(item => JSON.parse(item.properties))
+  const posts = result.Items.map(item => {
+    return {
+      slug: item.slug,
+      kind: item.kind,
+      published: item.published,
+      properties: JSON.parse(item.properties)
+    }
+  })
+  console.log(`slug=${JSON.stringify(posts)}`)
   const html = nunjucks.render('homepage.njk', { posts })
   return html
 }
