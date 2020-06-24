@@ -1,10 +1,22 @@
 const arc = require('@architect/functions')
 
 exports.handler = async function http (req) {
-  // const payload = { slug: '2018/04/leaving-venntro', method: 'update' }
-  // await arc.queues.publish({ name: 'download', payload })
-
+  const body = arc.http.helpers.bodyParser(req)
   const data = await arc.tables()
+
+  console.log(`req=${JSON.stringify(body)}`)
+
+  //if ("Authorization" in req.headers) {
+
+  if ("action" in req.body) {
+    // verify_action
+    // require_auth
+    // verify_url
+    action(body)
+    // return send202()
+  }
+
+  // add a post
   const slug = '2020/06/foo'
   const row = {
     slug: slug,
