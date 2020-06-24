@@ -18,14 +18,17 @@ exports.handler = async function http (req) {
 
   // add a post
   const slug = '2020/06/foo'
+  const published = '2020-06-22T21:56:00Z'
+  const kind = ['note']
   const row = {
     slug: slug,
     published: '2020-06-22T21:56:00Z',
     kind: 'note',
     properties: JSON.stringify({
+      slug: [slug],
+      published: [published],
+      kind: [kind],
       content: ["This is my content."],
-      kind: ['note'],
-      published: ['2020-06-22T21:56:00Z'],
       category: ['one', 'two']
     })
   }
