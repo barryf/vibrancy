@@ -8,9 +8,10 @@ markdown.register(njkEnv, marked)
 
 async function renderIndex() {
   const data = await arc.tables()
+  const css = arc.static('/main.css')
   const result = await data.posts.scan({ TableName: 'posts' })
   const posts = result.Items.map(item => JSON.parse(item.properties))
-  const html = nunjucks.render('homepage.njk', { posts })
+  const html = nunjucks.render('homepage.njk', { posts, css })
   return html
 }
 

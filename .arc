@@ -17,3 +17,5 @@ ping
 @tables
 posts
   slug *String
+
+@static

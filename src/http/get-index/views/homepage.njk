@@ -1,5 +1,15 @@
+<!doctype html>
+<html>
+<head>
+<link href="{{ css }}" rel="stylesheet">
+</head>
+<body>
+
 <ul>
-{%- for post in posts %}
-  <li><a href="/{{ post.slug }}">{{ post.published }}</a></li>
+{%- for properties in posts %}
+  <li><a href="/{{ properties.slug[0] }}">{{ properties.content[0] }}</a></li>
 {%- endfor %}
 </ul>
+
+</body>
+</html>
