@@ -1,7 +1,7 @@
 const arc = require('@architect/functions')
-const micropub = require('./micropub')
+const { micropub } = require('./micropub')
 
-function queueUpload(slug) {
+async function queueUpload(slug) {
   await arc.queues.publish({ name: 'upload', payload: { slug } })
 }
 
@@ -14,19 +14,12 @@ function send201(url) {
   }
 }
 
-function isValidUrl(string) {
-  try {
-    new URL(string)
-  } catch (_) {
-    return false
-  }
-  return true
-}
-
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
-  console.log(`req=${JSON.stringify(body)}`)
+  console.log(`req=${JSON.stringify(req)}`)
+
+  console.log(`body=${JSON.stringify(body)}`)
 
   if (body === null) return { body: "Missing" }
 
@@ -40,7 +33,7 @@ exports.handler = async function http (req) {
       }
     }
     // require_auth
-    if (!isValidUrl(body.url)) {
+    if (!micropub.isValidUrl(body.url)) {
       return {
         statusCode: 500,
         body: `The specified URL "${body.url} is not a valid URL.`
@@ -61,6 +54,6 @@ exports.handler = async function http (req) {
     // require_auth
     const post = await micropub.create(body)
     queueUpload(post.slug)
-    return send201(`${process.env.ROOT_URL}${post.slug}`)
+    return send201(`http://localhost:3333/${post.slug}`)
   }
 }
