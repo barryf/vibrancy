@@ -1,45 +1,66 @@
 const arc = require('@architect/functions')
+const micropub = require('./micropub')
+
+function queueUpload(slug) {
+  await arc.queues.publish({ name: 'upload', payload: { slug } })
+}
+
+function send201(url) {
+  return {
+    statusCode: 201,
+    headers: {
+      'Location': url
+    }
+  }
+}
+
+function isValidUrl(string) {
+  try {
+    new URL(string)
+  } catch (_) {
+    return false
+  }
+  return true
+}
 
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
-  const data = await arc.tables()
 
   console.log(`req=${JSON.stringify(body)}`)
 
+  if (body === null) return { body: "Missing" }
+
   //if ("Authorization" in req.headers) {
 
-  if ("action" in req.body) {
-    // verify_action
-    // require_auth
-    // verify_url
-    action(body)
-    // return send202()
-  }
-
-  // add a post
-  const slug = '2020/06/foo'
-  const published = '2020-06-22T21:56:00Z'
-  const kind = ['note']
-  const row = {
-    slug: slug,
-    published: '2020-06-22T21:56:00Z',
-    kind: 'note',
-    properties: JSON.stringify({
-      slug: [slug],
-      published: [published],
-      kind: [kind],
-      content: ["This is my content."],
-      category: ['one', 'two']
-    })
-  }
-  await data.posts.put(row)
-
-  await arc.queues.publish({ name: 'upload', payload: { slug } })
-
-  return {
-    statusCode: 202,
-    headers: {
-      'Location': 'http://localhost:3333/2020/06/foo'
+  if ("action" in body) {
+    if (!['create','update','delete','undelete'].includes(body.action)) {
+      return {
+        statusCode: 500,
+        body: `The specified action "${body.action}" is not supported.`
+      }
     }
+    // require_auth
+    if (!isValidUrl(body.url)) {
+      return {
+        statusCode: 500,
+        body: `The specified URL "${body.url} is not a valid URL.`
+      }
+    }
+    const post = await micropub.action(body)
+    queueUpload(post.slug)
+    return send201(`${process.env.ROOT_URL}${post.slug}`)
+
+  } else if ("file" in body) {
+    // assume this is a file (photo) upload
+    // require_auth
+    const url = await media.save(body.file)
+    return send201(url)
+
+  } else {
+    // assume this is a create
+    // require_auth
+    const post = await micropub.create(body)
+    queueUpload(post.slug)
+    return send201(`${process.env.ROOT_URL}${post.slug}`)
   }
 }
