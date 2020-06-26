@@ -41,17 +41,31 @@ function deriveKind(properties) {
   }
 }
 
+function sanitiseProperties(properties) {
+  for (prop in properties) {
+    if (prop.startsWith('mp-')) {
+      delete properties[prop]
+    }
+  }
+}
+
 const create = async function (body) {
   const data = await arc.tables()
   const slug = body.properties['mp-slug'][0]
+  const kind = deriveKind(body.properties)
   const properties = {
     ...body.properties,
-    slug: [slug]
+    slug: [slug],
+    kind: [kind]
   }
+  if (!("published" in properties)) {
+    properties.published = Date.now
+  }
+  sanitiseProperties(properties)
   const post = {
     slug: slug,
-    published: Date.now,
-    kind: deriveKind(properties),
+    kind: kind,
+    published: properties.published,
     properties: JSON.stringify(properties)
   }
   await data.posts.put(post)
