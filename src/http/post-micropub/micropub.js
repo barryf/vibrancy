@@ -41,6 +41,50 @@ function deriveKind (properties) {
   }
 }
 
+function deriveSlug (properties) {
+  if ('mp-slug' in properties && properties['mp-slug'][0] != '') {
+    return properties['mp-slug'][0]
+  }
+  const now = new Date()
+  const prefix = properties.published[0].strftime('%Y')
+  //
+  let content = ''
+  if ('name' in properties) {
+    content = properties.name[0]
+  } else if ('summary' in properties) {
+    content = properties.name[0]
+  } else if ('content' in properties) {
+    if (typeof properties.content[0] === 'object' &&
+      'html' in properties.content[0]) {
+      content = properties.content[0].html
+    } else {
+      content = properties.content[0]
+    }
+  }
+  if (content === '') {
+    return Date.now.strftime('%d-%H%M%S')
+  }
+}
+
+// def slugify
+// content = if @properties.key?('name')
+//   @properties['name'][0]
+// elsif @properties.key?('summary')
+//   @properties['summary'][0]
+// elsif @properties.key?('content')
+//   if @properties['content'][0].is_a?(Hash) &&
+//        @properties['content'][0].key?('html')
+//      @properties['content'][0]['html']
+//    else
+//      @properties['content'][0]
+//    end
+// end
+// return Time.now.utc.strftime('%d-%H%M%S') if content.nil?
+
+// content.downcase.gsub(/[^\w-]/, ' ').strip.gsub(' ', '-').
+//   gsub(/[-_]+/,'-').split('-')[0..5].join('-')
+// end
+
 function sanitiseProperties (properties) {
   for (const prop in properties) {
     if (prop.startsWith('mp-')) {
@@ -51,7 +95,7 @@ function sanitiseProperties (properties) {
 
 const create = async function (body) {
   const data = await arc.tables()
-  const slug = body.properties['mp-slug'][0]
+  const slug = deriveSlug(body.properties)
   const kind = deriveKind(body.properties)
   const properties = {
     ...body.properties,
