@@ -6,7 +6,7 @@ const marked = require('marked')
 const njkEnv = nunjucks.configure('views')
 markdown.register(njkEnv, marked)
 
-async function renderIndex() {
+async function renderIndex () {
   const data = await arc.tables()
   const css = arc.static('/main.css')
   const result = await data.posts.scan({ TableName: 'posts' })
@@ -15,11 +15,11 @@ async function renderIndex() {
   return html
 }
 
-async function renderKind(kind) {
+async function renderKind (kind) {
   const data = await arc.tables()
   const result = await data.posts.scan({
     TableName: 'posts',
-    FilterExpression: "kind = :kind",
+    FilterExpression: 'kind = :kind',
     ExpressionAttributeValues: {
       ':kind': kind
     }
@@ -29,16 +29,16 @@ async function renderKind(kind) {
   return html
 }
 
-async function renderPost(slug) {
+async function renderPost (slug) {
   const data = await arc.tables()
-  const post = await data.posts.get({slug})
+  const post = await data.posts.get({ slug })
   if (post === undefined) return
   const properties = JSON.parse(post.properties)
   const html = nunjucks.render('post.njk', properties)
   return html
 }
 
-function send200(body) {
+function send200 (body) {
   return {
     headers: {
       'cache-control': 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
@@ -48,7 +48,7 @@ function send200(body) {
   }
 }
 
-function send404() {
+function send404 () {
   return {
     statusCode: 404,
     headers: {
@@ -60,7 +60,8 @@ function send404() {
 }
 
 exports.handler = async function http (req) {
-  const slug = req.path.substr(1).replace('staging/','')
+  const slug = req.path.substr(1).replace('staging/', '')
+  let body
   switch (slug) {
     case 'favicon.ico':
       return

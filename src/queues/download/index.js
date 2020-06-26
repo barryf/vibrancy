@@ -1,12 +1,12 @@
 const arc = require('@architect/functions')
 const matter = require('gray-matter')
-const { Octokit } = require("@octokit/rest");
+const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
   userAgent: 'vibrancy'
 })
 
-async function getGitHubFile(slug) {
+async function getGitHubFile (slug) {
   const content = await octokit.repos.getContent({
     owner: 'barryf',
     repo: 'content',
@@ -16,7 +16,7 @@ async function getGitHubFile(slug) {
   return Buffer.from(content.data.content, 'base64').toString()
 }
 
-async function upsert(slug, post) {
+async function upsert (slug, post) {
   const data = await arc.tables()
   const row = {
     slug: slug,
