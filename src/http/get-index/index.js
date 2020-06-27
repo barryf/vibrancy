@@ -7,8 +7,8 @@ const njkEnv = nunjucks.configure('views')
 markdown.register(njkEnv, marked)
 
 async function renderIndex () {
-  const data = await arc.tables()
   const css = arc.static('/main.css')
+  const data = await arc.tables()
   const result = await data.posts.scan({ TableName: 'posts' })
   const posts = result.Items.map(item => JSON.parse(item.properties))
   const html = nunjucks.render('homepage.njk', { posts, css })
@@ -16,6 +16,7 @@ async function renderIndex () {
 }
 
 async function renderKind (kind) {
+  const css = arc.static('/main.css')
   const data = await arc.tables()
   const result = await data.posts.scan({
     TableName: 'posts',
@@ -25,16 +26,17 @@ async function renderKind (kind) {
     }
   })
   const posts = result.Items.map(item => JSON.parse(item.properties))
-  const html = nunjucks.render('homepage.njk', { posts })
+  const html = nunjucks.render('homepage.njk', { posts, css })
   return html
 }
 
 async function renderPost (slug) {
+  const css = arc.static('/main.css')
   const data = await arc.tables()
-  const post = await data.posts.get({ slug })
-  if (post === undefined) return
-  const properties = JSON.parse(post.properties)
-  const html = nunjucks.render('post.njk', properties)
+  const postData = await data.posts.get({ slug })
+  if (postData === undefined) return
+  const post = { properties: JSON.parse(postData.properties) }
+  const html = nunjucks.render('post.njk', { post, css })
   return html
 }
 

@@ -1,11 +1,18 @@
-<h1>{{ name[0] }}</h1>
+{%- extends 'layout.njk' %}
+{%- block content %}
+
+<h1>{{ post.properties.name[0] }}</h1>
+
+<p>{{ post.properties.published[0] }}</p>
 
 {% markdown %}
-{{ content[0] }}
+{{ post.properties.content[0] }}
 {% endmarkdown %}
 
 <ul>
-{%- for cat in category %}
-  <li>{{cat}}</li>
+{%- for cat in post.properties.category %}
+  <li>{{ cat }}</li>
 {%- endfor %}
 </ul>
+
+{%- endblock %}

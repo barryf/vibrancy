@@ -1,9 +1,5 @@
-<!doctype html>
-<html>
-<head>
-<link href="{{ css }}" rel="stylesheet">
-</head>
-<body>
+{% extends 'layout.njk' %}
+{% block content %}
 
 <ul>
 {%- for properties in posts %}
@@ -11,5 +7,4 @@
 {%- endfor %}
 </ul>
 
-</body>
-</html>
+{% endblock %}
