@@ -1,8 +1,8 @@
 const arc = require('@architect/functions')
 const { micropub } = require('./micropub')
 
-async function queueUpload (slug) {
-  await arc.queues.publish({ name: 'upload', payload: { slug } })
+async function queueUpload (slug, method) {
+  await arc.queues.publish({ name: 'upload', payload: { slug, method } })
 }
 
 function send201 (url) {
@@ -17,11 +17,7 @@ function send201 (url) {
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
-  console.log(`req=${JSON.stringify(req)}`)
-
   console.log(`body=${JSON.stringify(body)}`)
-
-  if (body === null) return { body: 'Missing' }
 
   // if ("Authorization" in req.headers) {
 
@@ -40,7 +36,8 @@ exports.handler = async function http (req) {
       }
     }
     const post = await micropub.action(body)
-    queueUpload(post.slug)
+    const method = body.action === 'create' ? 'added' : 'modified'
+    await queueUpload(post.slug, method)
     return send201(`${process.env.ROOT_URL}${post.slug}`)
   } else if ('file' in body) {
     // assume this is a file (photo) upload
@@ -51,7 +48,7 @@ exports.handler = async function http (req) {
     // assume this is a create
     // require_auth
     const post = await micropub.create(body)
-    queueUpload(post.slug)
+    await queueUpload(post.slug, 'added')
     return send201(process.env.ROOT_URL + post.slug)
   }
 }
