@@ -17,7 +17,7 @@ function send201 (url) {
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
-  console.log(`body=${JSON.stringify(body)}`)
+  // console.log(`body=${JSON.stringify(body)}`)
 
   // if ("Authorization" in req.headers) {
 

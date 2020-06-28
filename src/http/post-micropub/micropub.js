@@ -100,7 +100,7 @@ const create = async function (body) {
   }
   const data = await arc.tables()
   await data.posts.put(post)
-  console.log(JSON.stringify(post))
+  // console.log(JSON.stringify(post))
   return post
 }
 
