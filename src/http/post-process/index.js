@@ -2,10 +2,10 @@ const arc = require('@architect/functions')
 
 async function queueDownloads (commits) {
   const slugs = []
-  commits.forEach(commit => {
-    ['added', 'modified'].forEach(method => {
-      commit[method].forEach(async commit => {
-        const slug = commit.filename.slice(0, -3)
+  commits.forEach(async commit => {
+    ['added', 'modified'].forEach(async method => {
+      commit[method].forEach(async file => {
+        const slug = file.slice(0, -3)
         slugs.push(slug)
         const payload = { slug, method }
         await arc.queues.publish({ name: 'download', payload })
@@ -16,14 +16,15 @@ async function queueDownloads (commits) {
 }
 
 exports.handler = async function http (req) {
-  // TODO throw unless 'commits' key in req
+  const body = arc.http.helpers.bodyParser(req)
+  // console.log(`process req=${JSON.stringify(body)}`)
 
   // TODO check HTTP_X_HUB_SIGNATURE
 
-  const slugs = await queueDownloads(req.commits)
+  const slugs = await queueDownloads(body.commits)
 
   return {
     statusCode: 202,
-    body: `Queued download of: ${slugs.join(', ')}`
+    body: `Queued download of ${slugs.join(', ')}`
   }
 }
