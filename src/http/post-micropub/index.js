@@ -52,6 +52,6 @@ exports.handler = async function http (req) {
     // require_auth
     const post = await micropub.create(body)
     queueUpload(post.slug)
-    return send201(`http://localhost:3333/${post.slug}`)
+    return send201(process.env.ROOT_URL + post.slug)
   }
 }
