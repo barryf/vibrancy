@@ -42,12 +42,16 @@ function deriveKind (properties) {
 }
 
 function deriveSlug (properties) {
-  if ('mp-slug' in properties && properties['mp-slug'][0] != '') {
+  if ('mp-slug' in properties && properties['mp-slug'][0] !== '') {
     return properties['mp-slug'][0]
   }
-  const now = new Date()
-  const prefix = properties.published[0].strftime('%Y')
-  //
+
+  const published = new Date(properties.published[0])
+  const yyyy = published.getFullYear().toString()
+  const m = (published.getMonth() + 1).toString()
+  const mm = m.length === 1 ? `0${m}` : m
+  const prefix = `${yyyy}/${mm}/`
+
   let content = ''
   if ('name' in properties) {
     content = properties.name[0]
@@ -62,28 +66,11 @@ function deriveSlug (properties) {
     }
   }
   if (content === '') {
-    return Date.now.strftime('%d-%H%M%S')
+    return prefix + Math.random().toString(36).substring(2, 15)
   }
+  return prefix + content.toLowerCase().replace(/[^\w-]/g, ' ').trim()
+    .replace(/[\s-]+/g, ' ').replace(/ /g, '-').split('-').slice(0, 6).join('-')
 }
-
-// def slugify
-// content = if @properties.key?('name')
-//   @properties['name'][0]
-// elsif @properties.key?('summary')
-//   @properties['summary'][0]
-// elsif @properties.key?('content')
-//   if @properties['content'][0].is_a?(Hash) &&
-//        @properties['content'][0].key?('html')
-//      @properties['content'][0]['html']
-//    else
-//      @properties['content'][0]
-//    end
-// end
-// return Time.now.utc.strftime('%d-%H%M%S') if content.nil?
-
-// content.downcase.gsub(/[^\w-]/, ' ').strip.gsub(' ', '-').
-//   gsub(/[-_]+/,'-').split('-')[0..5].join('-')
-// end
 
 function sanitiseProperties (properties) {
   for (const prop in properties) {
@@ -94,24 +81,24 @@ function sanitiseProperties (properties) {
 }
 
 const create = async function (body) {
-  const data = await arc.tables()
-  const slug = deriveSlug(body.properties)
-  const kind = deriveKind(body.properties)
-  const properties = {
-    ...body.properties,
-    slug: [slug],
-    kind: [kind]
-  }
+  // if ('h' in body) {
+
+  // }
+
+  const properties = { ...body.properties }
   if (!('published' in properties)) {
-    properties.published = Date.now
+    properties.published = [new Date().toISOString()]
   }
+  properties.slug = [deriveSlug(properties)]
+  properties.kind = [deriveKind(properties)]
   sanitiseProperties(properties)
   const post = {
-    slug: slug,
-    kind: kind,
-    published: properties.published,
+    slug: properties.slug[0],
+    kind: properties.kind[0],
+    published: properties.published[0],
     properties: JSON.stringify(properties)
   }
+  const data = await arc.tables()
   await data.posts.put(post)
   console.log(JSON.stringify(post))
   return post
