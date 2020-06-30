@@ -78,18 +78,16 @@ function sanitiseAndFlattenProperties (properties) {
     if (prop.startsWith('mp-')) {
       delete properties[prop]
     }
-    if (typeof properties[prop] === 'object' && properties[prop].length === 1) {
+    if (Array.isArray(properties[prop]) && properties[prop].length === 1) {
       properties[prop] = properties[prop][0]
     }
   }
 }
 
-const formatPost = async function (properties) {
-  // const properties = { ...body.properties }
-
-  if (!('published' in properties)) {
-    properties.published = new Date().toISOString()
-  }
+const formatPost = async function (bodyProperties) {
+  const properties = { ...bodyProperties }
+  // TODO parse number from properties.published
+  properties.published = new Date() // keep as number
   properties.slug = deriveSlug(properties)
   properties['post-type'] = derivePostType(properties)
   sanitiseAndFlattenProperties(properties)
@@ -97,13 +95,9 @@ const formatPost = async function (properties) {
     slug: properties.slug,
     'post-type': properties['post-type'],
     published: properties.published,
-    properties: JSON.stringify(properties)
+    sha: null,
+    properties
   }
-
-  // const data = await arc.tables()
-  // await data.posts.put(post)
-
-  // console.log(JSON.stringify(post))
   return post
 }
 

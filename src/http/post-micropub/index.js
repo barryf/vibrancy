@@ -2,19 +2,6 @@ const arc = require('@architect/functions')
 const { micropub } = require('./micropub')
 const { github } = require('./github')
 
-async function queueUpload (slug, method) {
-  await arc.queues.publish({ name: 'upload', payload: { slug, method } })
-}
-
-function send201 (url) {
-  return {
-    statusCode: 201,
-    headers: {
-      location: url
-    }
-  }
-}
-
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
@@ -36,10 +23,10 @@ exports.handler = async function http (req) {
         body: `The specified URL "${body.url} is not a valid URL.`
       }
     }
-    const post = await micropub.action(body)
-    const method = body.action === 'create' ? 'added' : 'modified'
-    await queueUpload(post.slug, method)
-    return send201(`${process.env.ROOT_URL}${post.slug}`)
+    // const post = await micropub.action(body)
+    // const method = body.action === 'create' ? 'added' : 'modified'
+    // await queueUpload(post.slug, method)
+    // return send201(`${process.env.ROOT_URL}${post.slug}`)
   } else if ('file' in body) {
     // assume this is a file (photo) upload
     // require_auth
@@ -48,12 +35,14 @@ exports.handler = async function http (req) {
   } else {
     // assume this is a create
     // require_auth
-    const properties = { ...body.properties }
-    const post = await micropub.formatPost(properties)
-    const ghResponse = github.createFile(post)
-    if (ghResponse.statusCode === 200) {
+    const post = await micropub.formatPost(body.properties)
+    const response = github.createFile(post)
+    if (response.status === 201) {
       const data = await arc.tables()
-      await data.posts.put(post)
+      await data.posts.put({
+        ...post,
+        sha: response.body.commit.sha
+      })
       return {
         statusCode: 201,
         headers: {
