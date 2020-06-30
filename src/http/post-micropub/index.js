@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const { micropub } = require('./micropub')
+const { github } = require('./github')
 
 async function queueUpload (slug, method) {
   await arc.queues.publish({ name: 'upload', payload: { slug, method } })
@@ -24,14 +25,14 @@ exports.handler = async function http (req) {
   if ('action' in body) {
     if (!['create', 'update', 'delete', 'undelete'].includes(body.action)) {
       return {
-        statusCode: 500,
+        statusCode: 400,
         body: `The specified action "${body.action}" is not supported.`
       }
     }
     // require_auth
     if (!micropub.isValidUrl(body.url)) {
       return {
-        statusCode: 500,
+        statusCode: 400,
         body: `The specified URL "${body.url} is not a valid URL.`
       }
     }
@@ -47,8 +48,24 @@ exports.handler = async function http (req) {
   } else {
     // assume this is a create
     // require_auth
-    const post = await micropub.create(body)
-    await queueUpload(post.slug, 'added')
-    return send201(process.env.ROOT_URL + post.slug)
+    const properties = { ...body.properties }
+    const post = await micropub.formatPost(properties)
+    const ghResponse = github.createFile(post)
+    if (ghResponse.statusCode === 200) {
+      const data = await arc.tables()
+      await data.posts.put(post)
+      return {
+        statusCode: 201,
+        headers: {
+          location: process.env.ROOT_URL + post.slug
+        }
+      }
+    } else {
+      return {
+        statusCode: 500,
+        body: 'Error from GitHub when creating post.'
+        // TODO: better error
+      }
+    }
   }
 }

@@ -1,4 +1,4 @@
-const arc = require('@architect/functions')
+// const arc = require('@architect/functions')
 
 const isValidUrl = function (string) {
   try {
@@ -9,7 +9,7 @@ const isValidUrl = function (string) {
   return true
 }
 
-function deriveKind (properties) {
+function derivePostType (properties) {
   if (('rsvp' in properties) &&
     ['yes', 'no', 'maybe', 'interested'].includes(properties.rsvp[0])) {
     return 'rsvp'
@@ -43,6 +43,7 @@ function deriveKind (properties) {
 
 function deriveSlug (properties) {
   if ('mp-slug' in properties && properties['mp-slug'][0] !== '') {
+    // TODO: validate mp-slug format is foo or /yyyy/mm/foo
     return properties['mp-slug'][0]
   }
 
@@ -72,36 +73,38 @@ function deriveSlug (properties) {
     .replace(/[\s-]+/g, ' ').replace(/ /g, '-').split('-').slice(0, 6).join('-')
 }
 
-function sanitiseProperties (properties) {
+function sanitiseAndFlattenProperties (properties) {
   for (const prop in properties) {
     if (prop.startsWith('mp-')) {
       delete properties[prop]
     }
+    if (typeof properties[prop] === 'object' && properties[prop].length === 1) {
+      properties[prop] = properties[prop][0]
+    }
   }
 }
 
-const create = async function (body) {
-  // if ('h' in body) {
+const formatPost = async function (properties) {
+  // const properties = { ...body.properties }
 
-  // }
-
-  const properties = { ...body.properties }
   if (!('published' in properties)) {
-    properties.published = [new Date().toISOString()]
+    properties.published = new Date().toISOString()
   }
-  properties.slug = [deriveSlug(properties)]
-  properties.kind = [deriveKind(properties)]
-  sanitiseProperties(properties)
+  properties.slug = deriveSlug(properties)
+  properties['post-type'] = derivePostType(properties)
+  sanitiseAndFlattenProperties(properties)
   const post = {
-    slug: properties.slug[0],
-    kind: properties.kind[0],
-    published: properties.published[0],
+    slug: properties.slug,
+    'post-type': properties['post-type'],
+    published: properties.published,
     properties: JSON.stringify(properties)
   }
-  const data = await arc.tables()
-  await data.posts.put(post)
+
+  // const data = await arc.tables()
+  // await data.posts.put(post)
+
   // console.log(JSON.stringify(post))
   return post
 }
 
-exports.micropub = { create, isValidUrl }
+exports.micropub = { formatPost, isValidUrl }

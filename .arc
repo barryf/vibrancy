@@ -5,17 +5,12 @@ vibrancy-arc
 region eu-west-2
 
 @http
-get /
-post /process
 post /micropub
+post /process
 
 @queues
-download
-upload
 ping
 
 @tables
 posts
   slug *String
-
-@static
