@@ -5,6 +5,7 @@ vibrancy-arc
 region eu-west-2
 
 @http
+get /micropub
 post /micropub
 post /process
 

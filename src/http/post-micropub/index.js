@@ -36,7 +36,8 @@ exports.handler = async function http (req) {
     // assume this is a create
     // require_auth
     const post = await micropub.formatPost(body.properties)
-    const response = github.createFile(post)
+    // const response = github.createFile(post)
+    const response = { status: 201, body: { commit: { sha: 'foo' } } }
     if (response.status === 201) {
       const data = await arc.tables()
       await data.posts.put({

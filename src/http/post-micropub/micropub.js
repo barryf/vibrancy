@@ -42,12 +42,12 @@ function derivePostType (properties) {
 }
 
 function deriveSlug (properties) {
-  if ('mp-slug' in properties && properties['mp-slug'][0] !== '') {
+  if ('mp-slug' in properties && properties['mp-slug'] !== '') {
     // TODO: validate mp-slug format is foo or /yyyy/mm/foo
-    return properties['mp-slug'][0]
+    return properties['mp-slug']
   }
 
-  const published = new Date(properties.published[0])
+  const published = new Date(properties.published)
   const yyyy = published.getFullYear().toString()
   const m = (published.getMonth() + 1).toString()
   const mm = m.length === 1 ? `0${m}` : m
@@ -55,15 +55,15 @@ function deriveSlug (properties) {
 
   let content = ''
   if ('name' in properties) {
-    content = properties.name[0]
+    content = properties.name
   } else if ('summary' in properties) {
-    content = properties.name[0]
+    content = properties.name
   } else if ('content' in properties) {
-    if (typeof properties.content[0] === 'object' &&
-      'html' in properties.content[0]) {
-      content = properties.content[0].html
+    if (typeof properties.content === 'object' &&
+      'html' in properties.content) {
+      content = properties.content.html
     } else {
-      content = properties.content[0]
+      content = properties.content
     }
   }
   if (content === '') {
@@ -73,24 +73,30 @@ function deriveSlug (properties) {
     .replace(/[\s-]+/g, ' ').replace(/ /g, '-').split('-').slice(0, 6).join('-')
 }
 
-function sanitiseAndFlattenProperties (properties) {
+function flattenProperties (properties) {
   for (const prop in properties) {
-    if (prop.startsWith('mp-')) {
-      delete properties[prop]
-    }
     if (Array.isArray(properties[prop]) && properties[prop].length === 1) {
       properties[prop] = properties[prop][0]
     }
   }
 }
 
+function sanitiseProperties (properties) {
+  for (const prop in properties) {
+    if (prop.startsWith('mp-')) {
+      delete properties[prop]
+    }
+  }
+}
+
 const formatPost = async function (bodyProperties) {
   const properties = { ...bodyProperties }
+  flattenProperties(properties)
   // TODO parse number from properties.published
   properties.published = new Date() // keep as number
   properties.slug = deriveSlug(properties)
   properties['post-type'] = derivePostType(properties)
-  sanitiseAndFlattenProperties(properties)
+  sanitiseProperties(properties)
   const post = {
     slug: properties.slug,
     'post-type': properties['post-type'],

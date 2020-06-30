@@ -35,4 +35,4 @@ const createFile = async function (post) {
   return response
 }
 
-exports.micropub = { createFile }
+exports.github = { createFile }

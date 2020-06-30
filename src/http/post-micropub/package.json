@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@architect/functions": "^3.12.1"
+    "@architect/functions": "^3.12.1",
+    "@octokit/rest": "^18.0.0"
   }
 }
