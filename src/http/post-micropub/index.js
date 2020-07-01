@@ -3,30 +3,28 @@ const { micropub } = require('./micropub')
 // const { github } = require('./github')
 const { auth } = require('./auth')
 
-function requireAuth (body, headers) {
+async function requireAuth (body, headers) {
   let token = headers.HTTP_AUTHORIZATION || body.access_token || ''
   token = token.replace(/^Bearer /, '')
   if (token === '') {
     return {
       error: 'unauthorized',
+      statusCode: 401,
       message: 'Micropub endpoint did not return an access token.'
     }
   }
-  const scope = 'action' in body ? body.action : 'post'
-  const authorised = auth.verifyTokenAndScope(token, scope)
-  return authorised
+  const scope = ('action' in body) ? body.action : 'post'
+  return await auth.verifyTokenAndScope(token, scope)
 }
 
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
-  // console.log(`body=${JSON.stringify(body)}`)
-
   const authResponse = requireAuth(body, req.headers)
   if ('error' in authResponse) {
     return {
-      statusCode: 401,
-      message: JSON.stringify(authResponse)
+      statusCode: authResponse.statusCode,
+      body: JSON.stringify(authResponse)
     }
   }
 
