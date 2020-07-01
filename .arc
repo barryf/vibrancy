@@ -10,6 +10,7 @@ post /micropub
 post /process
 
 @queues
+download
 ping
 
 @tables
