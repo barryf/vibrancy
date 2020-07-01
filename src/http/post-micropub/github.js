@@ -3,7 +3,7 @@ const matter = require('gray-matter')
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
-  userAgent: 'vibrancy'
+  userAgent: 'Vibrancy https://github.com/barryf/vibrancy'
 })
 
 function formatContent (post) {
