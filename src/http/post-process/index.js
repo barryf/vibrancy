@@ -33,11 +33,11 @@ exports.handler = async function http (req) {
   // TODO check HTTP_X_HUB_SIGNATURE
 
   const slugs = await queueDownloads(body.commits)
-  const result = slugs.length > 0 ? `Queued download of ${slugs.join(', ')}`
+  const message = slugs.length > 0 ? `Queued download of ${slugs.join(', ')}`
     : 'No files were added/modified.'
 
   return {
     statusCode: 202,
-    body: JSON.stringify({ message: result })
+    body: JSON.stringify({ message })
   }
 }
