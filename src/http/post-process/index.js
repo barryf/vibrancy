@@ -38,6 +38,6 @@ exports.handler = async function http (req) {
 
   return {
     statusCode: 202,
-    body: result
+    body: JSON.stringify({ message: result })
   }
 }
