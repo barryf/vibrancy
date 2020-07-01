@@ -16,3 +16,5 @@ ping
 @tables
 posts
   slug *String
+tokens
+  token *String
