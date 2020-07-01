@@ -93,15 +93,14 @@ const formatPost = async function (bodyProperties) {
   const properties = { ...bodyProperties }
   flattenProperties(properties)
   // TODO parse number from properties.published
-  properties.published = new Date() // keep as number
+  properties.published = properties.published || new Date().toISOString()
   properties.slug = deriveSlug(properties)
   properties['post-type'] = derivePostType(properties)
   sanitiseProperties(properties)
   const post = {
     slug: properties.slug,
     'post-type': properties['post-type'],
-    published: properties.published,
-    sha: null,
+    publishedms: Date.parse(properties.published),
     properties
   }
   return post
