@@ -1,13 +1,34 @@
 const arc = require('@architect/functions')
 const { micropub } = require('./micropub')
-const { github } = require('./github')
+// const { github } = require('./github')
+const { auth } = require('./auth')
+
+function requireAuth (body, headers) {
+  let token = headers.HTTP_AUTHORIZATION || body.access_token || ''
+  token = token.replace(/^Bearer /, '')
+  if (token === '') {
+    return {
+      error: 'unauthorized',
+      message: 'Micropub endpoint did not return an access token.'
+    }
+  }
+  const scope = 'action' in body ? body.action : 'post'
+  const authorised = auth.verifyTokenAndScope(token, scope)
+  return authorised
+}
 
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
   // console.log(`body=${JSON.stringify(body)}`)
 
-  // if ("Authorization" in req.headers) {
+  const authResponse = requireAuth(body, req.headers)
+  if ('error' in authResponse) {
+    return {
+      statusCode: 401,
+      message: JSON.stringify(authResponse)
+    }
+  }
 
   if ('action' in body) {
     if (!['create', 'update', 'delete', 'undelete'].includes(body.action)) {
@@ -37,13 +58,10 @@ exports.handler = async function http (req) {
     // require_auth
     const post = await micropub.formatPost(body.properties)
     // const response = github.createFile(post)
-    const response = { status: 201, body: { commit: { sha: 'foo' } } }
+    const response = { statusCode: 201 }
     if (response.status === 201) {
       const data = await arc.tables()
-      await data.posts.put({
-        ...post,
-        sha: response.body.commit.sha
-      })
+      await data.posts.put(post)
       return {
         statusCode: 201,
         headers: {
