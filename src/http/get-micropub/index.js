@@ -1,5 +1,4 @@
 const arc = require('@architect/functions')
-// const { micropub } = require('./micropub')
 
 function verifyUrl (url) {
   return true
@@ -13,15 +12,16 @@ function unflattenProperties (properties) {
   }
 }
 
-async function renderSource (req) {
-  const url = req.queryStringParameters.url
-  if (!verifyUrl(url)) {
-    return { body: 'URL is invalid.' }
+async function renderSource (query) {
+  if (!verifyUrl(query.url)) {
+    return { body: JSON.stringify({ message: 'URL is invalid' }) }
   }
-  const slug = url.replace(process.env.ROOT_URL, '')
+  const slug = query.url.replace(process.env.ROOT_URL, '')
   const data = await arc.tables()
   const postData = await data.posts.get({ slug })
-  if (postData === undefined) return { body: 'Not found' }
+  if (postData === undefined) {
+    return { body: JSON.stringify({ message: 'Not found' }) }
+  }
   const properties = { ...postData.properties }
   unflattenProperties(properties)
   return {
@@ -33,10 +33,11 @@ async function renderSource (req) {
 }
 
 exports.handler = async function http (req) {
-  if ('q' in req.queryStringParameters) {
-    switch (req.queryStringParameters.q) {
+  const query = req.queryStringParameters
+  if ('q' in query) {
+    switch (query.q) {
       case 'source':
-        return await renderSource(req)
+        return await renderSource(query)
     }
   }
   // if params.key?('q')
