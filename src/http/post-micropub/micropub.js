@@ -92,7 +92,6 @@ function sanitiseProperties (properties) {
 const formatPost = async function (bodyProperties) {
   const properties = { ...bodyProperties }
   flattenProperties(properties)
-  // TODO parse number from properties.published
   properties.published = properties.published || new Date().toISOString()
   properties.slug = deriveSlug(properties)
   properties['post-type'] = derivePostType(properties)
@@ -100,7 +99,7 @@ const formatPost = async function (bodyProperties) {
   const post = {
     slug: properties.slug,
     'post-type': properties['post-type'],
-    publishedms: Date.parse(properties.published),
+    published: properties.published,
     properties
   }
   return post
