@@ -5,12 +5,14 @@ const { auth } = require('./auth')
 
 async function requireAuth (body, headers) {
   let token = headers.HTTP_AUTHORIZATION || body.access_token || ''
-  token = token.replace(/^Bearer /, '')
+  token = token.trim().replace(/^Bearer /, '')
   if (token === '') {
     return {
-      error: 'unauthorized',
       statusCode: 401,
-      message: 'Micropub endpoint did not return an access token.'
+      body: JSON.stringify({
+        error: 'unauthorized',
+        message: 'Micropub endpoint did not return an access token.'
+      })
     }
   }
   const scope = ('action' in body) ? body.action : 'post'
