@@ -19,10 +19,12 @@ const verifyTokenAndScope = async function (token, scope) {
     tokenData = await getTokenResponse(token, 'https://tokens.indieauth.com/token')
     if (!tokenData || tokenData.me !== 'https://barryfrost.com') {
       return {
-        error: 'forbidden',
         statusCode: 403,
-        message: 'The authenticated user does not have permission' +
-          ' to perform this request.'
+        body: JSON.stringify({
+          error: 'forbidden',
+          message: 'The authenticated user does not have permission' +
+            ' to perform this request.'
+        })
       }
     }
     await data.tokens.put(token, tokenData)
@@ -34,9 +36,11 @@ const verifyTokenAndScope = async function (token, scope) {
     if (scope === 'post' && scopes.includes('create')) { return true }
   }
   return {
-    error: 'insufficient_scope',
     statusCode: 401,
-    message: 'The user does not have sufficient scope to perform this action.'
+    body: JSON.stringify({
+      error: 'insufficient_scope',
+      message: 'The user does not have sufficient scope to perform this action.'
+    })
   }
 }
 
