@@ -11,25 +11,25 @@ const isValidUrl = function (string) {
 
 function derivePostType (properties) {
   if (('rsvp' in properties) &&
-    ['yes', 'no', 'maybe', 'interested'].includes(properties.rsvp[0])) {
+    ['yes', 'no', 'maybe', 'interested'].includes(properties.rsvp)) {
     return 'rsvp'
   } else if (('in-reply-to' in properties) &&
-    isValidUrl(properties['in-reply-to'][0])) {
+    isValidUrl(properties['in-reply-to'])) {
     return 'in-reply-to'
   } else if (('repost-of' in properties) &&
-    isValidUrl(properties['repost-of'][0])) {
+    isValidUrl(properties['repost-of'])) {
     return 'repost-of'
   } else if (('like-of' in properties) &&
-    isValidUrl(properties['like-of'][0])) {
+    isValidUrl(properties['like-of'])) {
     return 'like-of'
   } else if (('video' in properties) &&
-    isValidUrl(properties.video[0])) {
+    isValidUrl(properties.video)) {
     return 'video'
   } else if (('photo' in properties) &&
-    isValidUrl(properties.photo[0])) {
+    isValidUrl(properties.photo)) {
     return 'photo'
   } else if (('bookmark-of' in properties) &&
-    isValidUrl(properties['bookmark-of'][0])) {
+    isValidUrl(properties['bookmark-of'])) {
     return 'bookmark-of'
   } else if (('name' in properties) &&
     (properties.name !== '')) { // also !content_start_with_name
@@ -89,7 +89,9 @@ function sanitiseProperties (properties) {
   }
 }
 
-const formatPost = async function (properties) {
+const formatPost = async function (bodyProperties) {
+  const properties = { ...bodyProperties }
+  flattenProperties(properties)
   properties.published = properties.published || new Date().toISOString()
   properties.slug = deriveSlug(properties)
   properties['post-type'] = derivePostType(properties)
@@ -103,4 +105,4 @@ const formatPost = async function (properties) {
   return post
 }
 
-exports.micropub = { formatPost, sanitiseProperties, isValidUrl }
+exports.micropub = { formatPost, isValidUrl }
