@@ -1,6 +1,6 @@
 const arc = require('@architect/functions')
 const { micropub } = require('./micropub')
-// const { github } = require('./github')
+const { github } = require('./github')
 const { auth } = require('./auth')
 
 async function requireAuth (body, headers) {
@@ -55,24 +55,19 @@ exports.handler = async function http (req) {
     // return send201(url)
   } else {
     // assume this is a create
+    // TODO: handle form encoded, not just json
     // require_auth
-    const properties = { ...body }
-    console.log(JSON.stringify(properties))
-    micropub.sanitiseProperties(properties)
-    console.log(JSON.stringify(properties))
-    const post = await micropub.formatPost(properties)
-    console.log(JSON.stringify(post))
-    // const response = github.createFile(post)
-    const response = { statusCode: 201 }
-    if (response.statusCode === 201) {
+    const post = await micropub.formatPost(body.properties)
+    const response = await github.createFile(post)
+    console.log(JSON.stringify(response))
+    if (response.status === 201) {
       const data = await arc.tables()
       await data.posts.put(post)
       // console.log(JSON.stringify(post))
-      // console.log(process.env.ROOT_URL + post.slug)
       return {
         statusCode: 201,
         headers: {
-          location: process.env.ROOT_URL + post.slug
+          location: 'http://localhost:3334/' + post.slug
         }
       }
     } else {

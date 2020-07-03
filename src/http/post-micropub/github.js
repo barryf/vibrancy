@@ -19,7 +19,7 @@ function formatContent (post) {
 }
 
 async function writeGitHubFile (slug, method, content) {
-  await octokit.repos.createOrUpdateFileContents({
+  return await octokit.repos.createOrUpdateFileContents({
     owner: 'barryf',
     repo: 'content',
     branch: 'transform-fm-md',
@@ -31,8 +31,7 @@ async function writeGitHubFile (slug, method, content) {
 
 const createFile = async function (post) {
   const content = formatContent(post)
-  const response = await writeGitHubFile(post.slug, 'added', content)
-  return response
+  return await writeGitHubFile(post.slug, 'added', content)
 }
 
 exports.github = { createFile }
