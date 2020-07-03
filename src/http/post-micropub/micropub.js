@@ -83,15 +83,13 @@ function flattenProperties (properties) {
 
 function sanitiseProperties (properties) {
   for (const prop in properties) {
-    if (prop.startsWith('mp-')) {
+    if (prop.startsWith('mp-') || prop === 'h') {
       delete properties[prop]
     }
   }
 }
 
-const formatPost = async function (bodyProperties) {
-  const properties = { ...bodyProperties }
-  flattenProperties(properties)
+const formatPost = async function (properties) {
   properties.published = properties.published || new Date().toISOString()
   properties.slug = deriveSlug(properties)
   properties['post-type'] = derivePostType(properties)
@@ -105,4 +103,4 @@ const formatPost = async function (bodyProperties) {
   return post
 }
 
-exports.micropub = { formatPost, isValidUrl }
+exports.micropub = { formatPost, sanitiseProperties, isValidUrl }
