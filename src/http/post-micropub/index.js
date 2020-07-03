@@ -56,12 +56,19 @@ exports.handler = async function http (req) {
   } else {
     // assume this is a create
     // require_auth
-    const post = await micropub.formatPost(body.properties)
+    const properties = { ...body }
+    console.log(JSON.stringify(properties))
+    micropub.sanitiseProperties(properties)
+    console.log(JSON.stringify(properties))
+    const post = await micropub.formatPost(properties)
+    console.log(JSON.stringify(post))
     // const response = github.createFile(post)
     const response = { statusCode: 201 }
-    if (response.status === 201) {
+    if (response.statusCode === 201) {
       const data = await arc.tables()
       await data.posts.put(post)
+      // console.log(JSON.stringify(post))
+      // console.log(process.env.ROOT_URL + post.slug)
       return {
         statusCode: 201,
         headers: {
