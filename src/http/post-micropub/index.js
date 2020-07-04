@@ -4,7 +4,7 @@ const { github } = require('./github')
 const { auth } = require('./auth')
 
 async function requireAuth (body, headers) {
-  let token = headers.HTTP_AUTHORIZATION || body.access_token || ''
+  let token = headers.authorization || body.access_token || ''
   token = token.trim().replace(/^Bearer /, '')
   if (token === '') {
     return {
@@ -15,20 +15,17 @@ async function requireAuth (body, headers) {
       })
     }
   }
-  const scope = ('action' in body) ? body.action : 'post'
+  const scope = ('action' in body) ? body.action : 'create'
   return await auth.verifyTokenAndScope(token, scope)
 }
 
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
+  // console.log(JSON.stringify(req))
 
-  const authResponse = requireAuth(body, req.headers)
-  if ('error' in authResponse) {
-    return {
-      statusCode: authResponse.statusCode,
-      body: JSON.stringify(authResponse)
-    }
-  }
+  const authResponse = await requireAuth(body, req.headers)
+  // console.log(`authResponse=${JSON.stringify(authResponse)}`)
+  if (authResponse !== true) return authResponse
 
   if ('action' in body) {
     if (!['create', 'update', 'delete', 'undelete'].includes(body.action)) {
@@ -58,8 +55,9 @@ exports.handler = async function http (req) {
     // TODO: handle form encoded, not just json
     // require_auth
     const post = await micropub.formatPost(body.properties)
+    // console.log(JSON.stringify(post))
     const response = await github.createFile(post)
-    console.log(JSON.stringify(response))
+    // console.log(JSON.stringify(response))
     if (response.status === 201) {
       const data = await arc.tables()
       await data.posts.put(post)
