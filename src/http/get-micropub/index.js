@@ -1,4 +1,5 @@
 const arc = require('@architect/functions')
+const { auth } = require('@architect/shared/auth')
 
 function verifyUrl (url) {
   return true
@@ -20,7 +21,7 @@ async function renderSource (query) {
   const data = await arc.tables()
   const postData = await data.posts.get({ slug })
   if (postData === undefined) {
-    return { body: JSON.stringify({ message: 'Not found' }) }
+    return { body: JSON.stringify({ message: 'Post not found' }) }
   }
   const properties = { ...postData.properties }
   unflattenProperties(properties)
@@ -32,7 +33,31 @@ async function renderSource (query) {
   }
 }
 
+// TODO this is copy/pasted from post-micropub
+async function requireAuth (body, headers) {
+  let token = headers.Authorization ||
+    (body && 'access_token' in body ? body.access_token : '')
+  token = token.trim().replace(/^Bearer /, '')
+  if (token === '') {
+    return {
+      statusCode: 401,
+      body: JSON.stringify({
+        error: 'unauthorized',
+        message: 'Micropub endpoint did not return an access token.'
+      })
+    }
+  }
+  const scope = (body && 'action' in body) ? body.action : 'create'
+  return await auth.verifyTokenAndScope(token, scope)
+}
+
 exports.handler = async function http (req) {
+  const body = arc.http.helpers.bodyParser(req)
+
+  const authResponse = await requireAuth(body, req.headers)
+  console.log(`authResponse=${JSON.stringify(authResponse)}`)
+  if (authResponse !== true) return authResponse
+
   const query = req.queryStringParameters
   if ('q' in query) {
     switch (query.q) {
