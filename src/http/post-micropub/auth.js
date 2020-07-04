@@ -14,10 +14,13 @@ async function getTokenResponse (token, endpoint) {
 
 const verifyTokenAndScope = async function (token, scope) {
   const data = await arc.tables()
-  let tokenData = await data.tokens.get({ token })
-  if (!tokenData) {
+  const tokenRecord = await data.tokens.get({ token })
+  let tokenData
+  if (tokenRecord) {
+    tokenData = tokenRecord.data
+  } else {
     tokenData = await getTokenResponse(token, 'https://tokens.indieauth.com/token')
-    if (!tokenData || tokenData.me !== 'https://barryfrost.com') {
+    if (!tokenData || tokenData.me !== 'https://barryfrost.com/') {
       return {
         statusCode: 403,
         body: JSON.stringify({
@@ -27,9 +30,9 @@ const verifyTokenAndScope = async function (token, scope) {
         })
       }
     }
-    await data.tokens.put(token, tokenData)
+    await data.tokens.put({ token, data: tokenData })
   }
-  if ('scope' in tokenData && Array.isArray(tokenData.scope)) {
+  if ('scope' in tokenData) {
     const scopes = tokenData.scope.split(' ')
     if (scopes.includes(scope)) { return true }
     // if we want to post and are allowed to create then go ahead
@@ -44,4 +47,4 @@ const verifyTokenAndScope = async function (token, scope) {
   }
 }
 
-exports.github = { verifyTokenAndScope }
+exports.auth = { verifyTokenAndScope }
