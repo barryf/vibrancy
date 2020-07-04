@@ -18,7 +18,9 @@ const verifyTokenAndScope = async function (token, scope) {
   let tokenData
   if (tokenRecord) {
     tokenData = tokenRecord.data
+    console.log('token found')
   } else {
+    console.log('token not found')
     tokenData = await getTokenResponse(token, 'https://tokens.indieauth.com/token')
     if (!tokenData || tokenData.me !== 'https://barryfrost.com/') {
       return {
