@@ -1,10 +1,10 @@
 const arc = require('@architect/functions')
 const { micropub } = require('./micropub')
 const { github } = require('./github')
-const { auth } = require('./auth')
+const { auth } = require('@architect/shared/auth')
 
 async function requireAuth (body, headers) {
-  let token = headers.authorization || body.access_token || ''
+  let token = headers.Authorization || body.access_token || ''
   token = token.trim().replace(/^Bearer /, '')
   if (token === '') {
     return {
@@ -15,7 +15,7 @@ async function requireAuth (body, headers) {
       })
     }
   }
-  const scope = ('action' in body) ? body.action : 'create'
+  const scope = (body && 'action' in body) ? body.action : 'create'
   return await auth.verifyTokenAndScope(token, scope)
 }
 
