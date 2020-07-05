@@ -20,9 +20,11 @@ function unflattenProperties (properties) {
 
 async function renderSource (query) {
   if (!isValidUrl(query.url)) {
-    return { body: JSON.stringify({ message: 'URL is invalid' }) }
+    // TODO: return statuscode error
+    return { statusCode: 400, body: JSON.stringify({ message: 'URL is invalid' }) }
   }
   const slug = query.url.replace(process.env.ROOT_URL, '')
+  console.log(`slug=${slug}`)
   const data = await arc.tables()
   const postData = await data.posts.get({ slug })
   if (postData === undefined) {
