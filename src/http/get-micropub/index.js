@@ -10,10 +10,10 @@ const isValidUrl = function (string) {
   return true
 }
 
-function unflattenProperties (properties) {
-  for (const prop in properties) {
-    if (!Array.isArray(properties[prop])) {
-      properties[prop] = [properties[prop]]
+function unflatten (post) {
+  for (const key in post) {
+    if (!Array.isArray(post[key])) {
+      post[key] = [post[key]]
     }
   }
 }
@@ -27,15 +27,16 @@ async function renderSource (query) {
   console.log(`slug=${slug}`)
   const data = await arc.tables()
   const postData = await data.posts.get({ slug })
+  console.log(`postData=${JSON.stringify(postData)}`)
   if (postData === undefined) {
     return { body: JSON.stringify({ message: 'Post not found' }) }
   }
-  const properties = { ...postData.properties }
-  unflattenProperties(properties)
+  const post = { ...postData }
+  unflatten(post)
   return {
     body: JSON.stringify({
       type: ['h-entry'],
-      properties
+      properties: post
     })
   }
 }
