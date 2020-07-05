@@ -56,7 +56,7 @@ exports.handler = async function http (req) {
       return {
         statusCode: 201,
         headers: {
-          location: 'http://localhost:3334/' + post.slug
+          location: process.env.ROOT_URL + post.slug
         }
       }
     } else {
