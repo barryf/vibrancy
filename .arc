@@ -1,5 +1,5 @@
 @app
-vibrancy-arc
+vibrancy
 
 @aws
 region eu-west-2
