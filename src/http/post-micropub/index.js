@@ -4,6 +4,7 @@ const { github } = require('./github')
 const { auth } = require('@architect/shared/auth')
 
 exports.handler = async function http (req) {
+  const data = await arc.tables()
   const body = arc.http.helpers.bodyParser(req)
   // console.log(JSON.stringify(req))
 
@@ -36,11 +37,20 @@ exports.handler = async function http (req) {
     // assume this is a create
     // TODO: handle form encoded, not just json
     const post = await micropub.formatPost(body.properties)
+    // does post already exist? reject if so
+    const findPost = await data.posts.get({ slug: post.slug })
+    if (findPost !== undefined) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          message: `A post with slug "${post.slug}" already exists.`
+        })
+      }
+    }
     // console.log(JSON.stringify(post))
     const response = await github.createFile(post)
     // console.log(JSON.stringify(response))
     if (response.status === 201) {
-      const data = await arc.tables()
       await data.posts.put(post)
       // console.log(JSON.stringify(post))
       return {
