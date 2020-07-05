@@ -1,6 +1,23 @@
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
 
+async function requireAuth (body, headers) {
+  let token = headers.Authorization ||
+    (body && 'access_token' in body ? body.access_token : '')
+  token = token.trim().replace(/^Bearer /, '')
+  if (token === '') {
+    return {
+      statusCode: 401,
+      body: JSON.stringify({
+        error: 'unauthorized',
+        message: 'Micropub endpoint did not return an access token.'
+      })
+    }
+  }
+  const scope = (body && 'action' in body) ? body.action : 'create'
+  return await verifyTokenAndScope(token, scope)
+}
+
 async function getTokenResponse (token, endpoint) {
   const response = await fetch(endpoint, {
     method: 'get',
@@ -49,4 +66,4 @@ const verifyTokenAndScope = async function (token, scope) {
   }
 }
 
-exports.auth = { verifyTokenAndScope }
+exports.auth = { requireAuth, verifyTokenAndScope }

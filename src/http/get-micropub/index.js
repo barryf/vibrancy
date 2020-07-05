@@ -1,7 +1,12 @@
 const arc = require('@architect/functions')
 const { auth } = require('@architect/shared/auth')
 
-function verifyUrl (url) {
+const isValidUrl = function (string) {
+  try {
+    new URL(string) // eslint-disable-line
+  } catch (_) {
+    return false
+  }
   return true
 }
 
@@ -14,7 +19,7 @@ function unflattenProperties (properties) {
 }
 
 async function renderSource (query) {
-  if (!verifyUrl(query.url)) {
+  if (!isValidUrl(query.url)) {
     return { body: JSON.stringify({ message: 'URL is invalid' }) }
   }
   const slug = query.url.replace(process.env.ROOT_URL, '')
@@ -33,28 +38,10 @@ async function renderSource (query) {
   }
 }
 
-// TODO this is copy/pasted from post-micropub
-async function requireAuth (body, headers) {
-  let token = headers.Authorization ||
-    (body && 'access_token' in body ? body.access_token : '')
-  token = token.trim().replace(/^Bearer /, '')
-  if (token === '') {
-    return {
-      statusCode: 401,
-      body: JSON.stringify({
-        error: 'unauthorized',
-        message: 'Micropub endpoint did not return an access token.'
-      })
-    }
-  }
-  const scope = (body && 'action' in body) ? body.action : 'create'
-  return await auth.verifyTokenAndScope(token, scope)
-}
-
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
-  const authResponse = await requireAuth(body, req.headers)
+  const authResponse = await auth.requireAuth(body, req.headers)
   console.log(`authResponse=${JSON.stringify(authResponse)}`)
   if (authResponse !== true) return authResponse
 
