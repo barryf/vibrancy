@@ -7,9 +7,9 @@ const octokit = new Octokit({
 })
 
 function formatContent (post) {
-  const properties = { ...post.properties }
+  const properties = { ...post }
   // remove content from the properties object
-  const content = properties.content
+  const content = properties.content || ''
   delete properties.content
   // create a front-matter/content string from properties
   const fileContent = matter.stringify(content, properties)
