@@ -42,17 +42,18 @@ function derivePostType (properties) {
 }
 
 function deriveSlug (properties) {
-  if ('mp-slug' in properties && properties['mp-slug'] !== '') {
-    // TODO: validate mp-slug format is foo or /yyyy/mm/foo
+  // if the request passed mp-slug, make sure it's in the right format
+  if ('mp-slug' in properties && properties['mp-slug'] !== '' &&
+    properties['mp-slug'].match(/^[a-z0-9][a-z0-9/-]*$/)) {
     return properties['mp-slug']
   }
-
+  // convert published string to a date object and construct yyyy/mm prefix
   const published = new Date(properties.published)
   const yyyy = published.getFullYear().toString()
   const m = (published.getMonth() + 1).toString()
   const mm = m.length === 1 ? `0${m}` : m
   const prefix = `${yyyy}/${mm}/`
-
+  // try to make a sensible slug from content/summary either in text or html
   let content = ''
   if ('name' in properties) {
     content = properties.name
@@ -66,9 +67,11 @@ function deriveSlug (properties) {
       content = properties.content
     }
   }
+  // we don't have sensible text to use so create a random string of letters
   if (content === '') {
     return prefix + Math.random().toString(36).substring(2, 15)
   }
+  // use first 6 words from content
   return prefix + content.toLowerCase().replace(/[^\w-]/g, ' ').trim()
     .replace(/[\s-]+/g, ' ').replace(/ /g, '-').split('-').slice(0, 6).join('-')
 }
