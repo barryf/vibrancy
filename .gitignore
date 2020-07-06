@@ -1,3 +1,6 @@
 node_modules
-.serverless
-.dynamodb
+
+.arc-env
+sam.json
+sam.yaml
+.sam.yaml.swp
