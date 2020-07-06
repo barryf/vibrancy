@@ -1,6 +1,6 @@
 // const arc = require('@architect/functions')
 
-const isValidUrl = function (string) {
+function isValidUrl (string) {
   try {
     new URL(string) // eslint-disable-line
   } catch (_) {
