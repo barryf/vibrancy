@@ -1,7 +1,8 @@
 const arc = require('@architect/functions')
 const { auth } = require('@architect/shared/auth')
+const { configQuery } = require('./config-query')
 
-const isValidUrl = function (string) {
+function isValidUrl (string) {
   try {
     new URL(string) // eslint-disable-line
   } catch (_) {
@@ -51,6 +52,10 @@ exports.handler = async function http (req) {
   const query = req.queryStringParameters
   if ('q' in query) {
     switch (query.q) {
+      case 'config':
+        return { body: JSON.stringify(configQuery.config()) }
+      case 'syndicate-to':
+        return { body: JSON.stringify(configQuery.targets()) }
       case 'source':
         return await renderSource(query)
     }
