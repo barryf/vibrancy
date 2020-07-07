@@ -85,8 +85,9 @@ function flatten (post) {
 }
 
 function sanitise (post) {
+  const reservedProperties = ['action', 'url', 'access_token']
   for (const prop in post) {
-    if (prop.startsWith('mp-') || prop === 'h') {
+    if (prop.startsWith('mp-') || reservedProperties.includes(prop)) {
       delete post[prop]
     }
   }
