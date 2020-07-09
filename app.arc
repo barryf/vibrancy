@@ -19,3 +19,9 @@ posts
   slug *String
 tokens
   token *String
+
+@indexes
+posts
+  published **String
+posts
+  post-type **String
