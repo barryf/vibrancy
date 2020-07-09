@@ -5,6 +5,7 @@ vibrancy
 region eu-west-2
 
 @http
+get /
 get /micropub
 post /micropub
 post /process
