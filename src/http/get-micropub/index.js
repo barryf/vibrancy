@@ -20,13 +20,33 @@ function unflatten (post) {
 }
 
 async function renderSource (query) {
+  const data = await arc.tables()
   if (!isValidUrl(query.url)) {
-    // TODO: return statuscode error
-    return { statusCode: 400, body: JSON.stringify({ message: 'URL is invalid' }) }
+    if ('post-type' in query) {
+      const postData = await data.posts.query({
+        IndexName: 'post-type-index',
+        KeyConditionExpression: '#postType = :postType',
+        ExpressionAttributeNames: {
+          '#postType': 'post-type'
+        },
+        ExpressionAttributeValues: {
+          ':postType': query['post-type']
+        }
+      })
+      return {
+        body: JSON.stringify(postData.Items)
+      }
+    } else {
+      // TODO: return statuscode error
+      console.log('here')
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'URL is invalid' })
+      }
+    }
   }
   const slug = query.url.replace(process.env.ROOT_URL, '')
   console.log(`slug=${slug}`)
-  const data = await arc.tables()
   const postData = await data.posts.get({ slug })
   console.log(`postData=${JSON.stringify(postData)}`)
   if (postData === undefined) {
