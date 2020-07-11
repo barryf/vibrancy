@@ -8,7 +8,7 @@ exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
   // console.log(JSON.stringify(req))
 
-  const authResponse = await auth.requireAuth(body, req.headers)
+  const authResponse = await auth.requireAuth(req.headers, body)
   // console.log(`authResponse=${JSON.stringify(authResponse)}`)
   if (authResponse !== true) return authResponse
 

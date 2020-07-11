@@ -1,7 +1,7 @@
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
 
-async function requireAuth (body, headers) {
+async function requireAuth (headers, body = {}) {
   let token = headers.Authorization ||
     (body && 'access_token' in body ? body.access_token : '')
   token = token.trim().replace(/^Bearer /, '')

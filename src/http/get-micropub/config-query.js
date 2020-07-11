@@ -1,3 +1,10 @@
+const q = `
+  syndicate-to
+  config
+  source
+`.trim().split(/\s+/)
+// TODO: contact, category
+
 const syndicateTo = [
   {
     uid: 'https://twitter.com/barryf',
@@ -22,8 +29,9 @@ function targets () {
 function config () {
   return {
     'media-endpoint': process.env.MEDIA_ENDPOINT_URL,
-    'syndicate-to': syndicateTo
+    'syndicate-to': syndicateTo,
+    q
   }
 }
 
-exports.configQuery = { config, targets }
+exports.configQuery = { config, targets, q }

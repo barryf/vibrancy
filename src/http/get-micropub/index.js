@@ -63,9 +63,7 @@ async function renderSource (query) {
 }
 
 exports.handler = async function http (req) {
-  const body = arc.http.helpers.bodyParser(req)
-
-  const authResponse = await auth.requireAuth(body, req.headers)
+  const authResponse = await auth.requireAuth(req.headers)
   console.log(`authResponse=${JSON.stringify(authResponse)}`)
   if (authResponse !== true) return authResponse
 
