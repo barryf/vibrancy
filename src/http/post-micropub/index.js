@@ -6,7 +6,7 @@ const { auth } = require('@architect/shared/auth')
 exports.handler = async function http (req) {
   const data = await arc.tables()
   const body = arc.http.helpers.bodyParser(req)
-  // console.log(JSON.stringify(req))
+  console.log(`body=${JSON.stringify(body)}`)
 
   const authResponse = await auth.requireAuth(req.headers, body)
   // console.log(`authResponse=${JSON.stringify(authResponse)}`)
@@ -36,7 +36,7 @@ exports.handler = async function http (req) {
   } else {
     // assume this is a create
     // TODO: handle form encoded, not just json
-    const post = await micropub.formatPost(body.properties)
+    const post = await micropub.formatPost(body)
     // does post already exist? reject if so
     const findPost = await data.posts.get({ slug: post.slug })
     if (findPost !== undefined) {

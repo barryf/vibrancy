@@ -85,17 +85,27 @@ function flatten (post) {
 }
 
 function sanitise (post) {
-  const reservedProperties = ['action', 'url', 'access_token']
+  const reservedProperties = ['action', 'url', 'access_token', 'h']
   for (const prop in post) {
     if (prop.startsWith('mp-') || reservedProperties.includes(prop)) {
+      delete post[prop]
+    }
+    if (prop.endsWith('[]')) {
+      const propModified = prop.slice(0, -2)
+      post[propModified] = post[prop]
       delete post[prop]
     }
   }
 }
 
-const formatPost = async function (bodypost) {
-  const post = { ...bodypost }
-  flatten(post)
+const formatPost = async function (body) {
+  let post
+  if ('properties' in body) {
+    post = { ...body.properties }
+    flatten(post)
+  } else {
+    post = { ...body }
+  }
   post.published = post.published || new Date().toISOString()
   post.slug = deriveSlug(post)
   post['post-type'] = derivePostType(post)
