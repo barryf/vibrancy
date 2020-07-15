@@ -23,3 +23,4 @@ tokens
 @indexes
 posts
   post-type *String
+  published **String
