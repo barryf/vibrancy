@@ -24,7 +24,9 @@ async function renderSource (query) {
   if (!isValidUrl(query.url)) {
     if ('post-type' in query) {
       const postData = await data.posts.query({
-        IndexName: 'post-type-index',
+        IndexName: 'post-type-published-index',
+        Limit: 20,
+        ScanIndexForward: false,
         KeyConditionExpression: '#postType = :postType',
         ExpressionAttributeNames: {
           '#postType': 'post-type'
