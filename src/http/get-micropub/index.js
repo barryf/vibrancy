@@ -51,8 +51,12 @@ async function renderSource (query) {
   console.log(`slug=${slug}`)
   const postData = await data.posts.get({ slug })
   console.log(`postData=${JSON.stringify(postData)}`)
-  if (postData === undefined) {
-    return { body: JSON.stringify({ message: 'Post not found' }) }
+  if (postData === undefined ||
+    ('visibility' in postData && postData.visibility === 'private')) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ message: 'Post not found' })
+    }
   }
   const post = { ...postData }
   unflatten(post)
