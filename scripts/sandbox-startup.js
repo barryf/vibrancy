@@ -7,7 +7,16 @@ async function startup () {
       slug: '2020/07/foo',
       published: '2020-07-09T16:17:00',
       'post-type': 'note',
-      content: 'Foo'
+      content: `Something
+
+\`\`\`javascript
+const foo = "bar"
+function baz (a, b) {
+  let c = a
+}
+\`\`\`
+`,
+      category: ['via-twitter']
     },
     {
       slug: '2020/03/this-weekend-s-indiewebcamp-in-london',
