@@ -35,7 +35,6 @@ exports.handler = async function http (req) {
     // return send201(url)
   } else {
     // assume this is a create
-    // TODO: handle form encoded, not just json
     const post = await micropub.formatPost(body)
     // does post already exist? reject if so
     const findPost = await data.posts.get({ slug: post.slug })
