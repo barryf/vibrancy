@@ -28,19 +28,32 @@ async function renderSource (query) {
         Limit: 20,
         ScanIndexForward: false,
         KeyConditionExpression: '#postType = :postType',
+        FilterExpression: '(visibility = :visibility ' +
+          ' OR attribute_not_exists(visibility)' +
+          ' ) AND (#postStatus = :postStatus' +
+          ' OR attribute_not_exists(#postStatus))',
         ExpressionAttributeNames: {
-          '#postType': 'post-type'
+          '#postType': 'post-type',
+          '#postStatus': 'post-status'
         },
         ExpressionAttributeValues: {
-          ':postType': query['post-type']
+          ':postType': query['post-type'],
+          ':visibility': 'public',
+          ':postStatus': 'published'
         }
       })
+      const items = postData.Items.map(item => {
+        unflatten(item)
+        return {
+          type: ['h-entry'],
+          properties: item
+        }
+      })
+      // console.log(JSON.stringify(items))
       return {
-        body: JSON.stringify(postData.Items)
+        body: JSON.stringify({ items })
       }
     } else {
-      // TODO: return statuscode error
-      console.log('here')
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'URL is invalid' })

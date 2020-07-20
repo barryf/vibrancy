@@ -7,6 +7,7 @@ async function startup () {
       slug: '2020/07/foo',
       published: '2020-07-09T16:17:00',
       'post-type': 'note',
+      'post-status': 'published',
       content: `Something
 
 \`\`\`javascript
@@ -29,7 +30,8 @@ function baz (a, b) {
         'health',
         'iwclondon'
       ],
-      published: '2020-03-13T17:11:06Z'
+      published: '2020-03-13T17:11:06Z',
+      visibility: 'public'
     }
   ]
   posts.forEach(async post => {
