@@ -53,9 +53,13 @@ const verifyTokenAndScope = async function (token, scope) {
   }
   if ('scope' in tokenData) {
     const scopes = tokenData.scope.split(' ')
-    if (scopes.includes(scope)) { return true }
-    // if we want to post and are allowed to create then go ahead
-    if (scope === 'post' && scopes.includes('create')) { return true }
+    if (scopes.includes(scope)) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: `Scope ${scope} was authorised.` }),
+        scope
+      }
+    }
   }
   return {
     statusCode: 401,
