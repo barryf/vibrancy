@@ -1,0 +1,23 @@
+{
+  "name": "vibrancy",
+  "version": "0.1.0",
+  "description": "Personal website Micropub server",
+  "dependencies": {
+    "aws-sdk": "^2.697.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barryf/vibrancy.git"
+  },
+  "keywords": [
+    "micropub",
+    "indieweb"
+  ],
+  "author": "Barry Frost",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/barryf/vibrancy/issues"
+  },
+  "homepage": "https://github.com/barryf/vibrancy#readme"
+}
