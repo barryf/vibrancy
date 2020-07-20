@@ -19,34 +19,52 @@ function unflatten (post) {
   }
 }
 
-async function renderSource (query) {
+async function queryPostType (params, scope) {
   const data = await arc.tables()
+  const opts = {
+    IndexName: 'post-type-published-index',
+    Limit: 20,
+    ScanIndexForward: false,
+    KeyConditionExpression: '#postType = :postType',
+    ExpressionAttributeNames: {
+      '#postType': 'post-type'
+    },
+    ExpressionAttributeValues: {
+      ':postType': params['post-type']
+    }
+  }
+  if (scope === 'read') {
+    opts.FilterExpression = '(visibility = :visibility ' +
+      ' OR attribute_not_exists(visibility)' +
+      ' ) AND (#postStatus = :postStatus' +
+      ' OR attribute_not_exists(#postStatus))'
+    opts.ExpressionAttributeNames['#postStatus'] = 'post-status'
+    opts.ExpressionAttributeValues[':visibility'] = 'public'
+    opts.ExpressionAttributeValues[':postStatus'] = 'published'
+  }
+  return await data.posts.query(opts)
+}
+
+async function queryPost (slug) {
+  const data = await arc.tables()
+  const postData = data.posts.get({ slug })
+  if (!(postData === undefined ||
+    ('visibility' in postData && postData.visibility === 'private'))) {
+    return postData
+  }
+}
+
+async function renderSource (query, scope) {
   if (!isValidUrl(query.url)) {
     if ('post-type' in query) {
-      const postData = await data.posts.query({
-        IndexName: 'post-type-published-index',
-        Limit: 20,
-        ScanIndexForward: false,
-        KeyConditionExpression: '#postType = :postType',
-        FilterExpression: '(visibility = :visibility ' +
-          ' OR attribute_not_exists(visibility)' +
-          ' ) AND (#postStatus = :postStatus' +
-          ' OR attribute_not_exists(#postStatus))',
-        ExpressionAttributeNames: {
-          '#postType': 'post-type',
-          '#postStatus': 'post-status'
-        },
-        ExpressionAttributeValues: {
-          ':postType': query['post-type'],
-          ':visibility': 'public',
-          ':postStatus': 'published'
-        }
-      })
-      const items = postData.Items.map(item => {
-        unflatten(item)
+      const postData = await queryPostType({
+        'post-type': query['post-type']
+      }, scope)
+      const items = postData.Items.map(post => {
+        unflatten(post)
         return {
           type: ['h-entry'],
-          properties: item
+          properties: post
         }
       })
       // console.log(JSON.stringify(items))
@@ -62,10 +80,9 @@ async function renderSource (query) {
   }
   const slug = query.url.replace(process.env.ROOT_URL, '')
   console.log(`slug=${slug}`)
-  const postData = await data.posts.get({ slug })
+  const postData = await queryPost(slug)
   console.log(`postData=${JSON.stringify(postData)}`)
-  if (postData === undefined ||
-    ('visibility' in postData && postData.visibility === 'private')) {
+  if (postData === undefined) {
     return {
       statusCode: 404,
       body: JSON.stringify({ message: 'Post not found' })
@@ -84,7 +101,7 @@ async function renderSource (query) {
 exports.handler = async function http (req) {
   const authResponse = await auth.requireAuth(req.headers)
   console.log(`authResponse=${JSON.stringify(authResponse)}`)
-  if (authResponse !== true) return authResponse
+  if (authResponse.statusCode !== 200) return authResponse
 
   const query = req.queryStringParameters
   if ('q' in query) {
@@ -94,7 +111,7 @@ exports.handler = async function http (req) {
       case 'syndicate-to':
         return { body: JSON.stringify(configQuery.targets()) }
       case 'source':
-        return await renderSource(query)
+        return await renderSource(query, authResponse.scope)
     }
   }
   // if params.key?('q')
