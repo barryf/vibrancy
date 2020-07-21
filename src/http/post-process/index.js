@@ -37,7 +37,7 @@ exports.handler = async function http (req) {
       statusCode: 403,
       body: JSON.stringify({
         error: 'forbidden',
-        message: 'GitHub webhook signatures did not match.'
+        error_description: 'GitHub webhook signatures did not match.'
       })
     }
   }

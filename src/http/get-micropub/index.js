@@ -74,7 +74,10 @@ async function renderSource (query, scope) {
     } else {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'URL is invalid' })
+        body: JSON.stringify({
+          error: 'invalid_parameter',
+          error_description: 'URL parameter is invalid'
+        })
       }
     }
   }
@@ -85,7 +88,10 @@ async function renderSource (query, scope) {
   if (postData === undefined) {
     return {
       statusCode: 404,
-      body: JSON.stringify({ message: 'Post not found' })
+      body: JSON.stringify({
+        error: 'not_found',
+        error_description: 'Post was not found'
+      })
     }
   }
   const post = { ...postData }
