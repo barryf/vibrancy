@@ -16,13 +16,19 @@ exports.handler = async function http (req) {
     if (!['create', 'update', 'delete', 'undelete'].includes(body.action)) {
       return {
         statusCode: 400,
-        body: `The specified action "${body.action}" is not supported.`
+        body: JSON.stringify({
+          error: 'not_supported',
+          error_description: 'The specified action is not supported'
+        })
       }
     }
     if (!micropub.isValidUrl(body.url)) {
       return {
         statusCode: 400,
-        body: `The specified URL "${body.url} is not a valid URL.`
+        body: JSON.stringify({
+          error: 'invalid_parameter',
+          error_description: 'The specified URL is not a valid URL'
+        })
       }
     }
     // const post = await micropub.action(body)
@@ -42,7 +48,8 @@ exports.handler = async function http (req) {
       return {
         statusCode: 400,
         body: JSON.stringify({
-          message: `A post with slug "${post.slug}" already exists.`
+          error: 'invalid_parameter',
+          error_description: 'A post with this slug already exists'
         })
       }
     }

@@ -10,7 +10,7 @@ async function requireAuth (headers, body = {}) {
       statusCode: 401,
       body: JSON.stringify({
         error: 'unauthorized',
-        message: 'Micropub endpoint did not return an access token.'
+        error_description: 'Micropub endpoint did not return an access token.'
       })
     }
   }
@@ -38,13 +38,17 @@ const verifyTokenAndScope = async function (token, scope) {
     console.log('token found')
   } else {
     console.log('token not found')
-    tokenData = await getTokenResponse(token, 'https://tokens.indieauth.com/token')
+    tokenData = await getTokenResponse(
+      token,
+      'https://tokens.indieauth.com/token'
+    )
+    // TODO: move my URL to an env var
     if (!tokenData || tokenData.me !== 'https://barryfrost.com/') {
       return {
         statusCode: 403,
         body: JSON.stringify({
           error: 'forbidden',
-          message: 'The authenticated user does not have permission' +
+          error_description: 'The authenticated user does not have permission' +
             ' to perform this request.'
         })
       }
@@ -65,7 +69,8 @@ const verifyTokenAndScope = async function (token, scope) {
     statusCode: 401,
     body: JSON.stringify({
       error: 'insufficient_scope',
-      message: 'The user does not have sufficient scope to perform this action.'
+      error_description: 'The user does not have sufficient scope to perform' +
+        ' this action.'
     })
   }
 }
