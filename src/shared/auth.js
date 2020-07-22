@@ -14,7 +14,7 @@ async function requireAuth (headers, body = {}) {
       })
     }
   }
-  const scope = (body && 'action' in body) ? body.action : 'create'
+  const scope = (body && 'action' in body) ? body.action : 'read'
   return await verifyTokenAndScope(token, scope)
 }
 
