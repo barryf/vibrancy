@@ -20,18 +20,14 @@ const syndicateTo = [
   }
 ]
 
-function targets () {
-  return {
-    'syndicate-to': syndicateTo
-  }
+const targets = {
+  'syndicate-to': syndicateTo
 }
 
-function config () {
-  return {
-    'media-endpoint': process.env.MEDIA_ENDPOINT_URL,
-    'syndicate-to': syndicateTo,
-    q
-  }
+const config = {
+  'media-endpoint': process.env.MEDIA_ENDPOINT_URL,
+  'syndicate-to': syndicateTo,
+  q
 }
 
 exports.configQuery = { config, targets, q }
