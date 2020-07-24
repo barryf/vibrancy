@@ -20,7 +20,7 @@ function unflatten (post) {
 }
 
 async function queryPostType (params, scope) {
-  console.log(`scope=${scope}`)
+  // console.log(`scope=${scope}`)
   const data = await arc.tables()
   const opts = {
     IndexName: 'post-type-published-index',
@@ -141,15 +141,17 @@ async function renderSource (query, scope) {
 exports.handler = async function http (req) {
   const authResponse = await auth.requireAuth(req.headers)
   console.log(`authResponse=${JSON.stringify(authResponse)}`)
-  if (authResponse.statusCode !== 200) return authResponse
+  // if (authResponse.statusCode !== 200) return authResponse
 
   const query = req.queryStringParameters
   if ('q' in query) {
     switch (query.q) {
+      case 'category':
+        return { body: JSON.stringify(await configQuery.category()) }
       case 'config':
-        return { body: JSON.stringify(configQuery.config()) }
+        return { body: JSON.stringify(configQuery.config) }
       case 'syndicate-to':
-        return { body: JSON.stringify(configQuery.targets()) }
+        return { body: JSON.stringify(configQuery.targets) }
       case 'source':
         return await renderSource(query, authResponse.scope)
     }

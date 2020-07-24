@@ -1,3 +1,18 @@
+const arc = require('@architect/functions')
+
+async function category () {
+  const data = await arc.tables()
+  const posts = await data.posts.scan({
+    AttributesToGet: ['category']
+  })
+  const cats = posts.Items.map(item => item.category)
+  const uniqueCats = cats.flat().filter((v, i, a) => a.indexOf(v) === i)
+  const orderedSimpleCats = uniqueCats.map(cat => {
+    if (cat && cat.constructor === String) return cat
+  }).filter(cat => cat != null).sort()
+  return { categories: orderedSimpleCats }
+}
+
 const postTypes = [
   {
     type: 'note',
@@ -63,4 +78,9 @@ const config = {
   q
 }
 
-exports.configQuery = { config, targets, q }
+exports.configQuery = {
+  config,
+  targets,
+  q,
+  category
+}
