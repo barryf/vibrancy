@@ -20,6 +20,7 @@ function unflatten (post) {
 }
 
 async function queryPostType (params, scope) {
+  console.log(`scope=${scope}`)
   const data = await arc.tables()
   const opts = {
     IndexName: 'post-type-published-index',
@@ -47,11 +48,22 @@ async function queryPostType (params, scope) {
 
 async function queryPost (slug) {
   const data = await arc.tables()
-  const postData = data.posts.get({ slug })
+  const postData = await data.posts.get({ slug })
   if (!(postData === undefined ||
     ('visibility' in postData && postData.visibility === 'private'))) {
     return postData
   }
+}
+
+async function queryWebmentions (absoluteUrl) {
+  const data = await arc.tables()
+  return await data.webmentions.query({
+    IndexName: 'target-index',
+    KeyConditionExpression: 'target = :target',
+    ExpressionAttributeValues: {
+      ':target': absoluteUrl
+    }
+  })
 }
 
 async function renderSource (query, scope) {
@@ -96,6 +108,28 @@ async function renderSource (query, scope) {
   }
   const post = { ...postData }
   unflatten(post)
+  // get webmentions for this post
+  const absoluteUrl = process.env.ROOT_URL + slug
+  const webmentionsData = await queryWebmentions(absoluteUrl)
+  console.log(`wm=${JSON.stringify(webmentionsData)}`)
+  if (webmentionsData.Count > 0) {
+    const webmentionProperties = {
+      'in-reply-to': 'comment',
+      'like-of': 'like',
+      'repost-of': 'repost',
+      rsvp: 'rsvp',
+      'bookmark-of': 'bookmark'
+    }
+    webmentionsData.Items.forEach(webmention => {
+      for (const prop in webmentionProperties) {
+        if (webmention.post['wm-property'] === prop) {
+          post[webmentionProperties[prop]] =
+            post[webmentionProperties[prop]] || []
+          post[webmentionProperties[prop]].push(webmention.post)
+        }
+      }
+    })
+  }
   return {
     body: JSON.stringify({
       type: ['h-entry'],
