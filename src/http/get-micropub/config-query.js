@@ -8,15 +8,7 @@ const q = `
 const syndicateTo = [
   {
     uid: 'https://twitter.com/barryf',
-    name: 'Twitter (barryf)',
-    service: {
-      name: 'Twitter',
-      url: 'https://twitter.com'
-    },
-    user: {
-      name: 'barryf',
-      url: 'https://twitter.com/barryf'
-    }
+    name: 'Twitter (barryf)'
   }
 ]
 
