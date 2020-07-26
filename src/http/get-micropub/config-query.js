@@ -1,16 +1,25 @@
 const arc = require('@architect/functions')
 
-async function category () {
+async function category (filter) {
   const data = await arc.tables()
-  const posts = await data.posts.scan({
-    AttributesToGet: ['category']
-  })
-  const cats = posts.Items.map(item => item.category)
-  const uniqueCats = cats.flat().filter((v, i, a) => a.indexOf(v) === i)
-  const orderedSimpleCats = uniqueCats.map(cat => {
-    if (cat && cat.constructor === String) return cat
-  }).filter(cat => cat != null).sort()
-  return { categories: orderedSimpleCats }
+  // sanitise filter
+  filter = filter.toLowerCase().replace(/[^a-z0-9-]/, '')
+  const opts = {
+    KeyConditionExpression: '#type = :type',
+    ExpressionAttributeNames: { '#type': 'type' },
+    ExpressionAttributeValues: { ':type': 'tag' }
+  }
+  if (filter) {
+    opts.KeyConditionExpression =
+      '#type = :type and begins_with(category, :filter)'
+    opts.ExpressionAttributeValues = {
+      ':type': 'tag',
+      ':filter': filter
+    }
+  }
+  const results = await data.categories.query(opts)
+  const categories = results.Items.map(cat => { return cat.category }).sort()
+  return categories
 }
 
 const postTypes = [
@@ -52,35 +61,47 @@ const postTypes = [
   }
 ]
 
-const syndicateTo = [
-  {
+function syndicateTo (postType = null) {
+  const twitter = {
     uid: 'https://twitter.com/barryf',
     name: 'Twitter (barryf)'
   }
-]
-
-const targets = {
-  'syndicate-to': syndicateTo
+  const pinboard = {
+    uid: 'https://pinboard.in/barryf',
+    name: 'Pinboard'
+  }
+  switch (postType) {
+    case 'note':
+      return [
+        { ...twitter, checked: true }
+      ]
+    default:
+      return [
+        twitter,
+        pinboard
+      ]
+  }
 }
 
 const q = [
   'syndicate-to',
   'config',
   'source',
-  'post-types'
+  'post-types',
+  'category'
 ]
-// TODO contact, category
+// TODO contact
 
 const config = {
   'media-endpoint': process.env.MEDIA_ENDPOINT_URL,
   'post-types': postTypes,
-  'syndicate-to': syndicateTo,
+  'syndicate-to': syndicateTo(),
   q
 }
 
 exports.configQuery = {
-  config,
-  targets,
   q,
+  config,
+  syndicateTo,
   category
 }
