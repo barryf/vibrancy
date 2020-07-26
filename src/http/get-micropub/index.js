@@ -147,11 +147,15 @@ exports.handler = async function http (req) {
   if ('q' in query) {
     switch (query.q) {
       case 'category':
-        return { body: JSON.stringify(await configQuery.category()) }
+        return { body: JSON.stringify(await configQuery.category(query.filter)) }
       case 'config':
         return { body: JSON.stringify(configQuery.config) }
       case 'syndicate-to':
-        return { body: JSON.stringify(configQuery.targets) }
+        return {
+          body: JSON.stringify({
+            'syndicate-to': configQuery.syndicateTo(query['post-type'])
+          })
+        }
       case 'source':
         return await renderSource(query, authResponse.scope)
     }

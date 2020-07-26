@@ -17,6 +17,9 @@ post /webmention
 download
 ping
 
+@scheduled
+categories rate(1 day)
+
 @tables
 posts
   slug *String
@@ -24,6 +27,9 @@ tokens
   token *String
 webmentions
   source *String
+categories
+  type *String
+  category **String
 
 @indexes
 posts
