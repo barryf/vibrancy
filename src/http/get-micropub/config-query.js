@@ -1,15 +1,15 @@
 const arc = require('@architect/functions')
 
-async function category (filter) {
+async function category (filter = '') {
   const data = await arc.tables()
-  // sanitise filter
-  filter = filter.toLowerCase().replace(/[^a-z0-9-]/, '')
   const opts = {
     KeyConditionExpression: '#type = :type',
     ExpressionAttributeNames: { '#type': 'type' },
     ExpressionAttributeValues: { ':type': 'tag' }
   }
   if (filter) {
+    // sanitise filter
+    filter = filter.toLowerCase().replace(/[^a-z0-9-]/, '')
     opts.KeyConditionExpression =
       '#type = :type and begins_with(category, :filter)'
     opts.ExpressionAttributeValues = {
