@@ -20,11 +20,14 @@ function unflatten (post) {
 }
 
 async function queryPostType (params, scope) {
+  console.log(`params=${JSON.stringify(params)}`)
   // console.log(`scope=${scope}`)
   const data = await arc.tables()
+  let limit = 'limit' in params ? parseInt(params.limit, 10) : 20
+  if (!limit || limit < 1) limit = 1
   const opts = {
     IndexName: 'post-type-published-index',
-    Limit: 20,
+    Limit: limit,
     ScanIndexForward: false,
     KeyConditionExpression: '#postType = :postType',
     ExpressionAttributeNames: {
@@ -33,6 +36,12 @@ async function queryPostType (params, scope) {
     ExpressionAttributeValues: {
       ':postType': params['post-type']
     }
+  }
+  if ('before' in params) {
+    const before = new Date(parseInt(params.before, 10)).toISOString()
+    opts.KeyConditionExpression = opts.KeyConditionExpression +
+      ' and published < :before'
+    opts.ExpressionAttributeValues[':before'] = before
   }
   if (scope === 'read') {
     opts.FilterExpression = '(visibility = :visibility ' +
@@ -43,6 +52,7 @@ async function queryPostType (params, scope) {
     opts.ExpressionAttributeValues[':visibility'] = 'public'
     opts.ExpressionAttributeValues[':postStatus'] = 'published'
   }
+  console.log(JSON.stringify(opts))
   return await data.posts.query(opts)
 }
 
@@ -69,10 +79,11 @@ async function queryWebmentions (absoluteUrl) {
 async function renderSource (query, scope) {
   if (!isValidUrl(query.url)) {
     if ('post-type' in query) {
-      const postData = await queryPostType({
-        'post-type': query['post-type']
-      }, scope)
+      const postData = await queryPostType(query, scope)
       const items = postData.Items.map(post => {
+        // use full url, not just slug
+        post.url = `${process.env.ROOT_URL}${post.slug}`
+        delete post.slug
         unflatten(post)
         return {
           type: ['h-entry'],
