@@ -25,36 +25,44 @@ async function update (properties) {
   utils.unflatten(post)
   console.log(`post=${JSON.stringify(post)}`)
 
-  if ('replace' in properties) {
-    verifyObjectNotArray(properties, 'replace')
-    for (const prop in properties.replace) {
-      post[prop] = properties.replace[prop]
-    }
-  }
-
-  if ('add' in properties) {
-    verifyObjectNotArray(properties, 'add')
-    for (const prop in properties.add) {
-      if (!(prop in post)) {
-        post[prop] = properties.add[prop]
-      } else {
-        post[prop] = post[prop].concat(properties.add[prop])
+  try {
+    if ('replace' in properties) {
+      verifyObjectNotArray(properties, 'replace')
+      for (const prop in properties.replace) {
+        post[prop] = properties.replace[prop]
       }
     }
-  }
-
-  if ('delete' in properties) {
-    verifyArrayOrObject(properties, 'delete')
-    if (!Array.isArray(properties.delete)) {
-      for (const prop in properties.delete) {
-        post[prop] = post[prop].filter((p) => p != properties.delete[prop]) // eslint-disable-line
-        if (post[prop].length === 0) {
-          delete post[prop]
+    if ('add' in properties) {
+      verifyObjectNotArray(properties, 'add')
+      for (const prop in properties.add) {
+        if (!(prop in post)) {
+          post[prop] = properties.add[prop]
+        } else {
+          post[prop] = post[prop].concat(properties.add[prop])
         }
       }
-    } else {
-      properties.delete.forEach(prop => {
-        delete post[prop]
+    }
+    if ('delete' in properties) {
+      verifyArrayOrObject(properties, 'delete')
+      if (!Array.isArray(properties.delete)) {
+        for (const prop in properties.delete) {
+          post[prop] = post[prop].filter((p) => p != properties.delete[prop]) // eslint-disable-line
+          if (post[prop].length === 0) {
+            delete post[prop]
+          }
+        }
+      } else {
+        properties.delete.forEach(prop => {
+          delete post[prop]
+        })
+      }
+    }
+  } catch (e) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: 'invalid_request',
+        error_description: e.message
       })
     }
   }
