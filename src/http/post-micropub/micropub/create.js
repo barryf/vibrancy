@@ -1,38 +1,31 @@
-// const arc = require('@architect/functions')
-
-function isValidUrl (string) {
-  try {
-    new URL(string) // eslint-disable-line
-  } catch (_) {
-    return false
-  }
-  return true
-}
+const arc = require('@architect/functions')
+const { utils } = require('@architect/shared/utils')
+// const github = require('../github')
 
 function derivePostType (post) {
   if (('rsvp' in post) &&
     ['yes', 'no', 'maybe', 'interested'].includes(post.rsvp)) {
     return 'rsvp'
   } else if (('in-reply-to' in post) &&
-    isValidUrl(post['in-reply-to'])) {
+    utils.isValidURL(post['in-reply-to'])) {
     return 'in-reply-to'
   } else if (('repost-of' in post) &&
-    isValidUrl(post['repost-of'])) {
+    utils.isValidURL(post['repost-of'])) {
     return 'repost-of'
   } else if (('like-of' in post) &&
-    isValidUrl(post['like-of'])) {
+    utils.isValidURL(post['like-of'])) {
     return 'like-of'
   } else if (('video' in post) &&
-    isValidUrl(post.video)) {
+    utils.isValidURL(post.video)) {
     return 'video'
   } else if (('photo' in post) &&
-    isValidUrl(post.photo)) {
+    utils.isValidURL(post.photo)) {
     return 'photo'
   } else if (('bookmark-of' in post) &&
-    isValidUrl(post['bookmark-of'])) {
+    utils.isValidURL(post['bookmark-of'])) {
     return 'bookmark-of'
   } else if (('name' in post) &&
-    (post.name !== '')) { // also !content_start_with_name
+    (post.name !== '')) { // TODO also !content_start_with_name
     return 'article'
   } else if ('checkin' in post) {
     return 'checkin'
@@ -76,41 +69,57 @@ function deriveSlug (post) {
     .replace(/[\s-]+/g, ' ').replace(/ /g, '-').split('-').slice(0, 6).join('-')
 }
 
-function flatten (post) {
-  for (const key in post) {
-    if (Array.isArray(post[key]) && post[key].length === 1) {
-      post[key] = post[key][0]
-    }
-  }
-}
-
-function sanitise (post) {
-  const reservedProperties = ['action', 'url', 'access_token', 'h']
-  for (const prop in post) {
-    if (prop.startsWith('mp-') || reservedProperties.includes(prop)) {
-      delete post[prop]
-    }
-    if (prop.endsWith('[]')) {
-      const propModified = prop.slice(0, -2)
-      post[propModified] = post[prop]
-      delete post[prop]
-    }
-  }
-}
-
-const formatPost = async function (body) {
+function formatPost (body) {
   let post
   if ('properties' in body) {
     post = { ...body.properties }
-    flatten(post)
+    utils.flatten(post)
   } else {
     post = { ...body }
   }
   post.published = post.published || new Date().toISOString()
   post.slug = deriveSlug(post)
   post['post-type'] = derivePostType(post)
-  sanitise(post)
+  utils.sanitise(post)
   return post
 }
 
-exports.micropub = { formatPost, isValidUrl }
+async function create (scope, body) {
+  const data = await arc.tables()
+  const post = formatPost(body)
+  if (scope === 'draft') {
+    post['post-status'] = 'draft'
+  }
+
+  const findPost = await data.posts.get({ slug: post.slug })
+  if (findPost !== undefined || utils.reservedSlugs.includes(post.slug)) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: 'invalid_parameter',
+        error_description: 'A post with this slug already exists'
+      })
+    }
+  }
+
+  // TODO remove shim
+  // const gitHubResponse = await github.createFile(post)
+  const gitHubResponse = { status: 201 }
+  if (gitHubResponse.status === 201) {
+    await data.posts.put(post)
+    return {
+      statusCode: 201,
+      headers: {
+        location: process.env.ROOT_URL + post.slug
+      }
+    }
+  } else {
+    return {
+      statusCode: 500,
+      body: 'Error from GitHub when creating post.'
+      // TODO: better error
+    }
+  }
+}
+
+exports.create = create
