@@ -1,128 +1,12 @@
 const arc = require('@architect/functions')
 const { auth } = require('@architect/shared/auth')
-const { configQuery } = require('./config-query')
+const { utils } = require('@architect/shared/utils')
+const { query } = require('./query')
+const { config } = require('./config')
 
-function isValidUrl (string) {
-  try {
-    new URL(string) // eslint-disable-line
-  } catch (_) {
-    return false
-  }
-  return true
-}
-
-function unflatten (post) {
-  for (const key in post) {
-    if (!Array.isArray(post[key])) {
-      post[key] = [post[key]]
-    }
-  }
-}
-
-async function queryPostType (params, scope) {
-  console.log(`params=${JSON.stringify(params)}`)
-  // console.log(`scope=${scope}`)
-  const data = await arc.tables()
-  let limit = 'limit' in params ? parseInt(params.limit, 10) : 20
-  if (!limit || limit < 1) limit = 1
-  const opts = {
-    IndexName: 'post-type-published-index',
-    Limit: limit,
-    ScanIndexForward: false,
-    KeyConditionExpression: '#postType = :postType',
-    ExpressionAttributeNames: {
-      '#postType': 'post-type'
-    },
-    ExpressionAttributeValues: {
-      ':postType': params['post-type']
-    }
-  }
-  if ('before' in params) {
-    const before = new Date(parseInt(params.before, 10)).toISOString()
-    opts.KeyConditionExpression = opts.KeyConditionExpression +
-      ' and published < :before'
-    opts.ExpressionAttributeValues[':before'] = before
-  }
-  if (scope === 'read') {
-    opts.FilterExpression = '(visibility = :visibility ' +
-      ' OR attribute_not_exists(visibility)' +
-      ' ) AND (#postStatus = :postStatus' +
-      ' OR attribute_not_exists(#postStatus))'
-    opts.ExpressionAttributeNames['#postStatus'] = 'post-status'
-    opts.ExpressionAttributeValues[':visibility'] = 'public'
-    opts.ExpressionAttributeValues[':postStatus'] = 'published'
-  }
-  console.log(JSON.stringify(opts))
-  return await data.posts.query(opts)
-}
-
-async function queryPost (slug) {
-  const data = await arc.tables()
-  const postData = await data.posts.get({ slug })
-  if (!(postData === undefined ||
-    ('visibility' in postData && postData.visibility === 'private'))) {
-    return postData
-  }
-}
-
-async function queryWebmentions (absoluteUrl) {
-  const data = await arc.tables()
-  return await data.webmentions.query({
-    IndexName: 'target-index',
-    KeyConditionExpression: 'target = :target',
-    ExpressionAttributeValues: {
-      ':target': absoluteUrl
-    }
-  })
-}
-
-async function renderSource (query, scope) {
-  if (!isValidUrl(query.url)) {
-    if ('post-type' in query) {
-      const postData = await queryPostType(query, scope)
-      const items = postData.Items.map(post => {
-        // use full url, not just slug
-        post.url = `${process.env.ROOT_URL}${post.slug}`
-        delete post.slug
-        unflatten(post)
-        return {
-          type: ['h-entry'],
-          properties: post
-        }
-      })
-      // console.log(JSON.stringify(items))
-      return {
-        body: JSON.stringify({ items })
-      }
-    } else {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          error: 'invalid_parameter',
-          error_description: 'URL parameter is invalid'
-        })
-      }
-    }
-  }
-  const slug = query.url.replace(process.env.ROOT_URL, '')
-  console.log(`slug=${slug}`)
-  const postData = await queryPost(slug)
-  console.log(`postData=${JSON.stringify(postData)}`)
-  if (postData === undefined) {
-    return {
-      statusCode: 404,
-      body: JSON.stringify({
-        error: 'not_found',
-        error_description: 'Post was not found'
-      })
-    }
-  }
-  const post = { ...postData }
-  unflatten(post)
-  // get webmentions for this post
-  const absoluteUrl = process.env.ROOT_URL + slug
-  const webmentionsData = await queryWebmentions(absoluteUrl)
-  console.log(`wm=${JSON.stringify(webmentionsData)}`)
+async function setWebmentions (post) {
+  const absoluteUrl = process.env.ROOT_URL + post.slug
+  const webmentionsData = await query.findWebmentions(absoluteUrl)
   if (webmentionsData.Count > 0) {
     const webmentionProperties = {
       'in-reply-to': 'comment',
@@ -141,6 +25,23 @@ async function renderSource (query, scope) {
       }
     })
   }
+}
+
+async function getPost (params) {
+  const slug = params.url.replace(process.env.ROOT_URL, '')
+  const postData = await query.getPost(slug)
+  if (postData === undefined) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({
+        error: 'not_found',
+        error_description: 'Post was not found'
+      })
+    }
+  }
+  const post = { ...postData }
+  utils.unflatten(post)
+  setWebmentions(post)
   return {
     body: JSON.stringify({
       type: ['h-entry'],
@@ -149,49 +50,62 @@ async function renderSource (query, scope) {
   }
 }
 
+async function findPostItems (params, scope) {
+  const postData = await query.findPostItems(params, scope)
+  const items = postData.Items.map(post => {
+    post.url = `${process.env.ROOT_URL}${post.slug}`
+    delete post.slug
+    utils.unflatten(post)
+    return {
+      type: ['h-entry'],
+      properties: post
+    }
+  })
+  return {
+    body: JSON.stringify({ items })
+  }
+}
+
+async function source (params, scope) {
+  if ('url' in params) {
+    if (!utils.isValidURL(params.url)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          error: 'invalid_parameter',
+          error_description: 'URL parameter is invalid'
+        })
+      }
+    }
+    return getPost(params)
+  }
+  return findPostItems(params, scope)
+}
+
 exports.handler = async function http (req) {
-  const authResponse = await auth.requireAuth(req.headers)
-  console.log(`authResponse=${JSON.stringify(authResponse)}`)
+  const body = arc.http.helpers.bodyParser(req)
+  const authResponse = await auth.requireScope('read', req.headers, body)
   // if (authResponse.statusCode !== 200) return authResponse
 
-  const query = req.queryStringParameters
-  if ('q' in query) {
-    switch (query.q) {
+  const params = req.queryStringParameters || {}
+  if ('q' in params) {
+    switch (params.q) {
       case 'category':
-        return { body: JSON.stringify(await configQuery.category(query.filter)) }
+        return { body: JSON.stringify(await config.category(params.filter)) }
       case 'config':
-        return { body: JSON.stringify(configQuery.config) }
+        return { body: JSON.stringify(config.config) }
       case 'syndicate-to':
         return {
           body: JSON.stringify({
-            'syndicate-to': configQuery.syndicateTo(query['post-type'])
+            'syndicate-to': config.syndicateTo(params['post-type'])
           })
         }
       case 'source':
-        return await renderSource(query, authResponse.scope)
+        return await source(params, authResponse.scope)
     }
   }
-  // if params.key?('q')
-  //       require_auth
-  //       content_type :json
-  //       case params[:q]
-  //       when 'source'
-  //         render_source
-  //       when 'config'
-  //         render_config
-  //       when 'syndicate-to'
-  //         render_syndication_targets
-  //       else
-  //         # Silently fail if query method is not supported
-  //       end
-  //     else
-  //       'Micropub endpoint'
-  //     end
   return {
-    headers: {
-      'cache-control': 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
-      'content-type': 'text/html; charset=utf8'
-    },
-    body: 'hello'
+    headers: { 'content-type': 'text/html; charset=utf8' },
+    body: 'Micropub endpoint'
   }
 }
