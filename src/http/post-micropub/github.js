@@ -14,8 +14,7 @@ function formatContent (post) {
   // create a front-matter/content string from properties
   const fileContent = matter.stringify(content, properties)
   // encode as base64 for github's api
-  const base64Content = Buffer.from(fileContent, 'utf8').toString('base64')
-  return base64Content
+  return Buffer.from(fileContent, 'utf8').toString('base64')
 }
 
 async function writeGitHubFile (slug, method, content) {
@@ -29,7 +28,7 @@ async function writeGitHubFile (slug, method, content) {
   })
 }
 
-const createFile = async function (post) {
+async function createFile (post) {
   const content = formatContent(post)
   return await writeGitHubFile(post.slug, 'added', content)
 }
