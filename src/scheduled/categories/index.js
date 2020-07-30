@@ -1,13 +1,5 @@
 const arc = require('@architect/functions')
-
-function isValidUrl (string) {
-  try {
-    new URL(string) // eslint-disable-line
-  } catch (_) {
-    return false
-  }
-  return true
-}
+const { utils } = require('@architect/shared/utils')
 
 async function getCategories () {
   const data = await arc.tables()
@@ -19,7 +11,7 @@ async function getCategories () {
   const categories = uniqueCategories.map(category => {
     if (category && category.constructor === String) {
       let type = 'tag'
-      if (isValidUrl(category)) {
+      if (utils.isValidURL(category)) {
         type = 'contact'
       }
       return { type, category }
