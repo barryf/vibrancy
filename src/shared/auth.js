@@ -1,7 +1,10 @@
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
 
-async function requireAuth (headers, body = {}) {
+const tokenEndpoint = process.env.TOKEN_ENDPOINT ||
+  'https://tokens.indieauth.com/token'
+
+async function requireScope (scope, headers, body) {
   let token = headers.Authorization ||
     (body && 'access_token' in body ? body.access_token : '')
   token = token.trim().replace(/^Bearer /, '')
@@ -10,11 +13,10 @@ async function requireAuth (headers, body = {}) {
       statusCode: 401,
       body: JSON.stringify({
         error: 'unauthorized',
-        error_description: 'Micropub endpoint did not return an access token.'
+        error_description: 'Request is missing an access token.'
       })
     }
   }
-  const scope = (body && 'action' in body) ? body.action : 'read'
   return await verifyTokenAndScope(token, scope)
 }
 
@@ -40,10 +42,10 @@ const verifyTokenAndScope = async function (token, scope) {
     console.log('token not found')
     tokenData = await getTokenResponse(
       token,
-      'https://tokens.indieauth.com/token'
+      tokenEndpoint
     )
     // TODO: move my URL to an env var
-    if (!tokenData || tokenData.me !== 'https://barryfrost.com/') {
+    if (!tokenData || tokenData.me !== process.env.ME_URL) {
       return {
         statusCode: 403,
         body: JSON.stringify({
@@ -75,4 +77,4 @@ const verifyTokenAndScope = async function (token, scope) {
   }
 }
 
-exports.auth = { requireAuth, verifyTokenAndScope }
+exports.auth = { requireScope }
