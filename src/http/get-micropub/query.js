@@ -10,14 +10,20 @@ function setBefore (opts, params) {
   if ('before' in params) {
     const before = new Date(parseInt(params.before, 10)).toISOString()
     opts.KeyConditionExpression = opts.KeyConditionExpression +
-      ' and published < :before'
+      ' AND published < :before'
     opts.ExpressionAttributeValues[':before'] = before
   }
 }
 
 function setStatusAndVisibility (opts, params, scope) {
   if (scope === 'read') {
-    opts.FilterExpression = '(visibility = :visibility ' +
+    if ('FilterExpression' in opts) {
+      opts.FilterExpression = opts.FilterExpression + ' AND '
+    } else {
+      opts.FilterExpression = ''
+    }
+    opts.FilterExpression = opts.FilterExpression +
+      ' (visibility = :visibility ' +
       ' OR attribute_not_exists(visibility)' +
       ' ) AND (#postStatus = :postStatus' +
       ' OR attribute_not_exists(#postStatus))'
@@ -31,7 +37,7 @@ async function findPostItems (params, scope) {
   if ('post-type' in params) {
     return await findPostsByPostType(params, scope)
   } else if ('category' in params) {
-    // return await findPostsByCategory(params, scope)
+    return await findPostsByCategory(params, scope)
   } else {
     return await findPostsAll(params, scope)
   }
@@ -68,25 +74,32 @@ async function findPostsAll (params, scope) {
   return await data.posts.scan(opts)
 }
 
-// async function postsByCategory (params, scope) {
-//   const data = await arc.tables()
-//   const opts = {
-//     IndexName: 'category-published-index',
-//     ScanIndexForward: false,
-//     KeyConditionExpression: 'category = :category',
-//     ExpressionAttributeValues: {
-//       ':category': params.category
-//     }
-//   }
-//   setLimit(opts, params)
-//   setBefore(opts, params)
-//   setStatusAndVisibility(opts, params, scope)
-//   return await data.posts.query(opts)
-// }
-
-async function getPost (slug) {
+async function findPostsByCategory (params, scope) {
+  console.log('params', params)
   const data = await arc.tables()
-  const postData = await data.posts.get({ slug })
+  const opts = {
+    IndexName: 'type-published-index',
+    ScanIndexForward: false,
+    KeyConditionExpression: '#type = :type',
+    FilterExpression: 'contains(category, :category)',
+    ExpressionAttributeNames: {
+      '#type': 'type'
+    },
+    ExpressionAttributeValues: {
+      ':type': 'h-entry',
+      ':category': params.category
+    }
+  }
+  setLimit(opts, params)
+  setBefore(opts, params)
+  setStatusAndVisibility(opts, params, scope)
+  console.log('opts', opts)
+  return await data.posts.query(opts)
+}
+
+async function getPost (url) {
+  const data = await arc.tables()
+  const postData = await data.posts.get({ url })
   if (!(postData === undefined ||
     ('visibility' in postData && postData.visibility === 'private'))) {
     return postData
