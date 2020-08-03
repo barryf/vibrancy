@@ -37,7 +37,7 @@ function sanitise (post) {
   }
 }
 
-const reservedSlugs = `
+const reservedUrls = `
   notes
   articles
   bookmarks
@@ -54,5 +54,5 @@ exports.utils = {
   flatten,
   unflatten,
   sanitise,
-  reservedSlugs
+  reservedUrls
 }

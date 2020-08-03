@@ -5,7 +5,7 @@ const { query } = require('./query')
 const { config } = require('./config')
 
 async function setWebmentions (post) {
-  const absoluteUrl = process.env.ROOT_URL + post.slug
+  const absoluteUrl = process.env.ROOT_URL + post.url
   const webmentionsData = await query.findWebmentions(absoluteUrl)
   if (webmentionsData.Count > 0) {
     const webmentionProperties = {
@@ -28,8 +28,8 @@ async function setWebmentions (post) {
 }
 
 async function getPost (params) {
-  const slug = params.url.replace(process.env.ROOT_URL, '')
-  const postData = await query.getPost(slug)
+  const url = params.url.replace(process.env.ROOT_URL, '')
+  const postData = await query.getPost(url)
   if (postData === undefined) {
     return {
       statusCode: 404,
@@ -53,8 +53,7 @@ async function getPost (params) {
 async function findPostItems (params, scope) {
   const postData = await query.findPostItems(params, scope)
   const items = postData.Items.map(post => {
-    post.url = `${process.env.ROOT_URL}${post.slug}`
-    delete post.slug
+    post.url = `${process.env.ROOT_URL}${post.url}`
     utils.unflatten(post)
     return {
       type: ['h-entry'],
