@@ -1,5 +1,7 @@
 const { create } = require('./create')
 const { update } = require('./update')
+const { deletePost } = require('./delete')
+const { undelete } = require('./undelete')
 
 async function action (scope, body) {
   switch (scope) {
@@ -9,6 +11,10 @@ async function action (scope, body) {
       return await create(scope, body)
     case 'update':
       return await update(body)
+    case 'delete':
+      return await deletePost(body)
+    case 'undelete':
+      return await undelete(body)
 
       // if (!utils.isValidURL(body.url)) {
       //   return {
