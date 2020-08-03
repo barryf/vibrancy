@@ -17,12 +17,12 @@ function formatContent (post) {
   return Buffer.from(fileContent, 'utf8').toString('base64')
 }
 
-async function writeGitHubFile (slug, method, content) {
+async function writeGitHubFile (url, method, content) {
   return await octokit.repos.createOrUpdateFileContents({
     owner: 'barryf',
     repo: 'content',
     branch: 'transform-fm-md',
-    path: `${slug}.md`,
+    path: `${url}.md`,
     message: `Post ${method} by Vibrancy`,
     content
   })
@@ -30,7 +30,7 @@ async function writeGitHubFile (slug, method, content) {
 
 async function createFile (post) {
   const content = formatContent(post)
-  return await writeGitHubFile(post.slug, 'added', content)
+  return await writeGitHubFile(post.url, 'added', content)
 }
 
 exports.github = { createFile }

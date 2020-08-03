@@ -34,11 +34,17 @@ function derivePostType (post) {
   }
 }
 
-function deriveSlug (post) {
+function deriveUrl (post) {
+  let slug = ''
   // if the request passed mp-slug, make sure it's in the right format
   if ('mp-slug' in post && post['mp-slug'] !== '' &&
     post['mp-slug'].match(/^[a-z0-9][a-z0-9/-]*$/)) {
-    return post['mp-slug']
+    // if we have a leading slash then this is a top-level page
+    if (post['mp-slug'].substr(0, 1) === '/') {
+      return post['mp-slug'].substr(1, post['mp-slug'].length - 1)
+    } else {
+      slug = post['mp-slug']
+    }
   }
   // convert published string to a date object and construct yyyy/mm prefix
   const published = new Date(post.published)
@@ -46,6 +52,10 @@ function deriveSlug (post) {
   const m = (published.getMonth() + 1).toString()
   const mm = m.length === 1 ? `0${m}` : m
   const prefix = `${yyyy}/${mm}/`
+  // if we have a slug passed in then use this with date prefix
+  if (slug.length === 0) {
+    return prefix + slug
+  }
   // try to make a sensible slug from content/summary either in text or html
   let content = ''
   if ('name' in post) {
@@ -77,8 +87,9 @@ function formatPost (body) {
   } else {
     post = { ...body }
   }
+  post.type = 'h-entry'
   post.published = post.published || new Date().toISOString()
-  post.slug = deriveSlug(post)
+  post.url = deriveUrl(post)
   post['post-type'] = derivePostType(post)
   utils.sanitise(post)
   return post
@@ -91,13 +102,13 @@ async function create (scope, body) {
     post['post-status'] = 'draft'
   }
 
-  const findPost = await data.posts.get({ slug: post.slug })
-  if (findPost !== undefined || utils.reservedSlugs.includes(post.slug)) {
+  const findPost = await data.posts.get({ url: post.url })
+  if (findPost !== undefined || utils.reservedUrls.includes(post.url)) {
     return {
       statusCode: 400,
       body: JSON.stringify({
         error: 'invalid_parameter',
-        error_description: 'A post with this slug already exists'
+        error_description: 'A post with this URL already exists'
       })
     }
   }
@@ -110,7 +121,7 @@ async function create (scope, body) {
     return {
       statusCode: 201,
       headers: {
-        location: process.env.ROOT_URL + post.slug
+        location: process.env.ROOT_URL + post.url
       }
     }
   } else {

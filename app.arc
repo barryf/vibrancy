@@ -22,7 +22,7 @@ categories rate(1 day)
 
 @tables
 posts
-  slug *String
+  url *String
 tokens
   token *String
 webmentions
@@ -34,6 +34,9 @@ categories
 @indexes
 posts
   post-type *String
+  published **String
+posts
+  type *String
   published **String
 webmentions
   target *String

@@ -10,21 +10,21 @@ function verifySignature (signature, payload) {
 }
 
 async function queueDownloads (commits) {
-  const slugs = []
+  const urls = []
   commits.forEach(async commit => {
     // don't process if this commit has come via micropub
     if (commit.message.match(/Vibrancy$/) === null) {
       ['added', 'modified'].forEach(async method => {
         commit[method].forEach(async file => {
-          const slug = file.slice(0, -3)
-          slugs.push(slug)
-          const payload = { slug, method }
+          const url = file.slice(0, -3)
+          urls.push(url)
+          const payload = { url, method }
           await arc.queues.publish({ name: 'download', payload })
         })
       })
     }
   })
-  return slugs
+  return urls
 }
 
 exports.handler = async function http (req) {
@@ -42,8 +42,8 @@ exports.handler = async function http (req) {
     }
   }
 
-  const slugs = await queueDownloads(body.commits)
-  const message = slugs.length > 0 ? `Queued download of ${slugs.join(', ')}`
+  const urls = await queueDownloads(body.commits)
+  const message = urls.length > 0 ? `Queued download of ${urls.join(', ')}`
     : 'No files were added/modified.'
   return {
     statusCode: 202,

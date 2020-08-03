@@ -20,8 +20,8 @@ function verifyArrayOrObject (properties, key) {
 
 async function update (properties) {
   const data = await arc.tables()
-  const slug = properties.url.replace(process.env.ROOT_URL, '')
-  const post = await data.posts.get({ slug })
+  const url = properties.url.replace(process.env.ROOT_URL, '')
+  const post = await data.posts.get({ url })
   utils.unflatten(post)
   console.log(`post=${JSON.stringify(post)}`)
 
@@ -69,7 +69,7 @@ async function update (properties) {
 
   utils.flatten(post)
   utils.sanitise(post)
-  post.slug = slug
+  post.url = url
   post.updated = new Date().toISOString()
   // TODO send to github - decide async or sync
   console.log(JSON.stringify(post))

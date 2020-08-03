@@ -3,8 +3,8 @@ const arc = require('@architect/functions')
 async function undelete (properties) {
   const data = await arc.tables()
 
-  const slug = properties.url.replace(process.env.ROOT_URL, '')
-  const post = await data.posts.get({ slug })
+  const url = properties.url.replace(process.env.ROOT_URL, '')
+  const post = await data.posts.get({ url })
 
   delete post.deleted
   post.updated = new Date().toISOString()
