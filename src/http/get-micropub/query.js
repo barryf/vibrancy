@@ -32,19 +32,30 @@ function setStatusAndVisibility (opts, params, scope) {
       ' OR attribute_not_exists(visibility)' +
       ' ) AND (#postStatus = :postStatus' +
       ' OR attribute_not_exists(#postStatus))'
+    opts.ExpressionAttributeNames = ('ExpressionAttributeNames' in opts)
+      ? opts.ExpressionAttributeNames : {}
     opts.ExpressionAttributeNames['#postStatus'] = 'post-status'
+    opts.ExpressionAttributeValues = ('ExpressionAttributeValues' in opts)
+      ? opts.ExpressionAttributeValues : {}
     opts.ExpressionAttributeValues[':visibility'] = 'public'
     opts.ExpressionAttributeValues[':postStatus'] = 'published'
   }
 }
 
 async function findPostItems (params, scope) {
+  let items
   if ('post-type' in params) {
-    return await findPostsByPostType(params, scope)
+    items = await findPostsByPostType(params, scope)
   } else if ('category' in params) {
-    return await findPostsByCategory(params, scope)
+    items = await findPostsByCategory(params, scope)
   } else {
-    return await findPostsAll(params, scope)
+    items = await findPostsAll(params, scope)
+  }
+  return {
+    Items: items.Items.map(item => {
+      delete item.type
+      return item
+    })
   }
 }
 

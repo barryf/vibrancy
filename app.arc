@@ -17,9 +17,6 @@ post /webmention
 download
 ping
 
-@scheduled
-categories rate(1 day)
-
 @tables
 posts
   url *String
