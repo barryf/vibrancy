@@ -1,4 +1,5 @@
 const arc = require('@architect/functions')
+const { postsData } = require('../src/shared/posts-data')
 
 async function startup () {
   const data = await arc.tables()
@@ -55,7 +56,7 @@ function baz (a, b) {
     }
   ]
   posts.forEach(async post => {
-    await data.posts.put(post)
+    await postsData.put(post)
   })
 
   const webmentions = [

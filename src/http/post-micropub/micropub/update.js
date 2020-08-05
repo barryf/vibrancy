@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
+const { postsData } = require('@architect/shared/post-data')
 
 function verifyObjectNotArray (properties, key) {
   if (!(typeof properties[key] === 'object' &&
@@ -73,7 +74,7 @@ async function update (properties) {
   post.updated = new Date().toISOString()
   // TODO send to github - decide async or sync
   console.log(JSON.stringify(post))
-  await data.posts.put(post)
+  await postsData.put(post)
 
   return {
     statusCode: 204

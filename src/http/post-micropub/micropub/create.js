@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
+const { postsData } = require('@architect/shared/post-data')
 // const github = require('../github')
 
 function derivePostType (post) {
@@ -117,7 +118,7 @@ async function create (scope, body) {
   // const gitHubResponse = await github.createFile(post)
   const gitHubResponse = { status: 201 }
   if (gitHubResponse.status === 201) {
-    await data.posts.put(post)
+    await postsData.put(post)
     return {
       statusCode: 201,
       headers: {
