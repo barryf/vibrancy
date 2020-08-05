@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const matter = require('gray-matter')
+const { postsData } = require('@architect/shared/post-data')
 
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
@@ -18,12 +19,11 @@ async function getGitHubFile (url) {
 }
 
 async function upsert (matterData) {
-  const data = await arc.tables()
   const post = {
     ...matterData.data,
     content: matterData.content
   }
-  await data.posts.put(post)
+  await postsData.put(post)
 }
 
 exports.handler = async function queue (event) {

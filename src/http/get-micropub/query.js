@@ -9,8 +9,13 @@ function setLimit (opts, params) {
 function setBefore (opts, params) {
   if ('before' in params) {
     const before = new Date(parseInt(params.before, 10)).toISOString()
+    if ('KeyConditionExpression' in opts) {
+      opts.KeyConditionExpression = opts.KeyConditionExpression + ' AND '
+    } else {
+      opts.KeyConditionExpression = ''
+    }
     opts.KeyConditionExpression = opts.KeyConditionExpression +
-      ' AND published < :before'
+      'published < :before'
     opts.ExpressionAttributeValues[':before'] = before
   }
 }
@@ -65,28 +70,29 @@ async function findPostsByPostType (params, scope) {
 async function findPostsAll (params, scope) {
   const data = await arc.tables()
   const opts = {
-    IndexName: 'published-index',
-    ScanIndexForward: false
-  }
-  setLimit(opts, params)
-  setBefore(opts, params)
-  setStatusAndVisibility(opts, params, scope)
-  return await data.posts.scan(opts)
-}
-
-async function findPostsByCategory (params, scope) {
-  console.log('params', params)
-  const data = await arc.tables()
-  const opts = {
     IndexName: 'type-published-index',
     ScanIndexForward: false,
     KeyConditionExpression: '#type = :type',
-    FilterExpression: 'contains(category, :category)',
     ExpressionAttributeNames: {
       '#type': 'type'
     },
     ExpressionAttributeValues: {
-      ':type': 'h-entry',
+      ':type': 'h-entry'
+    }
+  }
+  setLimit(opts, params)
+  setBefore(opts, params)
+  setStatusAndVisibility(opts, params, scope)
+  return await data.posts.query(opts)
+}
+
+async function findPostsByCategory (params, scope) {
+  const data = await arc.tables()
+  const opts = {
+    IndexName: 'cat-published-index',
+    ScanIndexForward: false,
+    KeyConditionExpression: 'cat = :category',
+    ExpressionAttributeValues: {
       ':category': params.category
     }
   }
@@ -94,7 +100,13 @@ async function findPostsByCategory (params, scope) {
   setBefore(opts, params)
   setStatusAndVisibility(opts, params, scope)
   console.log('opts', opts)
-  return await data.posts.query(opts)
+  const posts = await data['categories-posts'].query(opts)
+  return {
+    Items: posts.Items.map(item => {
+      delete item.cat
+      return item
+    })
+  }
 }
 
 async function getPost (url) {
