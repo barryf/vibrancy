@@ -22,6 +22,8 @@ async function getCategories () {
 
 exports.handler = async function scheduled (event) {
   const data = await arc.tables()
+  // build list of categories used in posts
   const categories = await getCategories()
   categories.forEach(async category => await data.categories.put(category))
+  console.log(`Refreshed categories. Total of ${categories.length} categories.`)
 }
