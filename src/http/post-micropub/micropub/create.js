@@ -54,7 +54,7 @@ function deriveUrl (post) {
   const mm = m.length === 1 ? `0${m}` : m
   const prefix = `${yyyy}/${mm}/`
   // if we have a slug passed in then use this with date prefix
-  if (slug.length === 0) {
+  if (slug.length !== 0) {
     return prefix + slug
   }
   // try to make a sensible slug from content/summary either in text or html
