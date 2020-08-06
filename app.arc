@@ -20,6 +20,7 @@ ping
 @tables
 posts
   url *String
+  stream true
 tokens
   token *String
 webmentions
@@ -29,7 +30,6 @@ categories
   category **String
 categories-posts
   cat *String
-  url **String
 
 @indexes
 posts
