@@ -2,6 +2,8 @@ const arc = require('@architect/functions')
 const { postsData } = require('../src/shared/posts-data')
 
 async function startup () {
+  if (process.env.NODE_ENV === 'production') return
+
   const data = await arc.tables()
   const posts = [
     {
