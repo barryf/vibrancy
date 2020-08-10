@@ -4,3 +4,5 @@ node_modules
 sam.json
 sam.yaml
 .sam.yaml.swp
+
+.DS_Store
