@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const { postsData } = require('@architect/shared/posts-data')
+const github = require('../github')
 
 async function deletePost (properties) {
   const data = await arc.tables()
@@ -10,9 +11,10 @@ async function deletePost (properties) {
   post.deleted = new Date().toISOString()
   post.updated = post.deleted
 
-  // TODO send to github - decide async or sync
-  await postsData.put(post)
+  const response = await github.deleteFile(post)
+  if (response.statusCode !== 204) return response
 
+  await postsData.put(post)
   return {
     statusCode: 204
   }
