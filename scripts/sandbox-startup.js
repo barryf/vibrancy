@@ -84,21 +84,6 @@ function baz (a, b) {
   webmentions.forEach(async wm => {
     await data.webmentions.put(wm)
   })
-
-  const categories = [
-    { type: 'tag', category: 'indieweb' },
-    { type: 'tag', category: 'indiewebcamp' },
-    { type: 'tag', category: 'micropub' },
-    { type: 'tag', category: 'micropublish' },
-    { type: 'tag', category: 'london' },
-    { type: 'tag', category: 'health' },
-    { type: 'tag', category: 'iwclondon' },
-    { type: 'contact', category: 'https://barryfrost.com' },
-    { type: 'contact', category: 'https://calumryan.com' }
-  ]
-  categories.forEach(async cat => {
-    await data.categories.put(cat)
-  })
 }
 
 module.exports = startup
