@@ -6,10 +6,17 @@ const octokit = new Octokit({
   userAgent: 'Vibrancy https://github.com/barryf/vibrancy'
 })
 
-function formatContent (post) {
+function formatFile (post) {
   const properties = { ...post }
   // remove content from the properties object
-  const content = properties.content || ''
+  let content = ''
+  if ('content' in properties) {
+    if (typeof post.content === 'string') {
+      content = post.content.trim()
+    } else {
+      content = post.content.html.trim()
+    }
+  }
   delete properties.content
   // create a front-matter/content string from properties
   const fileContent = matter.stringify(content, properties)
@@ -17,20 +24,20 @@ function formatContent (post) {
   return Buffer.from(fileContent, 'utf8').toString('base64')
 }
 
-async function writeGitHubFile (url, method, content) {
+async function writeGitHubFile (url, method, file) {
   return await octokit.repos.createOrUpdateFileContents({
     owner: 'barryf',
     repo: 'content',
     branch: 'transform-fm-md',
     path: `${url}.md`,
     message: `Post ${method} by Vibrancy`,
-    content
+    content: file
   })
 }
 
 async function doFile (post, method) {
-  const content = formatContent(post)
-  const response = await writeGitHubFile(post.url, method, content)
+  const file = formatFile(post)
+  const response = await writeGitHubFile(post.url, method, file)
   if (response.status >= 400) return { statusCode: response.status }
   return {
     statusCode: response.status,
@@ -55,4 +62,4 @@ async function undeleteFile (post) {
   return await doFile(post, 'undeleted')
 }
 
-exports.github = { createFile, updateFile, deleteFile, undeleteFile }
+module.exports = { createFile, updateFile, deleteFile, undeleteFile }
