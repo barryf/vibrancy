@@ -15,7 +15,8 @@ post /webmention
 
 @queues
 download
-ping
+update-categories
+send-webmentions
 
 @tables
 posts
