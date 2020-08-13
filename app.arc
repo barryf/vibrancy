@@ -21,7 +21,6 @@ send-webmentions
 @tables
 posts
   url *String
-  stream true
 tokens
   token *String
 webmentions
