@@ -70,7 +70,8 @@ async function findPostsByPostType (params, scope) {
     },
     ExpressionAttributeValues: {
       ':postType': params['post-type']
-    }
+    },
+    FilterExpression: 'attribute_not_exists(deleted)'
   }
   setLimit(opts, params)
   setBefore(opts, params)
@@ -89,7 +90,8 @@ async function findPostsAll (params, scope) {
     },
     ExpressionAttributeValues: {
       ':type': 'h-entry'
-    }
+    },
+    FilterExpression: 'attribute_not_exists(deleted)'
   }
   setLimit(opts, params)
   setBefore(opts, params)
@@ -105,7 +107,8 @@ async function findPostsByCategory (params, scope) {
     KeyConditionExpression: 'cat = :category',
     ExpressionAttributeValues: {
       ':category': params.category
-    }
+    },
+    FilterExpression: 'attribute_not_exists(deleted)'
   }
   setLimit(opts, params)
   setBefore(opts, params)

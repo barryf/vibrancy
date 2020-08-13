@@ -12,6 +12,7 @@ async function startup () {
       published: '2020-07-09T16:17:00',
       'post-type': 'note',
       visibility: 'public',
+      deleted: '2020-07-09T17:17:00',
       content: `Something
 
 \`\`\`javascript

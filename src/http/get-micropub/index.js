@@ -38,13 +38,23 @@ async function getPost (params) {
         error_description: 'Post was not found'
       })
     }
+  } else if ('deleted' in postData) {
+    return {
+      statusCode: 410,
+      body: JSON.stringify({
+        error: 'gone',
+        error_description: 'This post is no longer available.'
+      })
+    }
   }
   const post = { ...postData }
   utils.unflatten(post)
+  const type = post.type
+  delete post.type
   setWebmentions(post)
   return {
     body: JSON.stringify({
-      type: ['h-entry'],
+      type,
       properties: post
     })
   }
