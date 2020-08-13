@@ -1,5 +1,45 @@
+// Properties that should always remain as arrays
+const arrayProperties = [
+  'category',
+  'syndication',
+  'in-reply-to',
+  'repost-of',
+  'like-of',
+  'bookmark-of',
+  'comment',
+  'like',
+  'repost',
+  'rsvp',
+  'bookmark'
+]
+
+const reservedUrls = `
+  notes
+  articles
+  bookmarks
+  photos
+  checkins
+  reposts
+  likes
+  replies
+  archives
+  events
+  rss
+`.trim().split(/\s+/)
+
 function derivePostType (post) {
-  if (('rsvp' in post) &&
+  // See https://www.w3.org/TR/post-type-discovery/
+  let content = ''
+  if ('content' in post) {
+    if (typeof post.content === 'string') {
+      content = post.content.trim()
+    } else {
+      content = post.content.html.trim()
+    }
+  }
+  if (('type' in post) && post.type === 'event') {
+    return 'event'
+  } else if (('rsvp' in post) &&
     ['yes', 'no', 'maybe', 'interested'].includes(post.rsvp)) {
     return 'rsvp'
   } else if (('in-reply-to' in post) &&
@@ -21,7 +61,7 @@ function derivePostType (post) {
     isValidURL(post['bookmark-of'])) {
     return 'bookmark-of'
   } else if (('name' in post) &&
-    (post.name !== '')) { // TODO also !content_start_with_name
+    (post.name.trim() !== '') && !content.startsWith(post.name.trim())) {
     return 'article'
   } else if ('checkin' in post) {
     return 'checkin'
@@ -39,10 +79,22 @@ function isValidURL (string) {
   return true
 }
 
-function flatten (post) {
+function flattenJSON (post) {
   for (const key in post) {
-    if (Array.isArray(post[key]) && post[key].length === 1) {
+    if (Array.isArray(post[key]) && post[key].length === 1 &&
+      !arrayProperties.includes(key)) {
       post[key] = post[key][0]
+    }
+  }
+}
+
+function flattenFormEncoded (post) {
+  for (const key in post) {
+    if (key === 'content[html]') {
+      post.content = { html: post[key] }
+      delete post['content[html]']
+    } else if (arrayProperties.includes(key)) {
+      post[key] = [post[key]]
     }
   }
 }
@@ -72,7 +124,9 @@ function sanitise (post) {
 exports.utils = {
   derivePostType,
   isValidURL,
-  flatten,
+  flattenJSON,
+  flattenFormEncoded,
   unflatten,
-  sanitise
+  sanitise,
+  reservedUrls
 }
