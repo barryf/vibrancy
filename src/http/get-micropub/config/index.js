@@ -9,7 +9,6 @@ const q = [
   'post-types',
   'category'
 ]
-// TODO contact
 
 const config = {
   'media-endpoint': process.env.MEDIA_ENDPOINT_URL,
