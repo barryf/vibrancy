@@ -1,39 +1,7 @@
 const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
-const { postsData } = require('@architect/shared/post-data')
+const { postsData } = require('@architect/shared/posts-data')
 // const github = require('../github')
-
-function derivePostType (post) {
-  if (('rsvp' in post) &&
-    ['yes', 'no', 'maybe', 'interested'].includes(post.rsvp)) {
-    return 'rsvp'
-  } else if (('in-reply-to' in post) &&
-    utils.isValidURL(post['in-reply-to'])) {
-    return 'in-reply-to'
-  } else if (('repost-of' in post) &&
-    utils.isValidURL(post['repost-of'])) {
-    return 'repost-of'
-  } else if (('like-of' in post) &&
-    utils.isValidURL(post['like-of'])) {
-    return 'like-of'
-  } else if (('video' in post) &&
-    utils.isValidURL(post.video)) {
-    return 'video'
-  } else if (('photo' in post) &&
-    utils.isValidURL(post.photo)) {
-    return 'photo'
-  } else if (('bookmark-of' in post) &&
-    utils.isValidURL(post['bookmark-of'])) {
-    return 'bookmark-of'
-  } else if (('name' in post) &&
-    (post.name !== '')) { // TODO also !content_start_with_name
-    return 'article'
-  } else if ('checkin' in post) {
-    return 'checkin'
-  } else {
-    return 'note'
-  }
-}
 
 function deriveUrl (post) {
   let slug = ''
@@ -91,7 +59,7 @@ function formatPost (body) {
   post.type = 'h-entry'
   post.published = post.published || new Date().toISOString()
   post.url = deriveUrl(post)
-  post['post-type'] = derivePostType(post)
+  post['post-type'] = utils.derivePostType(post)
   utils.sanitise(post)
   return post
 }

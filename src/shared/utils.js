@@ -1,3 +1,35 @@
+function derivePostType (post) {
+  if (('rsvp' in post) &&
+    ['yes', 'no', 'maybe', 'interested'].includes(post.rsvp)) {
+    return 'rsvp'
+  } else if (('in-reply-to' in post) &&
+    isValidURL(post['in-reply-to'])) {
+    return 'in-reply-to'
+  } else if (('repost-of' in post) &&
+    isValidURL(post['repost-of'])) {
+    return 'repost-of'
+  } else if (('like-of' in post) &&
+    isValidURL(post['like-of'])) {
+    return 'like-of'
+  } else if (('video' in post) &&
+    isValidURL(post.video)) {
+    return 'video'
+  } else if (('photo' in post) &&
+    isValidURL(post.photo)) {
+    return 'photo'
+  } else if (('bookmark-of' in post) &&
+    isValidURL(post['bookmark-of'])) {
+    return 'bookmark-of'
+  } else if (('name' in post) &&
+    (post.name !== '')) { // TODO also !content_start_with_name
+    return 'article'
+  } else if ('checkin' in post) {
+    return 'checkin'
+  } else {
+    return 'note'
+  }
+}
+
 function isValidURL (string) {
   try {
     new URL(string) // eslint-disable-line
@@ -50,6 +82,7 @@ const reservedUrls = `
 `.trim().split(/\s+/)
 
 exports.utils = {
+  derivePostType,
   isValidURL,
   flatten,
   unflatten,
