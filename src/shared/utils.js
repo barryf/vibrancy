@@ -69,23 +69,10 @@ function sanitise (post) {
   }
 }
 
-const reservedUrls = `
-  notes
-  articles
-  bookmarks
-  photos
-  checkins
-  reposts
-  likes
-  replies
-  archives
-`.trim().split(/\s+/)
-
 exports.utils = {
   derivePostType,
   isValidURL,
   flatten,
   unflatten,
-  sanitise,
-  reservedUrls
+  sanitise
 }
