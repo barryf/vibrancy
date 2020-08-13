@@ -69,7 +69,7 @@ async function update (properties) {
     }
   }
 
-  utils.flatten(post)
+  utils.flattenJSON(post)
   utils.sanitise(post)
   post['post-type'] = utils.derivePostType(post)
   post.url = url
