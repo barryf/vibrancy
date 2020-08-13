@@ -44,7 +44,6 @@ const verifyTokenAndScope = async function (token, scope) {
       token,
       tokenEndpoint
     )
-    // TODO: move my URL to an env var
     if (!tokenData || tokenData.me !== process.env.ME_URL) {
       return {
         statusCode: 403,
