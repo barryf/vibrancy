@@ -1,5 +1,5 @@
 const arc = require('@architect/functions')
-const { postsData } = require('@architect/shared/post-data')
+const { postsData } = require('@architect/shared/posts-data')
 
 async function undelete (properties) {
   const data = await arc.tables()

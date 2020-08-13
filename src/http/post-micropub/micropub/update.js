@@ -1,6 +1,6 @@
 const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
-const { postsData } = require('@architect/shared/post-data')
+const { postsData } = require('@architect/shared/posts-data')
 
 function verifyObjectNotArray (properties, key) {
   if (!(typeof properties[key] === 'object' &&
@@ -70,6 +70,7 @@ async function update (properties) {
 
   utils.flatten(post)
   utils.sanitise(post)
+  post['post-type'] = utils.derivePostType(post)
   post.url = url
   post.updated = new Date().toISOString()
   // TODO send to github - decide async or sync
