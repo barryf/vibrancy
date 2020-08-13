@@ -1,7 +1,7 @@
 const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
 const { postsData } = require('@architect/shared/posts-data')
-// const github = require('../github')
+const github = require('../github')
 
 function deriveUrl (post) {
   let slug = ''
@@ -82,22 +82,14 @@ async function create (scope, body) {
     }
   }
 
-  // TODO remove shim
-  // const gitHubResponse = await github.createFile(post)
-  const gitHubResponse = { status: 201 }
-  if (gitHubResponse.status === 201) {
-    await postsData.put(post)
-    return {
-      statusCode: 201,
-      headers: {
-        location: process.env.ROOT_URL + post.url
-      }
-    }
-  } else {
-    return {
-      statusCode: 500,
-      body: 'Error from GitHub when creating post.'
-      // TODO: better error
+  const response = await github.createFile(post)
+  if (response.statusCode !== 201) return response
+
+  await postsData.put(post)
+  return {
+    statusCode: 201,
+    headers: {
+      location: process.env.ROOT_URL + post.url
     }
   }
 }

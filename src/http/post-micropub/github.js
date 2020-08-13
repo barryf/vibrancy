@@ -28,9 +28,31 @@ async function writeGitHubFile (url, method, content) {
   })
 }
 
-async function createFile (post) {
+async function doFile (post, method) {
   const content = formatContent(post)
-  return await writeGitHubFile(post.url, 'added', content)
+  const response = await writeGitHubFile(post.url, method, content)
+  if (response.status >= 400) return { statusCode: response.status }
+  return {
+    statusCode: response.status,
+    error: 'github_error',
+    error_description: response.message
+  }
 }
 
-exports.github = { createFile }
+async function createFile (post) {
+  return await doFile(post, 'added')
+}
+
+async function updateFile (post) {
+  return await doFile(post, 'edited')
+}
+
+async function deleteFile (post) {
+  return await doFile(post, 'deleted')
+}
+
+async function undeleteFile (post) {
+  return await doFile(post, 'undeleted')
+}
+
+exports.github = { createFile, updateFile, deleteFile, undeleteFile }
