@@ -26,9 +26,6 @@ tokens
   token *String
 webmentions
   source *String
-categories
-  type *String
-  category **String
 categories-posts
   cat *String
 
