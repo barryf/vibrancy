@@ -1,6 +1,5 @@
-const arc = require('@architect/functions')
 const matter = require('gray-matter')
-const { postsData } = require('@architect/shared/post-data')
+const { postsData } = require('@architect/shared/posts-data')
 
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
