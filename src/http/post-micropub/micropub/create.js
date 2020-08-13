@@ -52,9 +52,10 @@ function formatPost (body) {
   let post
   if ('properties' in body) {
     post = { ...body.properties }
-    utils.flatten(post)
+    utils.flattenJSON(post)
   } else {
     post = { ...body }
+    utils.flattenFormEncoded(post)
   }
   post.type = 'h-entry'
   post.published = post.published || new Date().toISOString()
