@@ -6,7 +6,7 @@ const allowedActions = ['create', 'update', 'delete', 'undelete', 'draft']
 
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
-  console.log(`body=${JSON.stringify(body)}`)
+  console.log('body', body)
 
   let scope = 'create' // default to create
   if ('action' in body) {
