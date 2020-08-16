@@ -37,9 +37,9 @@ const verifyTokenAndScope = async function (token, scope) {
   let tokenData
   if (tokenRecord) {
     tokenData = tokenRecord.data
-    console.log('token found')
+    // console.log('token found')
   } else {
-    console.log('token not found')
+    // console.log('token not found')
     tokenData = await getTokenResponse(
       token,
       tokenEndpoint
