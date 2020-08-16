@@ -16,19 +16,22 @@ async function getPost (params) {
         error_description: 'Post was not found'
       })
     }
-  } else if ('deleted' in postData) {
-    return {
-      statusCode: 410,
-      body: JSON.stringify({
-        error: 'gone',
-        error_description: 'This post is no longer available.'
-      })
-    }
   }
   const post = { ...postData }
   utils.unflatten(post)
   const type = post.type
   delete post.type
+  if ('deleted' in post) {
+    return {
+      statusCode: 410,
+      body: JSON.stringify({
+        error: 'gone',
+        error_description: 'This post is no longer available.',
+        type,
+        properties: { deleted: post.deleted }
+      })
+    }
+  }
   webmentions.setWebmentions(post)
   return {
     body: JSON.stringify({
@@ -91,7 +94,7 @@ exports.handler = async function http (req) {
     }
   }
   return {
-    headers: { 'content-type': 'text/html; charset=utf8' },
+    headers: { 'Content-Type': 'text/html; charset=utf8' },
     body: 'Micropub endpoint'
   }
 }
