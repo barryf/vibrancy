@@ -1,6 +1,5 @@
 const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
-const { postsData } = require('@architect/shared/posts-data')
 const github = require('../github')
 
 function verifyObjectNotArray (properties, key) {
@@ -78,7 +77,24 @@ async function update (properties) {
   const response = await github.updateFile(post)
   if (response.statusCode !== 204) return response
 
-  await postsData.put(post)
+  // update post in ddb
+  await data.posts.put(post)
+  // queue category caching
+  await arc.queues.publish({
+    name: 'update-categories',
+    payload: { url: post.url }
+  })
+  // syndicate if requested
+  if ('mp-syndicate-to' in properties) {
+    await arc.queues.publish({
+      name: 'syndicate',
+      payload: {
+        url: post.url,
+        syndicateTo: properties['mp-syndicate-to']
+      }
+    })
+  }
+
   return {
     statusCode: 204
   }
