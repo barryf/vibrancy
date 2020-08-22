@@ -1,5 +1,4 @@
 const arc = require('@architect/functions')
-const { postsData } = require('../src/shared/posts-data')
 
 async function startup () {
   if (process.env.NODE_ENV === 'production') return
@@ -59,7 +58,11 @@ function baz (a, b) {
     }
   ]
   posts.forEach(async post => {
-    await postsData.put(post)
+    await data.posts.put(post)
+    await arc.queues.publish({
+      name: 'update-categories',
+      payload: { url: post.url }
+    })
   })
 
   const webmentions = [

@@ -1,5 +1,4 @@
 const matter = require('gray-matter')
-const { postsData } = require('@architect/shared/posts-data')
 
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
@@ -22,7 +21,8 @@ async function upsert (matterData) {
     ...matterData.data,
     content: matterData.content
   }
-  await postsData.put(post)
+  // TODO: remove download?
+  await data.posts.put(post)
 }
 
 exports.handler = async function queue (event) {

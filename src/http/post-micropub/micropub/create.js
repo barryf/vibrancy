@@ -1,6 +1,5 @@
 const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
-const { postsData } = require('@architect/shared/posts-data')
 const github = require('../github')
 
 function deriveUrl (post) {
@@ -49,7 +48,7 @@ function deriveUrl (post) {
 }
 
 function formatPost (body) {
-  let post
+  let post, syndicateTo
   if ('properties' in body) {
     post = { ...body.properties }
     utils.flattenJSON(post)
@@ -57,17 +56,22 @@ function formatPost (body) {
     post = { ...body }
     utils.flattenFormEncoded(post)
   }
+  if ('mp-syndicate-to' in post) {
+    syndicateTo = Array.isArray(post['mp-syndicate-to'])
+      ? post['mp-syndicate-to']
+      : [post['mp-syndicate-to']]
+  }
   post.type = 'h-entry'
   post.published = post.published || new Date().toISOString()
   post.url = deriveUrl(post)
   post['post-type'] = utils.derivePostType(post)
   utils.sanitise(post)
-  return post
+  return { post, syndicateTo }
 }
 
 async function create (scope, body) {
   const data = await arc.tables()
-  const post = formatPost(body)
+  const { post, syndicateTo } = formatPost(body)
   if (scope === 'draft') {
     post['post-status'] = 'draft'
   }
@@ -86,7 +90,24 @@ async function create (scope, body) {
   const response = await github.createFile(post)
   if (response.statusCode !== 201) return response
 
-  await postsData.put(post)
+  // add post to ddb
+  await data.posts.put(post)
+  // queue category caching
+  await arc.queues.publish({
+    name: 'update-categories',
+    payload: { url: post.url }
+  })
+  // syndicate if requested
+  if (syndicateTo) {
+    await arc.queues.publish({
+      name: 'syndicate',
+      payload: {
+        url: post.url,
+        syndicateTo
+      }
+    })
+  }
+
   return {
     statusCode: 201,
     headers: {

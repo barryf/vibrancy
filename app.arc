@@ -17,6 +17,7 @@ post /webmention
 download
 update-categories
 send-webmentions
+syndicate
 
 @tables
 posts

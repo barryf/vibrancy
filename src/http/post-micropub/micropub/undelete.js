@@ -1,5 +1,4 @@
 const arc = require('@architect/functions')
-const { postsData } = require('@architect/shared/posts-data')
 const github = require('../github')
 
 async function undelete (properties) {
@@ -14,7 +13,14 @@ async function undelete (properties) {
   const response = await github.undeleteFile(post)
   if (response.statusCode !== 204) return response
 
-  await postsData.put(post)
+  // update post in ddb
+  await data.posts.put(post)
+  // queue category caching
+  await arc.queues.publish({
+    name: 'update-categories',
+    payload: { url: post.url }
+  })
+
   return {
     statusCode: 204
   }
