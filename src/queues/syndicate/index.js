@@ -2,6 +2,7 @@ const arc = require('@architect/functions')
 
 // require syndicators
 const twitter = require('./twitter')
+const pinboard = require('./pinboard')
 
 exports.handler = async function queue (event) {
   const data = await arc.tables()
@@ -15,6 +16,9 @@ exports.handler = async function queue (event) {
       if (syndicateTo.indexOf('twitter.com') > -1) {
         const tweetUrl = await twitter.syndicate(post)
         post.syndication.push(tweetUrl)
+      } else if (syndicateTo.indexOf('pinboard.in') > -1) {
+        await pinboard.syndicate(post)
+        // no return value :(
       }
     }
     await data.posts.put(post)
