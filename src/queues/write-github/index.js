@@ -1,5 +1,5 @@
+const arc = require('@architect/functions')
 const matter = require('gray-matter')
-
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -30,36 +30,20 @@ async function writeGitHubFile (url, method, file) {
     repo: 'content',
     branch: 'transform-fm-md',
     path: `${url}.md`,
-    message: `Post ${method} by Vibrancy`,
+    message: `Post ${method}d by Vibrancy`,
     content: file
   })
 }
 
-async function doFile (post, method) {
+exports.handler = async function queue (event) {
+  const body = JSON.parse(event.Records[0].body)
+
+  const data = await arc.tables()
+  const post = await data.posts.get({ url: body.url })
+
+  // treat a draft as a create
+  const method = body.method === 'draft' ? 'create' : body.method
+
   const file = formatFile(post)
-  const response = await writeGitHubFile(post.url, method, file)
-  if (response.status >= 400) return { statusCode: response.status }
-  return {
-    statusCode: response.status,
-    error: 'github_error',
-    error_description: response.message
-  }
+  await writeGitHubFile(post.url, method, file)
 }
-
-async function createFile (post) {
-  return await doFile(post, 'added')
-}
-
-async function updateFile (post) {
-  return await doFile(post, 'edited')
-}
-
-async function deleteFile (post) {
-  return await doFile(post, 'deleted')
-}
-
-async function undeleteFile (post) {
-  return await doFile(post, 'undeleted')
-}
-
-module.exports = { createFile, updateFile, deleteFile, undeleteFile }
