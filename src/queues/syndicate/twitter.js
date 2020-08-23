@@ -1,7 +1,7 @@
 const path = require('path')
 const fetch = require('node-fetch')
 const brevity = require('brevity')
-const Twitter = require('twitter')
+const Twit = require('twit')
 
 // adapted from @grantcodes' Postr's syndicator-twitter
 // https://github.com/grantcodes/postr/blob/master/packages/syndicator-twitter/index.js
@@ -17,26 +17,18 @@ const isTweetUrl = tweetUrl => {
   return parsedUrl.hostname === 'twitter.com'
 }
 
-async function getClient () {
-  const client = new Twitter({
-    consumer_key: process.env.TWITTER_CONSUMER_KEY,
-    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
-    access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
-    access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
-  })
-  return client
-}
+const twit = new Twit({
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token: process.env.TWITTER_ACCESS_TOKEN,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+})
 
 async function postStatus (status) {
-  const client = await getClient()
-  client.post('statuses/update', status, function (err, tweet, response) {
-    if (err) throw err
-    console.log('tweet', tweet)
-    console.log('tw response', response)
-    return 'foo'
-  })
-  // const tweetUrl = `https://twitter.com/${user.screen_name}/status/${idStr}`
-  // return tweetUrl
+  const { data } = await twit.post('statuses/update', status)
+  const tweetUrl = 'https://twitter.com/' + data.user.screen_name + '/status/' +
+    data.id_str
+  return tweetUrl
 }
 
 function generateStatus (post, mediaIds = null) {
@@ -62,7 +54,8 @@ function generateStatus (post, mediaIds = null) {
 
   // add in-reply-to if appropriate
   if (post['in-reply-to']) {
-    const replyTo = post['in-reply-to']
+    // TODO: the twitter reply might not be first element
+    const replyTo = post['in-reply-to'][0]
     if (replyTo.indexOf('twitter.com') > -1) {
       const parsedUrl = new URL(replyTo)
       const statusId = tweetIdFromUrl(replyTo)
@@ -113,56 +106,55 @@ function generateStatus (post, mediaIds = null) {
 }
 
 async function mediaUpload (image) {
-  const client = await getClient()
   if (typeof image === 'string') {
     const res = await fetch(image)
     image = Buffer.from(res.body.arrayBuffer())
   }
   if (image instanceof Buffer) {
-    const media = await client.post('media/upload', { media: image })
+    const media = await twit.post('media/upload', { media: image })
     return media.media_id_string
   }
   throw new Error('Error posting image to Twitter')
 }
 
 async function sendTweet (post) {
-  const client = await getClient()
   // if it is a repost then first check if it is a retweet
-  if (post['repost-of'] && isTweetUrl(post['repost-of'])) {
-    const statusId = tweetIdFromUrl(post['repost-of'])
-    const { user, idStr } = await client.post('statuses/retweet/' + statusId, {})
+  if (post['repost-of'] && isTweetUrl(post['repost-of'][0])) {
+    const statusId = tweetIdFromUrl(post['repost-of'][0])
+    const { data } = twit.post('statuses/retweet/' + statusId, {})
     const repostUrl = `https://twitter.com/${
-      user.screen_name
-    }/status/${idStr}#favorited-by-${this.options.handle}`
+      data.user.screen_name
+    }/status/${data.id_str}#favorited-by-${process.env.TWITTER_ACCOUNT}`
     return repostUrl
-  } else if (post['like-of'] && isTweetUrl(post['like-of'])) {
+  } else if (post['like-of'] && isTweetUrl(post['like-of'][0])) {
     // check if it is a like of a tweet then sydicate the like
-    const statusId = tweetIdFromUrl(post['like-of'])
-    const { user, idStr } = await client.post('favorites/create', {
+    const statusId = tweetIdFromUrl(post['like-of'][0])
+    const { data } = twit.post('favorites/create', {
       id: statusId
     })
-    const likeUrl = `https://twitter.com/${user.screen_name}/status/${idStr}`
+    const likeUrl = `https://twitter.com/${
+      data.user.screen_name
+    }/status/${data.id_str}`
     return likeUrl
   } else {
-    // // check for photos
-    // let mediaIds = []
-    // let status = null
-    // if (post.photo) {
-    //   // trim to 4 photos as twitter doesn't support more
-    //   const photos = post.photo.slice(0, 4)
-    //   for (let photo of photos) {
-    //     if (photo.value) {
-    //       photo = photo.value
-    //     }
-    //     if (photo.buffer) {
-    //       photo = photo.buffer
-    //     }
-    //     mediaIds.push(await mediaUpload(photo))
-    //   }
-    // }
-    // mediaIds = mediaIds.length ? mediaIds : false
-    const status = generateStatus(post)
-    console.log('status', status)
+    // check for photos
+    let mediaIds = []
+    let status = null
+    if (post.photo) {
+      // trim to 4 photos as twitter doesn't support more
+      const photos = post.photo.slice(0, 4)
+      for (let photo of photos) {
+        if (photo.value) {
+          photo = photo.value
+        }
+        if (photo.buffer) {
+          photo = photo.buffer
+        }
+        mediaIds.push(await mediaUpload(photo))
+      }
+    }
+    mediaIds = mediaIds.length ? mediaIds : false
+    status = generateStatus(post)
     if (status) {
       return await postStatus(status)
     }
@@ -179,16 +171,14 @@ async function syndicate (post) {
       return null
     } else if (
       (post['like-of'] &&
-        !isTweetUrl(post['like-of'])) ||
+        !isTweetUrl(post['like-of'][0])) ||
       (post['in-reply-to'] &&
-        !isTweetUrl(post['in-reply-to']))
+        !isTweetUrl(post['in-reply-to'][0]))
     ) {
       // don't post likes and replies of external urls
       return null
     } else {
-      console.log('h')
       const tweetUrl = await sendTweet(post)
-      console.log('tweetUrl', tweetUrl)
       return tweetUrl
     }
   } catch (err) {
