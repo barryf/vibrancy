@@ -3,6 +3,6 @@
     "@architect/functions": "^3.12.3",
     "brevity": "^0.2.9",
     "node-fetch": "^2.6.0",
-    "twitter": "^1.7.1"
+    "twit": "^2.2.11"
   }
 }
