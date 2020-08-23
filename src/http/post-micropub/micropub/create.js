@@ -1,6 +1,5 @@
 const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
-const github = require('../github')
 
 function deriveUrl (post) {
   let slug = ''
@@ -87,28 +86,9 @@ async function create (scope, body) {
     }
   }
 
-  const response = await github.createFile(post)
-  if (response.statusCode !== 201) return response
-
-  // add post to ddb
-  await data.posts.put(post)
-  // queue category caching
-  await arc.queues.publish({
-    name: 'update-categories',
-    payload: { url: post.url }
-  })
-  // syndicate if requested
-  if (syndicateTo) {
-    await arc.queues.publish({
-      name: 'syndicate',
-      payload: {
-        url: post.url,
-        syndicateTo
-      }
-    })
-  }
-
   return {
+    post,
+    syndicateTo,
     statusCode: 201,
     headers: {
       location: process.env.ROOT_URL + post.url

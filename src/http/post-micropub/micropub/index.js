@@ -1,30 +1,56 @@
+const arc = require('@architect/functions')
+
 const { create } = require('./create')
 const { update } = require('./update')
 const { deletePost } = require('./delete')
 const { undelete } = require('./undelete')
 
 async function action (scope, body) {
-  switch (scope) {
-    case 'create':
-      return await create(scope, body)
-    case 'draft':
-      return await create(scope, body)
-    case 'update':
-      return await update(body)
-    case 'delete':
-      return await deletePost(body)
-    case 'undelete':
-      return await undelete(body)
+  const data = await arc.tables()
 
-      // if (!utils.isValidURL(body.url)) {
-      //   return {
-      //     statusCode: 400,
-      //     body: JSON.stringify({
-      //       error: 'invalid_parameter',
-      //       error_description: 'The specified URL is not a valid URL'
-      //     })
-      //   }
-      // }
+  let res
+  if (scope === 'create' || scope === 'draft') {
+    res = await create(scope, body)
+  } else if (scope === 'update') {
+    res = await update(body)
+  } else if (scope === 'delete') {
+    res = await deletePost(body)
+  } else if (scope === 'undelete') {
+    res = await undelete(body)
+  }
+
+  // add post to ddb
+  await data.posts.put(res.post)
+
+  // queue writing the file to github
+  await arc.queues.publish({
+    name: 'write-github',
+    payload: {
+      url: res.post.url,
+      method: scope
+    }
+  })
+
+  // queue category caching
+  await arc.queues.publish({
+    name: 'update-categories',
+    payload: { url: res.post.url }
+  })
+
+  // queue syndication if requested
+  if (res.syndicateTo) {
+    await arc.queues.publish({
+      name: 'syndicate',
+      payload: {
+        url: res.post.url,
+        syndicateTo: res.syndicateTo
+      }
+    })
+  }
+
+  return {
+    statusCode: res.statusCode,
+    headers: res.headers || {}
   }
 }
 
