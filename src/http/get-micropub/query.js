@@ -48,6 +48,8 @@ async function findPostItems (params, scope) {
     items = await findPostsByPostType(params, scope)
   } else if ('category' in params) {
     items = await findPostsByCategory(params, scope)
+  } else if ('published' in params) {
+    items = await findPostsByPublished(params, scope)
   } else {
     items = await findPostsAll(params, scope)
   }
@@ -90,6 +92,28 @@ async function findPostsAll (params, scope) {
     },
     ExpressionAttributeValues: {
       ':type': 'h-entry'
+    },
+    FilterExpression: 'attribute_not_exists(deleted)'
+  }
+  setLimit(opts, params)
+  setBefore(opts, params)
+  setStatusAndVisibility(opts, params, scope)
+  return await data.posts.query(opts)
+}
+
+async function findPostsByPublished (params, scope) {
+  const published = params.published.replace(/[^0-9-]/, '')
+  const data = await arc.tables()
+  const opts = {
+    IndexName: 'type-published-index',
+    ScanIndexForward: false,
+    KeyConditionExpression: '#type = :type and begins_with(published, :yearMonth)',
+    ExpressionAttributeNames: {
+      '#type': 'type'
+    },
+    ExpressionAttributeValues: {
+      ':type': 'h-entry',
+      ':yearMonth': published
     },
     FilterExpression: 'attribute_not_exists(deleted)'
   }
