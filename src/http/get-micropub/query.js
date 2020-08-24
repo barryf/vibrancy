@@ -107,18 +107,25 @@ async function findPostsByPublished (params, scope) {
   const opts = {
     IndexName: 'type-published-index',
     ScanIndexForward: false,
-    KeyConditionExpression: '#type = :type and begins_with(published, :yearMonth)',
     ExpressionAttributeNames: {
       '#type': 'type'
     },
     ExpressionAttributeValues: {
       ':type': 'h-entry',
-      ':yearMonth': published
+      ':published': published
     },
     FilterExpression: 'attribute_not_exists(deleted)'
   }
+  if ('before' in params) {
+    const before = new Date(parseInt(params.before, 10)).toISOString()
+    opts.KeyConditionExpression =
+      '#type = :type AND published BETWEEN :published AND :before'
+    opts.ExpressionAttributeValues[':before'] = before
+  } else {
+    opts.KeyConditionExpression =
+      '#type = :type AND begins_with(published, :published)'
+  }
   setLimit(opts, params)
-  setBefore(opts, params)
   setStatusAndVisibility(opts, params, scope)
   return await data.posts.query(opts)
 }
