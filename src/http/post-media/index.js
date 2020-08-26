@@ -1,14 +1,14 @@
-const aws = require('aws-sdk')
+const AWS = require('aws-sdk')
 const arc = require('@architect/functions')
 // const { auth } = require('@architect/shared/auth')
 
-const s3 = new aws.S3({
+const s3 = new AWS.S3({
   endpoint: new AWS.Endpoint(process.env.S3_ENDPOINT)
 })
 
 async function upload (filename, file) {
   s3.upload({
-    Bucket: process.env.S3_BUCKET,
+    Bucket: process.env.MEDIA_BUCKET,
     ACL: 'public-read',
     Key: filename,
     Body: file
