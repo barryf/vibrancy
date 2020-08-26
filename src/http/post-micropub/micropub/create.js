@@ -75,16 +75,17 @@ async function create (scope, body) {
     post['post-status'] = 'draft'
   }
 
-  const findPost = await data.posts.get({ url: post.url })
-  if (findPost !== undefined || utils.reservedUrls.includes(post.url)) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({
-        error: 'invalid_parameter',
-        error_description: 'A post with this URL already exists'
-      })
-    }
-  }
+  // TODO: uncomment this to prevent overwriting posts
+  // const findPost = await data.posts.get({ url: post.url })
+  // if (findPost !== undefined || utils.reservedUrls.includes(post.url)) {
+  //   return {
+  //     statusCode: 400,
+  //     body: JSON.stringify({
+  //       error: 'invalid_parameter',
+  //       error_description: 'A post with this URL already exists'
+  //     })
+  //   }
+  // }
 
   return {
     post,
