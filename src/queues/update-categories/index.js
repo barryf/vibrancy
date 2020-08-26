@@ -4,7 +4,9 @@ exports.handler = async function queue (event) {
   const data = await arc.tables()
   const url = JSON.parse(event.Records[0].body).url
   const post = await data.posts.get({ url })
-  const category = ('category' in post) ? post.category : []
+  const category = ('category' in post.properties)
+    ? post.properties.category
+    : []
 
   // add categories-posts records for each of the post's categories
   category.forEach(async cat => {

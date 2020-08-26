@@ -1,18 +1,3 @@
-// Properties that should always remain as arrays
-const arrayProperties = [
-  'category',
-  'syndication',
-  'in-reply-to',
-  'repost-of',
-  'like-of',
-  'bookmark-of',
-  'comment',
-  'like',
-  'repost',
-  'rsvp',
-  'bookmark'
-]
-
 const reservedUrls = `
   notes
   articles
@@ -30,40 +15,41 @@ const reservedUrls = `
 function derivePostType (post) {
   // See https://www.w3.org/TR/post-type-discovery/
   let content = ''
-  if ('content' in post) {
-    if (typeof post.content === 'string') {
-      content = post.content.trim()
+  if ('content' in post.properties) {
+    if (typeof post.properties.content[0] === 'string') {
+      content = post.properties.content[0].trim()
     } else {
-      content = post.content.html.trim()
+      content = post.properties.content[0].html.trim()
     }
   }
   if (('type' in post) && post.type === 'event') {
     return 'event'
-  } else if (('rsvp' in post) &&
-    ['yes', 'no', 'maybe', 'interested'].includes(post.rsvp)) {
+  } else if (('rsvp' in post.properties) &&
+    ['yes', 'no', 'maybe', 'interested'].includes(post.properties.rsvp[0])) {
     return 'rsvp'
-  } else if (('in-reply-to' in post) &&
-    isValidURL(post['in-reply-to'])) {
+  } else if (('in-reply-to' in post.properties) &&
+    isValidURL(post.properties['in-reply-to'][0])) {
     return 'in-reply-to'
-  } else if (('repost-of' in post) &&
-    isValidURL(post['repost-of'])) {
+  } else if (('repost-of' in post.properties) &&
+    isValidURL(post.properties['repost-of'][0])) {
     return 'repost-of'
-  } else if (('like-of' in post) &&
-    isValidURL(post['like-of'])) {
+  } else if (('like-of' in post.properties) &&
+    isValidURL(post.properties['like-of'][0])) {
     return 'like-of'
-  } else if (('video' in post) &&
-    isValidURL(post.video)) {
+  } else if (('video' in post.properties) &&
+    isValidURL(post.properties.video[0])) {
     return 'video'
-  } else if (('photo' in post) &&
-    isValidURL(post.photo)) {
+  } else if (('photo' in post.properties) &&
+    isValidURL(post.properties.photo[0])) {
     return 'photo'
-  } else if (('bookmark-of' in post) &&
-    isValidURL(post['bookmark-of'])) {
+  } else if (('bookmark-of' in post.properties) &&
+    isValidURL(post.properties['bookmark-of'][0])) {
     return 'bookmark-of'
-  } else if (('name' in post) &&
-    (post.name.trim() !== '') && !content.startsWith(post.name.trim())) {
+  } else if (('name' in post.properties) &&
+    (post.properties.name[0].trim() !== '') &&
+    !content.startsWith(post.properties.name[0].trim())) {
     return 'article'
-  } else if ('checkin' in post) {
+  } else if ('checkin' in post.properties) {
     return 'checkin'
   } else {
     return 'note'
@@ -79,44 +65,16 @@ function isValidURL (string) {
   return true
 }
 
-function flattenJSON (post) {
-  for (const key in post) {
-    if (Array.isArray(post[key]) && post[key].length === 1 &&
-      !arrayProperties.includes(key)) {
-      post[key] = post[key][0]
-    }
-  }
-}
-
-function flattenFormEncoded (post) {
-  for (const key in post) {
-    if (key === 'content[html]') {
-      post.content = { html: post[key] }
-      delete post['content[html]']
-    } else if (arrayProperties.includes(key)) {
-      post[key] = [post[key]]
-    }
-  }
-}
-
-function unflatten (post) {
-  for (const key in post) {
-    if (!Array.isArray(post[key])) {
-      post[key] = [post[key]]
-    }
-  }
-}
-
 function sanitise (post) {
   const reservedProperties = ['action', 'access_token', 'h']
-  for (const prop in post) {
+  for (const prop in post.properties) {
     if (prop.startsWith('mp-') || reservedProperties.includes(prop)) {
-      delete post[prop]
+      delete post.properties[prop]
     }
     if (prop.endsWith('[]')) {
       const propModified = prop.slice(0, -2)
-      post[propModified] = post[prop]
-      delete post[prop]
+      post.properties[propModified] = post.properties[prop]
+      delete post.properties[prop]
     }
   }
 }
@@ -124,9 +82,6 @@ function sanitise (post) {
 exports.utils = {
   derivePostType,
   isValidURL,
-  flattenJSON,
-  flattenFormEncoded,
-  unflatten,
   sanitise,
   reservedUrls
 }

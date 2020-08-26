@@ -6,8 +6,8 @@ async function deletePost (properties) {
   const url = properties.url.replace(process.env.ROOT_URL, '')
   const post = await data.posts.get({ url })
 
-  post.deleted = new Date().toISOString()
-  post.updated = post.deleted
+  post.properties.deleted = [new Date().toISOString()]
+  post.properties.updated = post.deleted
 
   return {
     post,
