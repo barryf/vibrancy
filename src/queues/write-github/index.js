@@ -24,6 +24,7 @@ function formatFile (post) {
   return Buffer.from(fileContent, 'utf8').toString('base64')
 }
 
+// TODO: find and include sha when updating
 async function writeGitHubFile (url, method, file) {
   return await octokit.repos.createOrUpdateFileContents({
     owner: 'barryf',
