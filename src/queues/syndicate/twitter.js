@@ -33,14 +33,15 @@ async function postStatus (status) {
 
 function generateStatus (post, mediaIds = null) {
   let content = null
-  if (post.summary) {
-    content = post.summary + ' ' + post.url
-  } else if (post.name) {
-    content = post.name + ' ' + post.url
-  } else if (post.content && typeof post.content === 'string') {
-    content = post.content
-  } else if (post['repost-of']) {
-    content = post['repost-of']
+  if (post.properties.summary) {
+    content = post.properties.summary[0] + ' ' + post.url
+  } else if (post.properties.name) {
+    content = post.properties.name[0] + ' ' + post.url
+  } else if (post.properties.content &&
+    typeof post.properties.content[0] === 'string') {
+    content = post.properties.content[0]
+  } else if (post.properties['repost-of']) {
+    content = post.properties['repost-of'][0]
   }
 
   const status = {
@@ -53,9 +54,9 @@ function generateStatus (post, mediaIds = null) {
   }
 
   // add in-reply-to if appropriate
-  if (post['in-reply-to']) {
+  if (post.properties['in-reply-to']) {
     // TODO: the twitter reply might not be first element
-    const replyTo = post['in-reply-to'][0]
+    const replyTo = post.properties['in-reply-to'][0]
     if (replyTo.indexOf('twitter.com') > -1) {
       const parsedUrl = new URL(replyTo)
       const statusId = tweetIdFromUrl(replyTo)
@@ -68,8 +69,8 @@ function generateStatus (post, mediaIds = null) {
   }
 
   // add location
-  if (post.location) {
-    let geouri = post.location
+  if (post.properties.location) {
+    let geouri = post.properties.location[0]
     if (typeof geouri === 'string') {
       if (geouri.indexOf(';u') > -1) {
         geouri = geouri.substring(0, geouri.indexOf(';'))
@@ -119,16 +120,17 @@ async function mediaUpload (image) {
 
 async function sendTweet (post) {
   // if it is a repost then first check if it is a retweet
-  if (post['repost-of'] && isTweetUrl(post['repost-of'][0])) {
-    const statusId = tweetIdFromUrl(post['repost-of'][0])
+  if (post.properties['repost-of'] && isTweetUrl(post['repost-of'][0])) {
+    const statusId = tweetIdFromUrl(post.properties['repost-of'][0])
     const { data } = twit.post('statuses/retweet/' + statusId, {})
     const repostUrl = `https://twitter.com/${
       data.user.screen_name
     }/status/${data.id_str}#favorited-by-${process.env.TWITTER_ACCOUNT}`
     return repostUrl
-  } else if (post['like-of'] && isTweetUrl(post['like-of'][0])) {
+  } else if (post.properties['like-of'] &&
+    isTweetUrl(post.properties['like-of'][0])) {
     // check if it is a like of a tweet then sydicate the like
-    const statusId = tweetIdFromUrl(post['like-of'][0])
+    const statusId = tweetIdFromUrl(post.properties['like-of'][0])
     const { data } = twit.post('favorites/create', {
       id: statusId
     })
@@ -140,9 +142,9 @@ async function sendTweet (post) {
     // check for photos
     let mediaIds = []
     let status = null
-    if (post.photo) {
+    if (post.properties.photo) {
       // trim to 4 photos as twitter doesn't support more
-      const photos = post.photo.slice(0, 4)
+      const photos = post.properties.photo.slice(0, 4)
       for (let photo of photos) {
         if (photo.value) {
           photo = photo.value
@@ -166,14 +168,14 @@ async function sendTweet (post) {
 async function syndicate (post) {
   try {
     // if there is an existing syndication to twitter do not syndicate this post
-    if (post.syndication.find(tweet => isTweetUrl(tweet))) {
+    if (post.properties.syndication.find(tweet => isTweetUrl(tweet))) {
       // there is already a twitter syndication for this post so skip it
       return null
     } else if (
-      (post['like-of'] &&
-        !isTweetUrl(post['like-of'][0])) ||
-      (post['in-reply-to'] &&
-        !isTweetUrl(post['in-reply-to'][0]))
+      (post.properties['like-of'] &&
+        !isTweetUrl(post.properties['like-of'][0])) ||
+      (post.properties['in-reply-to'] &&
+        !isTweetUrl(post.properties['in-reply-to'][0]))
     ) {
       // don't post likes and replies of external urls
       return null

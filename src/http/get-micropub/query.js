@@ -55,7 +55,7 @@ async function findPostItems (params, scope) {
   }
   return {
     Items: items.Items.map(item => {
-      delete item.type
+      // delete item.type
       return item
     })
   }
@@ -91,7 +91,7 @@ async function findPostsAll (params, scope) {
       '#type': 'type'
     },
     ExpressionAttributeValues: {
-      ':type': 'h-entry'
+      ':type': 'entry'
     },
     FilterExpression: 'attribute_not_exists(deleted)'
   }
@@ -111,7 +111,7 @@ async function findPostsByPublished (params, scope) {
       '#type': 'type'
     },
     ExpressionAttributeValues: {
-      ':type': 'h-entry',
+      ':type': 'entry',
       ':published': published
     },
     FilterExpression: 'attribute_not_exists(deleted)'

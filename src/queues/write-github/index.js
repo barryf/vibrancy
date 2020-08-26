@@ -7,19 +7,18 @@ const octokit = new Octokit({
 })
 
 function formatFile (post) {
-  const properties = { ...post }
   // remove content from the properties object
   let content = ''
-  if ('content' in properties) {
-    if (typeof post.content === 'string') {
-      content = post.content.trim()
+  if ('content' in post.properties) {
+    if (typeof post.properties.content[0] === 'string') {
+      content = post.properties.content[0].trim()
     } else {
-      content = post.content.html.trim()
+      content = post.properties.content.html.trim()
     }
   }
-  delete properties.content
+  delete post.properties.content
   // create a front-matter/content string from properties
-  const fileContent = matter.stringify(content, properties)
+  const fileContent = matter.stringify(content, post)
   // encode as base64 for github's api
   return Buffer.from(fileContent, 'utf8').toString('base64')
 }
