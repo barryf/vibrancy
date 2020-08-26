@@ -19,33 +19,36 @@ async function action (scope, body) {
     res = await undelete(body)
   }
 
-  // add post to ddb
-  await data.posts.put(res.post)
+  // if the action was successful...
+  if (res.statusCode < 300) {
+    // add post to ddb
+    await data.posts.put(res.post)
 
-  // queue writing the file to github
-  await arc.queues.publish({
-    name: 'write-github',
-    payload: {
-      url: res.post.url,
-      method: scope
-    }
-  })
-
-  // queue category caching
-  await arc.queues.publish({
-    name: 'update-categories',
-    payload: { url: res.post.url }
-  })
-
-  // queue syndication if requested
-  if (res.syndicateTo) {
+    // queue writing the file to github
     await arc.queues.publish({
-      name: 'syndicate',
+      name: 'write-github',
       payload: {
         url: res.post.url,
-        syndicateTo: res.syndicateTo
+        method: scope
       }
     })
+
+    // queue category caching
+    await arc.queues.publish({
+      name: 'update-categories',
+      payload: { url: res.post.url }
+    })
+
+    // queue syndication if requested
+    if (res.syndicateTo) {
+      await arc.queues.publish({
+        name: 'syndicate',
+        payload: {
+          url: res.post.url,
+          syndicateTo: res.syndicateTo
+        }
+      })
+    }
   }
 
   return {
