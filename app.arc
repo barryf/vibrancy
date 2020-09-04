@@ -29,6 +29,7 @@ webmentions
   source *String
 categories-posts
   cat *String
+  url **String
 
 @indexes
 posts
@@ -40,7 +41,7 @@ posts
 webmentions
   target *String
 categories-posts
-  url *String
-categories-posts
   cat *String
   published **String
+categories-posts
+  url *String
