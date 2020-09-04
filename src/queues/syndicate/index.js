@@ -8,9 +8,11 @@ exports.handler = async function queue (event) {
   const data = await arc.tables()
   const body = JSON.parse(event.Records[0].body)
 
-  if (body.syndicateTo && Array.isArray(body.syndicateTo)) {
+  if (body.syndicateTo) {
     const post = await data.posts.get({ url: body.url })
-    if (!('syndication' in post)) { post.syndication = [] }
+    if (!('syndication' in post.properties)) {
+      post.properties.syndication = []
+    }
     // iterate over each syndicateTo url
     for (const syndicateTo of body.syndicateTo) {
       if (syndicateTo.indexOf('twitter.com') > -1) {

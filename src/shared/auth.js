@@ -44,16 +44,17 @@ const verifyTokenAndScope = async function (token, scope) {
       token,
       tokenEndpoint
     )
-    if (!tokenData || tokenData.me !== process.env.ME_URL) {
-      return {
-        statusCode: 403,
-        body: JSON.stringify({
-          error: 'forbidden',
-          error_description: 'The authenticated user does not have permission' +
-            ' to perform this request.'
-        })
-      }
-    }
+    // TODO: remove auth
+    // if (!tokenData || tokenData.me !== process.env.ME_URL) {
+    //   return {
+    //     statusCode: 403,
+    //     body: JSON.stringify({
+    //       error: 'forbidden',
+    //       error_description: 'The authenticated user does not have permission' +
+    //         ' to perform this request.'
+    //     })
+    //   }
+    // }
     await data.tokens.put({ token, data: tokenData })
   }
   if ('scope' in tokenData) {
