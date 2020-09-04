@@ -1,20 +1,22 @@
-const arc = require('@architect/functions')
+// const arc = require('@architect/functions')
 const { utils } = require('@architect/shared/utils')
 
 function deriveUrl (post) {
   let slug = ''
   // if the request passed mp-slug, make sure it's in the right format
-  if ('mp-slug' in post && post['mp-slug'] !== '' &&
-    post['mp-slug'].match(/^[a-z0-9][a-z0-9/-]*$/)) {
+  if ('mp-slug' in post.properties &&
+    post.properties['mp-slug'][0] !== '' &&
+    post.properties['mp-slug'][0].match(/^\/?[a-z0-9][a-z0-9/-]*$/)) {
     // if we have a leading slash then this is a top-level page
-    if (post['mp-slug'].substr(0, 1) === '/') {
-      return post['mp-slug'].substr(1, post['mp-slug'].length - 1)
+    if (post.properties['mp-slug'][0].substr(0, 1) === '/') {
+      return post.properties['mp-slug'][0].substr(1,
+        post.properties['mp-slug'][0].length - 1)
     } else {
-      slug = post['mp-slug']
+      slug = post.properties['mp-slug'][0]
     }
   }
   // convert published string to a date object and construct yyyy/mm prefix
-  const published = new Date(post.published)
+  const published = new Date(post.properties.published[0])
   const yyyy = published.getFullYear().toString()
   const m = (published.getMonth() + 1).toString()
   const mm = m.length === 1 ? `0${m}` : m
@@ -25,16 +27,17 @@ function deriveUrl (post) {
   }
   // try to make a sensible slug from content/summary either in text or html
   let content = ''
-  if ('name' in post) {
-    content = post.name
-  } else if ('summary' in post) {
-    content = post.name
-  } else if ('content' in post) {
-    if (typeof post.content === 'object' &&
-      'html' in post.content) {
-      content = post.content.html
+  if ('name' in post.properties) {
+    content = post.properties.name[0]
+  } else if ('summary' in post.properties &&
+    Array.isArray(post.properties.summary)) {
+    content = post.properties.summary[0]
+  } else if ('content' in post.properties) {
+    if (typeof post.properties.content[0] === 'object' &&
+      'html' in post.properties.content[0]) {
+      content = post.properties.content[0].html
     } else {
-      content = post.content
+      content = post.properties.content[0]
     }
   }
   // we don't have sensible text to use so create a random string of letters
@@ -49,19 +52,34 @@ function deriveUrl (post) {
 function formatPost (body) {
   let post, syndicateTo
   if ('properties' in body) {
-    post = { ...body.properties }
-    utils.flattenJSON(post)
-  } else {
+    // json format
     post = { ...body }
-    utils.flattenFormEncoded(post)
+    post.type = body.type[0].split('-')[1]
+  } else {
+    // form-encoded format
+    post = {
+      type: ['h-' + body.h],
+      properties: {}
+    }
+    for (const prop in body) {
+      if (prop === 'content[html]') {
+        post.properties.content = [{ html: body[prop] }]
+      } else if (!Array.isArray(body[prop])) {
+        post.properties[prop] = [body[prop]]
+      } else {
+        post.properties[prop] = body[prop]
+      }
+    }
   }
-  if ('mp-syndicate-to' in post) {
-    syndicateTo = Array.isArray(post['mp-syndicate-to'])
-      ? post['mp-syndicate-to']
-      : [post['mp-syndicate-to']]
+  if ('mp-syndicate-to' in post.properties) {
+    syndicateTo = post.properties['mp-syndicate-to']
   }
-  post.type = 'h-entry'
-  post.published = post.published || new Date().toISOString()
+  post.type = 'entry'
+  post.properties.published = [('published' in post.properties)
+    ? post.properties.published[0]
+    : new Date().toISOString()]
+  post.published = post.properties.published[0]
+  // console.log('formatPost post', JSON.stringify(post, null, 2))
   post.url = deriveUrl(post)
   post['post-type'] = utils.derivePostType(post)
   utils.sanitise(post)
@@ -69,7 +87,7 @@ function formatPost (body) {
 }
 
 async function create (scope, body) {
-  const data = await arc.tables()
+  // const data = await arc.tables()
   const { post, syndicateTo } = formatPost(body)
   if (scope === 'draft') {
     post['post-status'] = 'draft'

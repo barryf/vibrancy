@@ -6,13 +6,15 @@ async function startup () {
   const data = await arc.tables()
   const posts = [
     {
-      type: 'h-entry',
+      type: 'entry',
       url: '2020/07/foo',
       published: '2020-07-09T16:17:00',
       'post-type': 'note',
-      visibility: 'public',
-      // deleted: '2020-07-09T17:17:00',
-      content: `Something
+      properties: {
+        published: ['2020-07-09T16:17:00'],
+        visibility: ['public'],
+        // deleted: '2020-07-09T17:17:00',
+        content: [`Something
 
 \`\`\`javascript
 const foo = "bar"
@@ -20,41 +22,47 @@ function baz (a, b) {
   let c = a
 }
 \`\`\`
-`,
-      category: ['via-twitter']
+`],
+        category: ['via-twitter']
+      }
     },
     {
-      type: 'h-entry',
+      type: 'entry',
       url: '2020/03/this-weekend-s-indiewebcamp-in-london',
-      'post-type': 'note',
-      content: "This weekend's [IndieWebCamp in London](https://2020.indieweb.org/london) has sensibly been switched to online-only because of the current health concerns. \r\n\r\nA big well done to the organisers, [Cheuk](https://cheuk.dev/), [Calum](https://calumryan.com/) and [Ana](https://ohhelloana.blog/), for their initial attempts to keep it going and then swiftly reconfiguring for an online event. Communication with attendees during the week has been exemplary. \r\n\r\nI'm very much looking forward to joining tomorrow's sessions from the comfort and safety of my home office.",
-      updated: '2020-03-14T14:41:35Z',
-      category: [
-        'indieweb',
-        'indiewebcamp',
-        'london',
-        'health',
-        'iwclondon'
-      ],
       published: '2020-03-13T17:11:06Z',
-      visibility: 'public'
+      'post-type': 'note',
+      properties: {
+        content: ["This weekend's [IndieWebCamp in London](https://2020.indieweb.org/london) has sensibly been switched to online-only because of the current health concerns. \r\n\r\nA big well done to the organisers, [Cheuk](https://cheuk.dev/), [Calum](https://calumryan.com/) and [Ana](https://ohhelloana.blog/), for their initial attempts to keep it going and then swiftly reconfiguring for an online event. Communication with attendees during the week has been exemplary. \r\n\r\nI'm very much looking forward to joining tomorrow's sessions from the comfort and safety of my home office."],
+        updated: ['2020-03-14T14:41:35Z'],
+        category: [
+          'indieweb',
+          'indiewebcamp',
+          'london',
+          'health',
+          'iwclondon'
+        ],
+        published: ['2020-03-13T17:11:06Z'],
+        visibility: ['public']
+      }
     },
     {
-      type: 'h-entry',
+      type: 'entry',
       url: '2016/12/micropublish-2',
-      name: 'Micropublish 2',
-      content: {
-        html: "<div>Today I pushed a rebuild of my <a href=\"https://micropub.net\">Micropub</a> client, Micropublish, live to <a href=\"https://micropublish.net\">https://micropublish.net</a>. The <a href=\"https://github.com/barryf/micropublish\">source</a> is on GitHub.&nbsp;</div><div><br></div><div>I've squeezed it out just before the end of 2016 so that I meet my <a href=\"https://barryfrost.com/2016/12/my-2017-01-01-indieweb-commitment\">IndieWeb commitment</a>. For the first time I'm now able to edit posts on this site and delete (or undelete) them if needed.&nbsp;</div><div><br></div><div>There are a couple of things I want to improve, but it's ready for use. If you have a compatible site I'd welcome you to kick the tyres and let me know how you get on.</div>"
-      },
-      category: [
-        'indieweb',
-        'indiewebcamp',
-        'micropub',
-        'micropublish'
-      ],
-      published:
-        '2016-12-31T18:11:16Z',
-      'post-type': 'article'
+      published: '2016-12-31T18:11:16Z',
+      'post-type': 'article',
+      properties: {
+        name: ['Micropublish 2'],
+        content: [{
+          html: "<div>Today I pushed a rebuild of my <a href=\"https://micropub.net\">Micropub</a> client, Micropublish, live to <a href=\"https://micropublish.net\">https://micropublish.net</a>. The <a href=\"https://github.com/barryf/micropublish\">source</a> is on GitHub.&nbsp;</div><div><br></div><div>I've squeezed it out just before the end of 2016 so that I meet my <a href=\"https://barryfrost.com/2016/12/my-2017-01-01-indieweb-commitment\">IndieWeb commitment</a>. For the first time I'm now able to edit posts on this site and delete (or undelete) them if needed.&nbsp;</div><div><br></div><div>There are a couple of things I want to improve, but it's ready for use. If you have a compatible site I'd welcome you to kick the tyres and let me know how you get on.</div>"
+        }],
+        category: [
+          'indieweb',
+          'indiewebcamp',
+          'micropub',
+          'micropublish'
+        ],
+        published: ['2016-12-31T18:11:16Z']
+      }
     }
   ]
   posts.forEach(async post => {

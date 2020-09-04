@@ -18,25 +18,23 @@ async function getPost (params) {
     }
   }
   const post = { ...postData }
-  utils.unflatten(post)
-  const type = post.type
-  delete post.type
-  if ('deleted' in post) {
+  if ('deleted' in post.properties) {
     return {
       statusCode: 410,
       body: JSON.stringify({
         error: 'gone',
         error_description: 'This post is no longer available.',
-        type,
-        properties: { deleted: post.deleted }
+        type: post.type,
+        properties: { deleted: post.properties.deleted[0] }
       })
     }
   }
   webmentions.setWebmentions(post)
   return {
     body: JSON.stringify({
-      type,
-      properties: post
+      type: [`h-${post.type}`],
+      'post-type': [post['post-type']],
+      properties: post.properties
     })
   }
 }
@@ -45,10 +43,11 @@ async function findPostItems (params, scope) {
   const postData = await query.findPostItems(params, scope)
   const items = postData.Items.map(post => {
     post.url = `${process.env.ROOT_URL}${post.url}`
-    utils.unflatten(post)
     return {
-      type: ['h-entry'],
-      properties: post
+      url: [post.url],
+      type: [`h-${post.type}`],
+      'post-type': [post['post-type']],
+      properties: post.properties
     }
   })
   return {
