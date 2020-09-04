@@ -10,7 +10,6 @@ get /micropub
 get /media
 post /micropub
 post /media
-post /process
 post /webmention
 
 @queues
