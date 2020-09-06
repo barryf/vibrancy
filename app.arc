@@ -13,7 +13,6 @@ post /media
 post /webmention
 
 @queues
-download
 write-github
 update-categories
 send-webmentions
