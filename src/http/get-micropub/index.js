@@ -93,7 +93,7 @@ exports.handler = async function http (req) {
     }
   }
   return {
-    headers: { 'Content-Type': 'text/html; charset=utf8' },
+    headers: { 'Content-Type': 'text/plain; charset=utf8' },
     body: 'Micropub endpoint'
   }
 }
