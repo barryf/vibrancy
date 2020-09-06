@@ -28,6 +28,8 @@ webmentions
 categories-posts
   cat *String
   url **String
+media
+  url *String
 
 @indexes
 posts
@@ -43,3 +45,6 @@ categories-posts
   published **String
 categories-posts
   url *String
+media
+  type *String
+  published **String
