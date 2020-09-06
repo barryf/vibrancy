@@ -45,7 +45,7 @@ async function writeGitHubFile (url, method, file) {
       ...githubConfig
     })
     params.sha = response.data.sha
-  } catch (error) {
+  } catch (err) {
     // assume file was not found
   }
   return await octokit.repos.createOrUpdateFileContents(params)
