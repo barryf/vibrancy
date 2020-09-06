@@ -3,14 +3,25 @@ const arc = require('@architect/functions')
 // const { auth } = require('@architect/shared/auth')
 
 const s3 = new AWS.S3({
-  endpoint: new AWS.Endpoint(process.env.S3_ENDPOINT)
+  // endpoint: new AWS.Endpoint(process.env.S3_ENDPOINT)
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 })
 
-async function upload (filename, file) {
+function dateFilePath () {
+  const published = new Date()
+  const yyyy = published.getFullYear().toString()
+  const m = (published.getMonth() + 1).toString()
+  const mm = m.length === 1 ? `0${m}` : m
+  return `${yyyy}/${mm}/`
+}
+
+async function upload (file) {
+  const key = dateFilePath() + Math.random().toString(36).substring(2, 15)
   s3.upload({
     Bucket: process.env.MEDIA_BUCKET,
     ACL: 'public-read',
-    Key: filename,
+    Key: key,
     Body: file
   }, function (err, data) {
     if (err) {
