@@ -24,7 +24,7 @@ async function getPost (params) {
       body: JSON.stringify({
         error: 'gone',
         error_description: 'This post is no longer available.',
-        type: post.type,
+        type: 'entry',
         properties: { deleted: post.properties.deleted[0] }
       })
     }
@@ -32,7 +32,7 @@ async function getPost (params) {
   webmentions.setWebmentions(post)
   return {
     body: JSON.stringify({
-      type: [`h-${post.type}`],
+      type: ['h-entry'],
       'post-type': [post['post-type']],
       properties: post.properties
     })
@@ -40,12 +40,13 @@ async function getPost (params) {
 }
 
 async function findPostItems (params, scope) {
+  if (!('channel' in params)) params.channel = 'posts' // default channel
   const postData = await query.findPostItems(params, scope)
   const items = postData.Items.map(post => {
     post.url = `${process.env.ROOT_URL}${post.url}`
     return {
       url: [post.url],
-      type: [`h-${post.type}`],
+      type: ['h-entry'],
       'post-type': [post['post-type']],
       properties: post.properties
     }

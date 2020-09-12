@@ -6,7 +6,7 @@ async function startup () {
   const data = await arc.tables()
   const posts = [
     {
-      type: 'entry',
+      channel: 'posts',
       url: '2020/07/foo',
       published: '2020-07-09T16:17:00',
       'post-type': 'note',
@@ -27,7 +27,7 @@ function baz (a, b) {
       }
     },
     {
-      type: 'entry',
+      channel: 'posts',
       url: '2020/03/this-weekend-s-indiewebcamp-in-london',
       published: '2020-03-13T17:11:06Z',
       'post-type': 'note',
@@ -46,7 +46,7 @@ function baz (a, b) {
       }
     },
     {
-      type: 'entry',
+      channel: 'posts',
       url: '2016/12/micropublish-2',
       published: '2016-12-31T18:11:16Z',
       'post-type': 'article',
@@ -62,6 +62,20 @@ function baz (a, b) {
           'micropublish'
         ],
         published: ['2016-12-31T18:11:16Z']
+      }
+    },
+    {
+      channel: 'pages',
+      url: 'now',
+      published: '2020-09-12T20:00:00Z',
+      'post-type': 'article',
+      properties: {
+        name: ['Now'],
+        content: ['This is what I\'m doing now.'],
+        category: [
+          'personal'
+        ],
+        published: ['2020-09-12T20:00:00Z']
       }
     }
   ]
