@@ -4,7 +4,7 @@ async function syndicate (post) {
   const response = await fetch('https://micro.blog/micropub', {
     method: 'post',
     body: {
-      type: [`h-${post.type}`],
+      type: ['h-entry'],
       properties: post.properties
     },
     headers: {

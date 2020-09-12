@@ -1,5 +1,4 @@
 const arc = require('@architect/functions')
-const matter = require('gray-matter')
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -13,24 +12,15 @@ const githubConfig = {
 }
 
 function formatFile (post) {
-  // remove content from the properties object
-  let content = ''
-  if ('content' in post.properties) {
-    if (typeof post.properties.content[0] === 'string') {
-      content = post.properties.content[0].trim()
-    } else {
-      content = post.properties.content.html.trim()
-    }
-  }
-  delete post.properties.content
-  // create a front-matter/content string from properties
-  const fileContent = matter.stringify(content, post)
+  const fileContent = JSON.stringify({
+    type: ['h-entry'],
+    properties: post.properties
+  }, 2, null)
   // encode as base64 for github's api
   return Buffer.from(fileContent, 'utf8').toString('base64')
 }
 
-async function writeGitHubFile (url, method, file) {
-  const path = `${url}.md`
+async function writeGitHubFile (path, method, file) {
   const params = {
     path,
     message: `Post ${method}d by Vibrancy`,
@@ -61,5 +51,6 @@ exports.handler = async function queue (event) {
   const method = body.method === 'draft' ? 'create' : body.method
 
   const file = formatFile(post)
-  await writeGitHubFile(post.url, method, file)
+  const path = `${post.channel}/${post.url}.json`
+  await writeGitHubFile(path, method, file)
 }
