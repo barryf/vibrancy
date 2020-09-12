@@ -54,7 +54,6 @@ function formatPost (body) {
   if ('properties' in body) {
     // json format
     post = { ...body }
-    post.type = body.type[0].split('-')[1]
   } else {
     // form-encoded format
     post = {
@@ -71,10 +70,14 @@ function formatPost (body) {
       }
     }
   }
+  if ('mp-channel' in post.properties) {
+    post.channel = post.properties['mp-channel']
+  } else {
+    post.channel = 'posts'
+  }
   if ('mp-syndicate-to' in post.properties) {
     syndicateTo = post.properties['mp-syndicate-to']
   }
-  post.type = 'entry'
   post.properties.published = [('published' in post.properties)
     ? post.properties.published[0]
     : new Date().toISOString()]
