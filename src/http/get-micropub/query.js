@@ -55,7 +55,7 @@ async function findPostItems (params, scope) {
   }
   return {
     Items: items.Items.map(item => {
-      // delete item.type
+      // delete item.type - TODO: simplify this
       return item
     })
   }
@@ -71,9 +71,10 @@ async function findPostsByPostType (params, scope) {
       '#postType': 'post-type'
     },
     ExpressionAttributeValues: {
+      ':channel': params.channel,
       ':postType': params['post-type']
     },
-    FilterExpression: 'attribute_not_exists(deleted)'
+    FilterExpression: 'attribute_not_exists(deleted) AND channel = :channel'
   }
   setLimit(opts, params)
   setBefore(opts, params)
@@ -84,14 +85,11 @@ async function findPostsByPostType (params, scope) {
 async function findPostsAll (params, scope) {
   const data = await arc.tables()
   const opts = {
-    IndexName: 'type-published-index',
+    IndexName: 'channel-published-index',
     ScanIndexForward: false,
-    KeyConditionExpression: '#type = :type',
-    ExpressionAttributeNames: {
-      '#type': 'type'
-    },
+    KeyConditionExpression: 'channel = :channel',
     ExpressionAttributeValues: {
-      ':type': 'entry'
+      ':channel': 'posts'
     },
     FilterExpression: 'attribute_not_exists(deleted)'
   }
@@ -105,13 +103,10 @@ async function findPostsByPublished (params, scope) {
   const published = params.published.replace(/[^0-9-]/, '')
   const data = await arc.tables()
   const opts = {
-    IndexName: 'type-published-index',
+    IndexName: 'channel-published-index',
     ScanIndexForward: false,
-    ExpressionAttributeNames: {
-      '#type': 'type'
-    },
     ExpressionAttributeValues: {
-      ':type': 'entry',
+      ':channel': 'posts',
       ':published': published
     },
     FilterExpression: 'attribute_not_exists(deleted)'
@@ -119,11 +114,11 @@ async function findPostsByPublished (params, scope) {
   if ('before' in params) {
     const before = new Date(parseInt(params.before, 10)).toISOString()
     opts.KeyConditionExpression =
-      '#type = :type AND published BETWEEN :published AND :before'
+      'channel = :channel AND published BETWEEN :published AND :before'
     opts.ExpressionAttributeValues[':before'] = before
   } else {
     opts.KeyConditionExpression =
-      '#type = :type AND begins_with(published, :published)'
+      'channel = :channel AND begins_with(published, :published)'
   }
   setLimit(opts, params)
   setStatusAndVisibility(opts, params, scope)

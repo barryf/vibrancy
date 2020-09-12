@@ -36,7 +36,7 @@ posts
   post-type *String
   published **String
 posts
-  type *String
+  channel *String
   published **String
 webmentions
   target *String
