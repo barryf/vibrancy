@@ -25,6 +25,7 @@ tokens
   token *String
 webmentions
   source *String
+  target **String
 categories-posts
   cat *String
   url **String
@@ -40,6 +41,7 @@ posts
   published **String
 webmentions
   target *String
+  published **String
 categories-posts
   cat *String
   published **String
