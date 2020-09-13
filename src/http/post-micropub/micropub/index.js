@@ -28,6 +28,7 @@ async function action (scope, body) {
     await arc.queues.publish({
       name: 'write-github',
       payload: {
+        folder: res.post.channel,
         url: res.post.url,
         method: scope
       }
