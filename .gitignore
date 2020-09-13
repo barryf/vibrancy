@@ -6,3 +6,6 @@ sam.yaml
 .sam.yaml.swp
 
 .DS_Store
+
+.bundle
+vendor
