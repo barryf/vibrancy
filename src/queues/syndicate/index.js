@@ -32,6 +32,7 @@ exports.handler = async function queue (event) {
     await arc.queues.publish({
       name: 'write-github',
       payload: {
+        folder: post.channel,
         url: post.url,
         method: 'update'
       }
