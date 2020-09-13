@@ -3,7 +3,7 @@ const { auth } = require('@architect/shared/auth')
 const { utils } = require('@architect/shared/utils')
 const { config } = require('./config')
 const { query } = require('./query')
-const { webmentions } = require('./webmentions')
+const { setWebmentions } = require('./webmentions')
 
 async function getPost (params) {
   const url = params.url.replace(process.env.ROOT_URL, '')
@@ -29,7 +29,7 @@ async function getPost (params) {
       })
     }
   }
-  webmentions.setWebmentions(post)
+  await setWebmentions(post)
   return {
     body: JSON.stringify({
       type: ['h-entry'],

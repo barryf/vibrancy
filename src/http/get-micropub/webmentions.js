@@ -13,16 +13,17 @@ async function setWebmentions (post) {
     }
     webmentionsData.Items.forEach(webmention => {
       for (const prop in webmentionProperties) {
-        if (webmention.post['wm-property'] === prop) {
-          post[webmentionProperties[prop]] =
-            post[webmentionProperties[prop]] || []
-          post[webmentionProperties[prop]].push(webmention.post)
+        if (webmention['wm-property'] === prop) {
+          post.properties[webmentionProperties[prop]] =
+            post.properties[webmentionProperties[prop]] || []
+          post.properties[webmentionProperties[prop]].push({
+            type: ['h-cite'],
+            properties: webmention.properties
+          })
         }
       }
     })
   }
 }
 
-module.exports.webmentions = {
-  setWebmentions
-}
+module.exports = { setWebmentions }

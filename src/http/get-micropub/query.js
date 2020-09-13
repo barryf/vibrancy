@@ -161,7 +161,8 @@ async function getPost (url) {
 async function findWebmentions (absoluteUrl) {
   const data = await arc.tables()
   return await data.webmentions.query({
-    IndexName: 'target-index',
+    IndexName: 'target-published-index',
+    ScanIndexForward: false,
     KeyConditionExpression: 'target = :target',
     ExpressionAttributeValues: {
       ':target': absoluteUrl
