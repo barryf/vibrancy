@@ -1,0 +1,54 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    absolutely (4.0.0)
+      addressable (~> 2.7)
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
+    ffi (1.13.1)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
+    http (4.4.1)
+      addressable (~> 2.3)
+      http-cookie (~> 1.0)
+      http-form_data (~> 2.2)
+      http-parser (~> 1.2.0)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
+    http-form_data (2.3.0)
+    http-parser (1.2.1)
+      ffi-compiler (>= 1.0, < 2.0)
+    indieweb-endpoints (4.0.0)
+      absolutely (~> 4.0)
+      addressable (~> 2.7)
+      http (~> 4.4)
+      link-header-parser (~> 2.0)
+      nokogiri (~> 1.10)
+    link-header-parser (2.0.0)
+      absolutely (~> 4.0)
+    mini_portile2 (2.4.0)
+    nokogiri (1.10.10)
+      mini_portile2 (~> 2.4.0)
+    public_suffix (4.0.6)
+    rake (13.0.1)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.7)
+    webmention (4.0.0)
+      absolutely (~> 4.0)
+      addressable (~> 2.7)
+      http (~> 4.4)
+      indieweb-endpoints (~> 4.0)
+      nokogiri (~> 1.10)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  webmention
+
+BUNDLED WITH
+   2.1.4

@@ -49,6 +49,11 @@ async function action (scope, body) {
         }
       })
     }
+
+    await arc.queues.publish({
+      name: 'send-webmentions',
+      payload: { url: res.post.url }
+    })
   }
 
   return {
