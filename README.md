@@ -31,6 +31,26 @@ The Architect framework builds AWS infrastructure at
 
 All content is stored on GitHub in my `content` git repository. Posts are also maintained in DynamoDB tables for querying. Tables can be rebuilt from the repo if needed, but the canonical store is the git repo.
 
+## Environment variables
+
+```
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+ME_URL
+MEDIA_BUCKET
+MEDIA_ENDPOINT_URL
+MEDIA_URL
+MICRO_BLOG_TOKEN
+PINBOARD_AUTH_TOKEN
+ROOT_URL
+TOKEN_ENDPOINT
+TWITTER_ACCESS_TOKEN
+TWITTER_ACCESS_TOKEN_SECRET
+TWITTER_ACCOUNT
+TWITTER_CONSUMER_KEY
+TWITTER_CONSUMER_SECRET
+```
+
 ## FAQs
 
 #### Q: Why Architect and not the Serverless Framework?
