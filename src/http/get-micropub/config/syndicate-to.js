@@ -21,6 +21,11 @@ function syndicateTo (postType = null) {
       return [
         { ...pinboard, checked: true }
       ]
+    case 'article':
+      return [
+        { ...twitter, checked: true },
+        { ...microblog, checked: true }
+      ]
     default:
       return [
         twitter,
