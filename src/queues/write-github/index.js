@@ -1,4 +1,5 @@
 const arc = require('@architect/functions')
+const fetch = require('node-fetch')
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -11,18 +12,19 @@ const githubConfig = {
   ref: 'transform-fm-md'
 }
 
-function textToBase64 (fileContent) {
-  return Buffer.from(fileContent, 'utf8').toString('base64')
-}
-
 function formatPostFile (post) {
   const fileContent = JSON.stringify({
     type: ['h-entry'],
     'post-type': [post['post-type']],
     properties: post.properties
   }, null, 2)
-  // encode as base64 for github's api
-  return textToBase64(fileContent)
+  return Buffer.from(fileContent, 'utf8').toString('base64')
+}
+
+async function formatFileFile (url) {
+  const response = await fetch(url)
+  const file = await response.buffer()
+  return Buffer.from(file).toString('base64')
 }
 
 async function writeGitHubFile (path, method, file) {
@@ -57,17 +59,28 @@ exports.handler = async function queue (event) {
     // treat a draft as a create
     method = body.method === 'draft' ? 'create' : body.method
     file = formatPostFile(post)
+    // path like posts/2020/09/foo.json
     path = `${post.channel}/${post.url}.json`
+    //
   } else if (body.folder === 'webmentions') {
     const webmention = await data.webmentions.get({
       source: body.source,
       target: body.target
     })
-    file = textToBase64(JSON.stringify(webmention, null, 2))
-    // TODO: webmentions path
-    path = 'webmentions/'
+    const fileContent = JSON.stringify(webmention, null, 2)
+    file = Buffer.from(fileContent, 'utf8').toString('base64')
+    // path like webmentions/2020/09/foo/https---example-org-bar-html.json
+    const targetPath = body.target.replace(process.env.ROOT_URL, '')
+    const sourcePath = body.source.replace(/[^A-Za-z0-9]/g, '-')
+    path = `webmentions/${targetPath}/${sourcePath}.json`
+    //
   } else if (body.folder === 'files') {
-    // TODO: files
+    file = await formatFileFile(body.url)
+    const filePath = body.url.replace(process.env.MEDIA_URL, '')
+    path = `files/${filePath}`
+    //
+  } else {
+    console.error('Unknown folder', body.folder)
   }
 
   if (file) {
