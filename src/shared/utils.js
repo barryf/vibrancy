@@ -22,9 +22,7 @@ function derivePostType (post) {
       content = post.properties.content[0].html.trim()
     }
   }
-  if (('type' in post) && post.type === 'event') {
-    return 'event'
-  } else if (('rsvp' in post.properties) &&
+  if (('rsvp' in post.properties) &&
     ['yes', 'no', 'maybe', 'interested'].includes(post.properties.rsvp[0])) {
     return 'rsvp'
   } else if (('in-reply-to' in post.properties) &&
@@ -79,9 +77,20 @@ function sanitise (post) {
   }
 }
 
+function jsonify (value, statusCode = 200) {
+  return {
+    headers: {
+      'Content-Type': 'application/json; utf-8'
+    },
+    statusCode,
+    body: JSON.stringify(value)
+  }
+}
+
 exports.utils = {
   derivePostType,
   isValidURL,
   sanitise,
+  jsonify,
   reservedUrls
 }
