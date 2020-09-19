@@ -61,6 +61,7 @@ exports.handler = async function http (req) {
     if (!allowedActions.includes(body.action)) {
       return {
         statusCode: 400,
+        headers: { 'Content-Type': 'application/json; charset=utf-8' }
         body: JSON.stringify({
           error: 'not_supported',
           error_description: 'The specified action is not supported'
