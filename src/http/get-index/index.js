@@ -1,7 +1,8 @@
 exports.handler = async function http (req) {
   return {
+    statusCode: 200,
     headers: {
-      'content-type': 'text/html; charset=utf8'
+      'Content-Type': 'text/html; charset=utf8'
     },
     body: `
     <!DOCTYPE html>
@@ -10,7 +11,7 @@ exports.handler = async function http (req) {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
-      <body>    
+      <body>
         <h1>Vibrancy Micropub server</h1>
         <ul>
           <li>

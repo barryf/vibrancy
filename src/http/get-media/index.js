@@ -24,6 +24,7 @@ async function source (params) {
   const mediaData = await query(params)
   const items = mediaData.Items
   return {
+    statusCode: 200,
     body: JSON.stringify({ items })
   }
 }
@@ -39,6 +40,7 @@ exports.handler = async function http (req) {
     return await source(params)
   }
   return {
+    statusCode: 200,
     headers: { 'Content-Type': 'text/plain; charset=utf8' },
     body: 'Micropub media endpoint'
   }
