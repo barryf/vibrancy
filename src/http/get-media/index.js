@@ -1,5 +1,7 @@
 const arc = require('@architect/functions')
-const { auth } = require('@architect/shared/auth')
+// const { auth } = require('@architect/shared/auth')
+const { utils } = require('@architect/shared/utils')
+const jsonify = utils.jsonify
 
 async function query (params) {
   const data = await arc.tables()
@@ -22,11 +24,7 @@ async function query (params) {
 
 async function source (params) {
   const mediaData = await query(params)
-  const items = mediaData.Items
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ items })
-  }
+  return jsonify({ items: mediaData.Items })
 }
 
 exports.handler = async function http (req) {
@@ -41,7 +39,7 @@ exports.handler = async function http (req) {
   }
   return {
     statusCode: 200,
-    headers: { 'Content-Type': 'text/plain; charset=utf8' },
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     body: 'Micropub media endpoint'
   }
 }
