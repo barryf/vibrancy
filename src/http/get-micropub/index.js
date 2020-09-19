@@ -31,6 +31,7 @@ async function getPost (params) {
   }
   await setWebmentions(post)
   return {
+    statusCode: 200,
     body: JSON.stringify({
       type: ['h-entry'],
       'post-type': [post['post-type']],
@@ -52,6 +53,7 @@ async function findPostItems (params, scope) {
     }
   })
   return {
+    statusCode: 200,
     body: JSON.stringify({ items })
   }
 }
@@ -75,16 +77,30 @@ exports.handler = async function http (req) {
   const authResponse = await auth.requireScope('read', req.headers, body)
   // if (process.env.NODE_ENV === 'production' &&
   //   authResponse.statusCode !== 200) return authResponse
+  const httpHeaders = {
+    headers: {
+      'Content-Type': 'application/json; charset=utf8'
+    }
+  }
 
   const params = req.queryStringParameters || {}
   if ('q' in params) {
     switch (params.q) {
       case 'category':
-        return { body: JSON.stringify(await config.category(params.filter)) }
+        return {
+          statusCode: 200,
+          body: JSON.stringify(await config.category(params.filter))
+        }
       case 'config':
-        return { body: JSON.stringify(config.config) }
+        return {
+          statusCode: 200,
+          ...httpHeaders,
+          body: JSON.stringify(config.config)
+        }
       case 'syndicate-to':
         return {
+          statusCode: 200,
+          ...httpHeaders,
           body: JSON.stringify({
             'syndicate-to': config.syndicateTo(params['post-type'])
           })
@@ -94,7 +110,8 @@ exports.handler = async function http (req) {
     }
   }
   return {
-    headers: { 'Content-Type': 'text/plain; charset=utf8' },
+    statusCode: 200,
+    'Content-Type': 'text/plain; charset=utf8',
     body: 'Micropub endpoint'
   }
 }
