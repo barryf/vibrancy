@@ -1,5 +1,9 @@
 // const arc = require('@architect/functions')
-const { utils } = require('@architect/shared/utils')
+const {
+  derivePostType,
+  sanitise,
+  reservedUrls
+} = require('@architect/shared/utils')
 
 function deriveUrl (post) {
   let slug = ''
@@ -84,8 +88,8 @@ function formatPost (body) {
   post.published = post.properties.published[0]
   // console.log('formatPost post', JSON.stringify(post, null, 2))
   post.url = deriveUrl(post)
-  post['post-type'] = utils.derivePostType(post)
-  utils.sanitise(post)
+  post['post-type'] = derivePostType(post)
+  sanitise(post)
   return { post, syndicateTo }
 }
 
@@ -98,7 +102,7 @@ async function create (scope, body) {
 
   // TODO: uncomment this to prevent overwriting posts
   // const findPost = await data.posts.get({ url: post.url })
-  // if (findPost !== undefined || utils.reservedUrls.includes(post.url)) {
+  // if (findPost !== undefined || reservedUrls.includes(post.url)) {
   //   return {
   //     statusCode: 400,
   //     body: JSON.stringify({

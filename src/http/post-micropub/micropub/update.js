@@ -1,6 +1,11 @@
 // TODO: mf2
 const arc = require('@architect/functions')
-const { utils } = require('@architect/shared/utils')
+const {
+  unflatten,
+  flattenJSON,
+  sanitise,
+  derivePostType
+} = require('@architect/shared/utils')
 
 function verifyObjectNotArray (properties, key) {
   if (!(typeof properties[key] === 'object' &&
@@ -23,7 +28,7 @@ async function update (properties) {
   const data = await arc.tables()
   const url = properties.url.replace(process.env.ROOT_URL, '')
   const post = await data.posts.get({ url })
-  utils.unflatten(post)
+  unflatten(post)
   console.log(`post=${JSON.stringify(post)}`)
 
   try {
@@ -68,15 +73,15 @@ async function update (properties) {
     }
   }
 
-  utils.flattenJSON(post)
+  flattenJSON(post)
   let syndicateTo
   if ('mp-syndicate-to' in post) {
     syndicateTo = Array.isArray(post['mp-syndicate-to'])
       ? post['mp-syndicate-to']
       : [post['mp-syndicate-to']]
   }
-  utils.sanitise(post)
-  post['post-type'] = utils.derivePostType(post)
+  sanitise(post)
+  post['post-type'] = derivePostType(post)
   post.url = url
   post.updated = new Date().toISOString()
 

@@ -1,7 +1,6 @@
 const arc = require('@architect/functions')
 // const { auth } = require('@architect/shared/auth')
-const { utils } = require('@architect/shared/utils')
-const jsonify = utils.jsonify
+const { jsonify } = require('@architect/shared/utils')
 
 async function query (params) {
   const data = await arc.tables()

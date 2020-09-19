@@ -87,7 +87,7 @@ function jsonify (value, statusCode = 200) {
   }
 }
 
-exports.utils = {
+module.exports = {
   derivePostType,
   isValidURL,
   sanitise,

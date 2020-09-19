@@ -1,7 +1,6 @@
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
-const { utils } = require('@architect/shared/utils')
-const jsonify = utils.jsonify
+const { jsonify } = require('@architect/shared/utils')
 
 const tokenEndpoint = process.env.TOKEN_ENDPOINT ||
   'https://tokens.indieauth.com/token'
