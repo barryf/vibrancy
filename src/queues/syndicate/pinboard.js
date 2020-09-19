@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const { utils } = require('@architect/shared/utils')
+const { isValidURL } = require('@architect/shared/utils')
 
 async function syndicate (post) {
   const opts = {
@@ -11,7 +11,7 @@ async function syndicate (post) {
   }
   if (post.properties.category && Array.isArray(post.properties.category)) {
     opts.tags = post.properties.category.map(cat => {
-      if (!utils.isValidURL(cat)) return cat.trim()
+      if (!isValidURL(cat)) return cat.trim()
     }).filter((el) => el != null) // remove nulls
       .filter((v, i, a) => a.indexOf(v) === i) // unique
       .join(',')

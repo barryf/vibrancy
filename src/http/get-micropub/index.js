@@ -1,7 +1,6 @@
 const arc = require('@architect/functions')
 const { auth } = require('@architect/shared/auth')
-const { utils } = require('@architect/shared/utils')
-const jsonify = utils.jsonify
+const { jsonify, isValidURL } = require('@architect/shared/utils')
 const { config } = require('./config')
 const { query } = require('./query')
 const { setWebmentions } = require('./webmentions')
@@ -49,7 +48,7 @@ async function findPostItems (params, scope) {
 
 async function source (params, scope) {
   if (!('url' in params)) return findPostItems(params, scope)
-  if (!utils.isValidURL(params.url)) {
+  if (!isValidURL(params.url)) {
     return jsonify({
       error: 'invalid_parameter',
       error_description: 'URL parameter is invalid'
