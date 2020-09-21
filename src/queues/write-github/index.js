@@ -76,8 +76,7 @@ exports.handler = async function queue (event) {
     //
   } else if (body.folder === 'files') {
     file = await formatFileFile(body.url)
-    const filePath = body.url.replace(process.env.MEDIA_URL, '')
-    path = `files/${filePath}`
+    path = `files/${body.filePath}`
     //
   } else {
     console.error('Unknown folder', body.folder)

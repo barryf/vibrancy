@@ -26,7 +26,8 @@ async function upload (file, contentType) {
   return {
     url: result.secure_url,
     type: result.resource_type,
-    published: publishedDate.toISOString()
+    published: publishedDate.toISOString(),
+    filePath: `${key}.${result.format}`
   }
 }
 
@@ -44,6 +45,15 @@ exports.handler = async function http (req) {
 
   console.log('media', media)
   await data.media.put(media)
+
+  await arc.queues.publish({
+    name: 'write-github',
+    payload: {
+      folder: 'files',
+      url: media.url,
+      filePath: media.filePath
+    }
+  })
 
   return {
     headers: {
