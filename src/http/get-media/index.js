@@ -1,6 +1,5 @@
 const arc = require('@architect/functions')
 // const { auth } = require('@architect/shared/auth')
-const { jsonify } = require('@architect/shared/utils')
 
 async function query (params) {
   const data = await arc.tables()
@@ -23,7 +22,7 @@ async function query (params) {
 
 async function source (params) {
   const mediaData = await query(params)
-  return jsonify({ items: mediaData.Items })
+  return { items: mediaData.Items }
 }
 
 exports.handler = async function http (req) {
