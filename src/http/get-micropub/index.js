@@ -24,11 +24,11 @@ async function getPost (params) {
     }, 410)
   }
   await setWebmentions(post)
-  return jsonify({
+  return {
     type: ['h-entry'],
     'post-type': [post['post-type']],
     properties: post.properties
-  })
+  }
 }
 
 async function findPostItems (params, scope) {
@@ -43,7 +43,7 @@ async function findPostItems (params, scope) {
       properties: post.properties
     }
   })
-  return jsonify({ items })
+  return { items }
 }
 
 async function source (params, scope) {
@@ -67,13 +67,11 @@ exports.handler = async function http (req) {
   if ('q' in params) {
     switch (params.q) {
       case 'category':
-        return jsonify(await config.category(params.filter))
+        return await config.category(params.filter)
       case 'config':
-        return jsonify(config.config)
+        return config.config
       case 'syndicate-to':
-        return jsonify({
-          'syndicate-to': config.syndicateTo(params['post-type'])
-        })
+        return { 'syndicate-to': config.syndicateTo(params['post-type']) }
       case 'source':
         return await source(params, authResponse.scope)
     }
