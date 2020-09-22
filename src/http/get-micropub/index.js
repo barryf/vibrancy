@@ -60,8 +60,8 @@ async function source (params, scope) {
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
   const authResponse = await auth.requireScope('read', req.headers, body)
-  // if (process.env.NODE_ENV === 'production' &&
-  //   authResponse.statusCode !== 200) return authResponse
+  if (process.env.NODE_ENV === 'production' &&
+    authResponse.statusCode !== 200) return authResponse
 
   const params = req.queryStringParameters || {}
   if ('q' in params) {
