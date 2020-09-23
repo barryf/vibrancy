@@ -122,4 +122,4 @@ async function create (scope, body) {
   }
 }
 
-exports.create = create
+module.exports = create

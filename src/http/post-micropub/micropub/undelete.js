@@ -15,4 +15,4 @@ async function undelete (properties) {
   }
 }
 
-exports.undelete = undelete
+module.exports = undelete

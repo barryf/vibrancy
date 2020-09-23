@@ -30,7 +30,7 @@ const config = {
   q
 }
 
-exports.config = {
+module.exports = {
   q,
   config,
   syndicateTo,

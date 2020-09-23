@@ -92,4 +92,4 @@ async function update (properties) {
   }
 }
 
-exports.update = update
+module.exports = update

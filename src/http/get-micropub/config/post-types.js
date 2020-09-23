@@ -1,4 +1,4 @@
-exports.postTypes = [
+module.exports = [
   {
     type: 'note',
     name: 'Note'
