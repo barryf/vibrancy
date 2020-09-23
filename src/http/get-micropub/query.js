@@ -170,7 +170,7 @@ async function findWebmentions (absoluteUrl) {
   })
 }
 
-module.exports.query = {
+module.exports = {
   getPost,
   findPostItems,
   findWebmentions

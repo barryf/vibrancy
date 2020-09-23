@@ -1,9 +1,8 @@
 const arc = require('@architect/functions')
-
-const { create } = require('./create')
-const { update } = require('./update')
-const { deletePost } = require('./delete')
-const { undelete } = require('./undelete')
+const create = require('./create')
+const update = require('./update')
+const deletePost = require('./delete')
+const undelete = require('./undelete')
 
 async function action (scope, body) {
   const data = await arc.tables()
@@ -63,4 +62,4 @@ async function action (scope, body) {
   }
 }
 
-exports.micropub = { action }
+module.exports = { action }

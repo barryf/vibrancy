@@ -69,4 +69,4 @@ const verifyTokenAndScope = async function (token, scope) {
   }, 401)
 }
 
-exports.auth = { requireScope }
+module.exports = { requireScope }

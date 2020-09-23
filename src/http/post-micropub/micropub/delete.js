@@ -15,4 +15,4 @@ async function deletePost (properties) {
   }
 }
 
-exports.deletePost = deletePost
+module.exports = deletePost

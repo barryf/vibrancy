@@ -1,4 +1,4 @@
-const { query } = require('./query')
+const query = require('./query')
 
 async function setWebmentions (post) {
   const absoluteUrl = process.env.ROOT_URL + post.url

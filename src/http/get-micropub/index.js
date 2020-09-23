@@ -1,8 +1,8 @@
 const arc = require('@architect/functions')
-const { auth } = require('@architect/shared/auth')
+const auth = require('@architect/shared/auth')
 const { jsonify, isValidURL } = require('@architect/shared/utils')
-const { config } = require('./config')
-const { query } = require('./query')
+const config = require('./config')
+const query = require('./query')
 const { setWebmentions } = require('./webmentions')
 
 async function getPost (params) {
