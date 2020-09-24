@@ -1,4 +1,5 @@
 const arc = require('@architect/functions')
+const { jsonify } = require('@architect/shared/utils')
 
 function postToMf2 (post) {
   if ('deleted' in post && post.deleted) {
@@ -37,9 +38,12 @@ exports.handler = async function http (req) {
   const data = await arc.tables()
   const body = arc.http.helpers.bodyParser(req)
 
-  // TODO check secret matches
-
-  // TODO store as file in github
+  if (body.secret !== process.env.WEBMENTION_IO_SECRET) {
+    return jsonify({
+      error: 'unauthorized',
+      error_description: 'Secret does not match.'
+    }, 403)
+  }
 
   const webmention = {
     source: body.source,
@@ -49,6 +53,15 @@ exports.handler = async function http (req) {
     properties: postToMf2(body.post)
   }
   data.webmentions.put({ webmention })
+
+  await arc.queues.publish({
+    name: 'write-github',
+    payload: {
+      folder: 'webmentions',
+      source: body.source,
+      target: body.target
+    }
+  })
 
   return {
     statusCode: 202
