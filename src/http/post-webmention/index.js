@@ -38,7 +38,7 @@ exports.handler = async function http (req) {
   const data = await arc.tables()
   const body = arc.http.helpers.bodyParser(req)
 
-  if (body.secret !== process.env.WEBMENTION_IO_SECRET) {
+  if (!('secret' in body) || body.secret !== process.env.WEBMENTION_IO_SECRET) {
     return jsonify({
       error: 'unauthorized',
       error_description: 'Secret does not match.'
