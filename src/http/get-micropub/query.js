@@ -43,21 +43,14 @@ function setStatusAndVisibility (opts, params, scope) {
 }
 
 async function findPostItems (params, scope) {
-  let items
   if ('post-type' in params) {
-    items = await findPostsByPostType(params, scope)
+    return await findPostsByPostType(params, scope)
   } else if ('category' in params) {
-    items = await findPostsByCategory(params, scope)
+    return await findPostsByCategory(params, scope)
   } else if ('published' in params) {
-    items = await findPostsByPublished(params, scope)
+    return await findPostsByPublished(params, scope)
   } else {
-    items = await findPostsAll(params, scope)
-  }
-  return {
-    Items: items.Items.map(item => {
-      // delete item.type - TODO: simplify this
-      return item
-    })
+    return await findPostsAll(params, scope)
   }
 }
 
