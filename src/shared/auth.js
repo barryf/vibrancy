@@ -9,7 +9,6 @@ async function requireScope (scope, headers, body) {
   let token = headers.Authorization || headers.authorization ||
     (body && 'access_token' in body ? body.access_token : '')
   token = token.trim().replace(/^Bearer /, '')
-  console.log('headers', headers)
   if (token === '') {
     return jsonify({
       error: 'unauthorized',
