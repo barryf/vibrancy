@@ -1,11 +1,5 @@
-// TODO: mf2
 const arc = require('@architect/functions')
-const {
-  unflatten,
-  flattenJSON,
-  sanitise,
-  derivePostType
-} = require('@architect/shared/utils')
+const { sanitise } = require('@architect/shared/utils')
 
 function verifyObjectNotArray (properties, key) {
   if (!(typeof properties[key] === 'object' &&
@@ -28,23 +22,24 @@ async function update (properties) {
   const data = await arc.tables()
   const url = properties.url.replace(process.env.ROOT_URL, '')
   const post = await data.posts.get({ url })
-  unflatten(post)
-  console.log(`post=${JSON.stringify(post)}`)
+  console.log('properties', JSON.stringify(properties))
+  console.log('post', JSON.stringify(post))
 
   try {
     if ('replace' in properties) {
       verifyObjectNotArray(properties, 'replace')
       for (const prop in properties.replace) {
-        post[prop] = properties.replace[prop]
+        post.properties[prop] = properties.replace[prop]
       }
     }
     if ('add' in properties) {
       verifyObjectNotArray(properties, 'add')
       for (const prop in properties.add) {
-        if (!(prop in post)) {
-          post[prop] = properties.add[prop]
+        if (!(prop in post.properties)) {
+          post.properties[prop] = properties.add[prop]
         } else {
-          post[prop] = post[prop].concat(properties.add[prop])
+          post.properties[prop] = post.properties[prop].concat(
+            properties.add[prop])
         }
       }
     }
@@ -52,14 +47,15 @@ async function update (properties) {
       verifyArrayOrObject(properties, 'delete')
       if (!Array.isArray(properties.delete)) {
         for (const prop in properties.delete) {
-          post[prop] = post[prop].filter((p) => p != properties.delete[prop]) // eslint-disable-line
-          if (post[prop].length === 0) {
-            delete post[prop]
+          post.properties[prop] = post.properties[prop].filter(
+            (p) => p != properties.delete[prop]) // eslint-disable-line
+          if (post.properties[prop].length === 0) {
+            delete post.properties[prop]
           }
         }
       } else {
         properties.delete.forEach(prop => {
-          delete post[prop]
+          delete post.properties[prop]
         })
       }
     }
@@ -73,17 +69,15 @@ async function update (properties) {
     }
   }
 
-  flattenJSON(post)
   let syndicateTo
-  if ('mp-syndicate-to' in post) {
-    syndicateTo = Array.isArray(post['mp-syndicate-to'])
-      ? post['mp-syndicate-to']
-      : [post['mp-syndicate-to']]
+  if ('mp-syndicate-to' in properties) {
+    syndicateTo = Array.isArray(properties['mp-syndicate-to'])
+      ? properties['mp-syndicate-to']
+      : [properties['mp-syndicate-to']]
   }
+
   sanitise(post)
-  post['post-type'] = derivePostType(post)
-  post.url = url
-  post.updated = new Date().toISOString()
+  post.properties.updated = [new Date().toISOString()]
 
   return {
     post,
