@@ -22,7 +22,6 @@ async function upload (file, contentType) {
     Math.random().toString(36).substring(2, 15)
   const dataUri = `data:${contentType};base64,${file}`
   const result = await cloudinary.uploader.upload(dataUri, { public_id: key })
-  console.log('result', result)
   return {
     url: result.secure_url,
     type: result.resource_type,
@@ -44,7 +43,6 @@ exports.handler = async function http (req) {
   const contentType = result.files[0].contentType
   const media = await upload(file, contentType)
 
-  console.log('media', media)
   await data.media.put(media)
 
   await arc.queues.publish({

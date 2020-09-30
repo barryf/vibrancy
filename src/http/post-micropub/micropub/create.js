@@ -86,7 +86,6 @@ function formatPost (body) {
     ? post.properties.published[0]
     : new Date().toISOString()]
   post.published = post.properties.published[0]
-  // console.log('formatPost post', JSON.stringify(post, null, 2))
   post.url = deriveUrl(post)
   post['post-type'] = derivePostType(post)
   sanitise(post)

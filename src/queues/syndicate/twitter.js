@@ -100,7 +100,7 @@ function generateStatus (post, mediaIds = null) {
       280
     )
   } else {
-    console.log('Error generating Twitter status', status, post)
+    console.error('Error generating Twitter status', status, post)
   }
 
   return status
@@ -184,7 +184,7 @@ async function syndicate (post) {
       return tweetUrl
     }
   } catch (err) {
-    console.log('Error syndicating to Twitter', err)
+    console.error('Error syndicating to Twitter', err)
   }
   return null
 }

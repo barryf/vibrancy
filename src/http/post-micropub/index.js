@@ -5,7 +5,6 @@ const { requireScope } = require('@architect/shared/auth')
 const allowedActions = ['create', 'update', 'delete', 'undelete', 'draft']
 
 exports.handler = async function http (req) {
-  console.log('req', req)
   let body = arc.http.helpers.bodyParser(req)
   // extra check in case json body wasn't detected and parsed
   if (typeof body === 'string') { body = JSON.parse(body) }

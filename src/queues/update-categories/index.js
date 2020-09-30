@@ -10,7 +10,6 @@ exports.handler = async function queue (event) {
 
   // add categories-posts records for each of the post's categories
   category.forEach(async cat => {
-    console.log('cat', cat)
     await data['categories-posts'].put({
       cat,
       ...post
