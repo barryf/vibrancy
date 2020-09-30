@@ -22,8 +22,6 @@ async function update (properties) {
   const data = await arc.tables()
   const url = properties.url.replace(process.env.ROOT_URL, '')
   const post = await data.posts.get({ url })
-  console.log('properties', JSON.stringify(properties))
-  console.log('post', JSON.stringify(post))
 
   try {
     if ('replace' in properties) {

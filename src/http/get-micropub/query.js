@@ -132,7 +132,6 @@ async function findPostsByCategory (params, scope) {
   setLimit(opts, params)
   setBefore(opts, params)
   setStatusAndVisibility(opts, params, scope)
-  console.log('opts', opts)
   const posts = await data['categories-posts'].query(opts)
   return {
     Items: posts.Items.map(item => {
