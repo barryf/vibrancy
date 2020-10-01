@@ -1,7 +1,7 @@
 const cloudinary = require('cloudinary').v2
 const arc = require('@architect/functions')
 const parser = require('lambda-multipart-parser')
-const { requireScope } = require('@architect/shared/auth')
+const { requireScopes } = require('@architect/shared/auth')
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,7 +34,8 @@ exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
   const data = await arc.tables()
 
-  const authResponse = await requireScope('media', req.headers, body)
+  const acceptedScopes = ['create', 'media']
+  const authResponse = await requireScopes(acceptedScopes, req.headers, body)
   if (authResponse.statusCode >= 400) return authResponse
 
   const result = await parser.parse(req)

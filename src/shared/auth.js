@@ -5,7 +5,7 @@ const { jsonify } = require('@architect/shared/utils')
 const tokenEndpoint = process.env.TOKEN_ENDPOINT ||
   'https://tokens.indieauth.com/token'
 
-async function requireScope (scope, headers, body) {
+async function requireScopes (scopes, headers, body) {
   let token = headers.Authorization || headers.authorization ||
     (body && 'access_token' in body ? body.access_token : '')
   token = token.trim().replace(/^Bearer /, '')
@@ -15,7 +15,7 @@ async function requireScope (scope, headers, body) {
       error_description: 'Request is missing an access token.'
     }, 401)
   }
-  return await verifyTokenAndScope(token, scope)
+  return await verifyTokenAndScopes(token, scopes)
 }
 
 async function getTokenResponse (token, endpoint) {
@@ -29,8 +29,8 @@ async function getTokenResponse (token, endpoint) {
   return await response.json()
 }
 
-const verifyTokenAndScope = async function (token, scope) {
-  if (process.env.NODE_ENV !== 'production') return { statusCode: 200, scope }
+const verifyTokenAndScopes = async function (token, scopes) {
+  if (process.env.NODE_ENV !== 'production') return { statusCode: 200, scopes }
 
   const data = await arc.tables()
   const tokenRecord = await data.tokens.get({ token })
@@ -52,12 +52,12 @@ const verifyTokenAndScope = async function (token, scope) {
     await data.tokens.put({ token, data: tokenData })
   }
   if ('scope' in tokenData) {
-    const scopes = tokenData.scope.split(' ')
-    if (scopes.includes(scope)) {
+    const tokenScopes = tokenData.scope.split(' ')
+    if (tokenScopes.some(scope => scopes.includes(scope))) {
       return {
         statusCode: 200,
-        body: JSON.stringify({ message: `Scope ${scope} was authorised.` }),
-        scope
+        body: JSON.stringify({ message: 'Scope was authorised.' }),
+        scopes
       }
     }
   }
@@ -68,4 +68,4 @@ const verifyTokenAndScope = async function (token, scope) {
   }, 401)
 }
 
-module.exports = { requireScope }
+module.exports = { requireScopes }

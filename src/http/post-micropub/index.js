@@ -1,6 +1,6 @@
 const arc = require('@architect/functions')
 const micropub = require('./micropub')
-const { requireScope } = require('@architect/shared/auth')
+const { requireScopes } = require('@architect/shared/auth')
 
 const allowedActions = ['create', 'update', 'delete', 'undelete', 'draft']
 
@@ -24,7 +24,7 @@ exports.handler = async function http (req) {
     scope = body.action
   }
 
-  const authResponse = await requireScope(scope, req.headers, body)
+  const authResponse = await requireScopes([scope], req.headers, body)
   if (authResponse.statusCode >= 400) return authResponse
 
   return await micropub.action(scope, body)
