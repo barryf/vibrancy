@@ -20,8 +20,9 @@ function setBefore (opts, params) {
   }
 }
 
-function setStatusAndVisibility (opts, params, scope) {
-  if (scope === 'read') {
+function setStatusAndVisibility (opts, params, scopes) {
+  // if we've *only* granted read access then enforce privacy
+  if (scopes === ['read']) {
     if ('FilterExpression' in opts) {
       opts.FilterExpression = opts.FilterExpression + ' AND '
     } else {
@@ -42,19 +43,19 @@ function setStatusAndVisibility (opts, params, scope) {
   }
 }
 
-async function findPostItems (params, scope) {
+async function findPostItems (params, scopes) {
   if ('post-type' in params) {
-    return await findPostsByPostType(params, scope)
+    return await findPostsByPostType(params, scopes)
   } else if ('category' in params) {
-    return await findPostsByCategory(params, scope)
+    return await findPostsByCategory(params, scopes)
   } else if ('published' in params) {
-    return await findPostsByPublished(params, scope)
+    return await findPostsByPublished(params, scopes)
   } else {
-    return await findPostsAll(params, scope)
+    return await findPostsAll(params, scopes)
   }
 }
 
-async function findPostsByPostType (params, scope) {
+async function findPostsByPostType (params, scopes) {
   const data = await arc.tables()
   const opts = {
     IndexName: 'post-type-published-index',
@@ -71,11 +72,11 @@ async function findPostsByPostType (params, scope) {
   }
   setLimit(opts, params)
   setBefore(opts, params)
-  setStatusAndVisibility(opts, params, scope)
+  setStatusAndVisibility(opts, params, scopes)
   return await data.posts.query(opts)
 }
 
-async function findPostsAll (params, scope) {
+async function findPostsAll (params, scopes) {
   const data = await arc.tables()
   const opts = {
     IndexName: 'channel-published-index',
@@ -88,11 +89,11 @@ async function findPostsAll (params, scope) {
   }
   setLimit(opts, params)
   setBefore(opts, params)
-  setStatusAndVisibility(opts, params, scope)
+  setStatusAndVisibility(opts, params, scopes)
   return await data.posts.query(opts)
 }
 
-async function findPostsByPublished (params, scope) {
+async function findPostsByPublished (params, scopes) {
   const published = params.published.replace(/[^0-9-]/, '')
   const data = await arc.tables()
   const opts = {
@@ -114,11 +115,11 @@ async function findPostsByPublished (params, scope) {
       'channel = :channel AND begins_with(published, :published)'
   }
   setLimit(opts, params)
-  setStatusAndVisibility(opts, params, scope)
+  setStatusAndVisibility(opts, params, scopes)
   return await data.posts.query(opts)
 }
 
-async function findPostsByCategory (params, scope) {
+async function findPostsByCategory (params, scopes) {
   const data = await arc.tables()
   const opts = {
     IndexName: 'cat-published-index',
@@ -131,7 +132,7 @@ async function findPostsByCategory (params, scope) {
   }
   setLimit(opts, params)
   setBefore(opts, params)
-  setStatusAndVisibility(opts, params, scope)
+  setStatusAndVisibility(opts, params, scopes)
   const posts = await data['categories-posts'].query(opts)
   return {
     Items: posts.Items.map(item => {

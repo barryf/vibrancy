@@ -1,5 +1,5 @@
 const arc = require('@architect/functions')
-const { requireScope } = require('@architect/shared/auth')
+const { requireScopes } = require('@architect/shared/auth')
 
 async function query (params) {
   const data = await arc.tables()
@@ -27,7 +27,8 @@ async function source (params) {
 
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
-  const authResponse = await requireScope('media', req.headers, body)
+  const acceptedScopes = ['media', 'create']
+  const authResponse = await requireScopes(acceptedScopes, req.headers, body)
   if (process.env.NODE_ENV === 'production' &&
     authResponse.statusCode !== 200) return authResponse
 

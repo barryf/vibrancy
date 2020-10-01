@@ -31,9 +31,9 @@ async function getPost (params) {
   }
 }
 
-async function findPostItems (params, scope) {
+async function findPostItems (params, scopes) {
   if (!('channel' in params)) params.channel = 'posts' // default channel
-  const postData = await query.findPostItems(params, scope)
+  const postData = await query.findPostItems(params, scopes)
   const items = postData.Items.map(post => {
     post.url = `${process.env.ROOT_URL}${post.url}`
     return {
@@ -46,8 +46,8 @@ async function findPostItems (params, scope) {
   return { items }
 }
 
-async function source (params, scope) {
-  if (!('url' in params)) return findPostItems(params, scope)
+async function source (params, scopes) {
+  if (!('url' in params)) return findPostItems(params, scopes)
   if (!isValidURL(params.url)) {
     return jsonify({
       error: 'invalid_parameter',
@@ -59,7 +59,9 @@ async function source (params, scope) {
 
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
-  const authResponse = await auth.requireScope('read', req.headers, body)
+  const acceptedScopes = ['read', 'create']
+  const authResponse = await auth.requireScopes(acceptedScopes, req.headers,
+    body)
   if (process.env.NODE_ENV === 'production' &&
     authResponse.statusCode !== 200) return authResponse
 
@@ -75,7 +77,7 @@ exports.handler = async function http (req) {
       case 'channels':
         return { channels: config.channels }
       case 'source':
-        return await source(params, authResponse.scope)
+        return await source(params, authResponse.scopes)
     }
   }
   return {
