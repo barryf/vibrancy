@@ -34,5 +34,6 @@ module.exports = {
   q,
   config,
   syndicateTo,
-  category
+  category,
+  channels
 }
