@@ -2,17 +2,27 @@
   "name": "vibrancy",
   "version": "0.1.0",
   "description": "Personal website Micropub server",
-  "dependencies": {
-    "aws-sdk": "^2.697.0"
+  "scripts": {
+    "start": "PORT=3333 arc sandbox",
+    "test": "NODE_ENV=testing PORT=3334 tape test/*-test.js | tap-spec"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@architect/sandbox": "^2.0.1",
+    "aws-sdk": "^2.763.0",
+    "node-fetch": "^2.6.1",
+    "tap-spec": "^5.0.0",
+    "tape": "^5.0.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/barryf/vibrancy.git"
   },
   "keywords": [
     "micropub",
-    "indieweb"
+    "indieweb",
+    "architect",
+    "cms",
+    "serverless"
   ],
   "author": "Barry Frost",
   "license": "MIT",

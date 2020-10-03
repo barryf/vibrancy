@@ -1,7 +1,7 @@
 const arc = require('@architect/functions')
 
 async function startup () {
-  if (process.env.NODE_ENV === 'production') return
+  if (process.env.NODE_ENV === 'production' || process.env.PORT === '3334') return
 
   const data = await arc.tables()
   const posts = [
