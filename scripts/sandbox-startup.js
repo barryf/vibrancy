@@ -77,6 +77,17 @@ function baz (a, b) {
         ],
         published: ['2020-09-12T20:00:00Z']
       }
+    },
+    {
+      channel: 'posts',
+      url: '2020/10/photo',
+      published: '2020-10-01T20:56:36.563Z',
+      'post-type': 'photo',
+      properties: {
+        photo: ['https://fastly.4sqi.net/img/general/original/506725_18b6X1CH-xEQUH2D5oas6Enfa7sV-3YfPvresfD8LiI.jpg'],
+        published: ['2020-10-01T20:56:36.563Z'],
+        content: ['A nice photo']
+      }
     }
   ]
   posts.forEach(async post => {
