@@ -27,13 +27,13 @@ function derivePostType (post) {
     return 'rsvp'
   } else if (('in-reply-to' in post.properties) &&
     isValidURL(post.properties['in-reply-to'][0])) {
-    return 'in-reply-to'
+    return 'reply'
   } else if (('repost-of' in post.properties) &&
     isValidURL(post.properties['repost-of'][0])) {
-    return 'repost-of'
+    return 'repost'
   } else if (('like-of' in post.properties) &&
     isValidURL(post.properties['like-of'][0])) {
-    return 'like-of'
+    return 'like'
   } else if (('video' in post.properties) &&
     isValidURL(post.properties.video[0])) {
     return 'video'
@@ -42,7 +42,7 @@ function derivePostType (post) {
     return 'photo'
   } else if (('bookmark-of' in post.properties) &&
     isValidURL(post.properties['bookmark-of'][0])) {
-    return 'bookmark-of'
+    return 'bookmark'
   } else if (('name' in post.properties) &&
     (post.properties.name[0].trim() !== '') &&
     !content.startsWith(post.properties.name[0].trim())) {
