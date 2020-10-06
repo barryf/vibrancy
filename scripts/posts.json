@@ -1,0 +1,328 @@
+{
+  "items": [
+    {
+      "url": "2020/09/29-180505",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "checkin": [
+          {
+            "type": [
+              "h-card"
+            ],
+            "value": "https://foursquare.com/v/4e7aeff91f6e6840a37866ac",
+            "properties": {
+              "url": [
+                "https://foursquare.com/v/4e7aeff91f6e6840a37866ac"
+              ],
+              "name": [
+                "The Barber's Room"
+              ],
+              "region": [
+                "Hertfordshire"
+              ],
+              "latitude": [
+                51.830093139767634
+              ],
+              "locality": [
+                "Welwyn"
+              ],
+              "longitude": [
+                -0.21556059980096257
+              ],
+              "country-name": [
+                "United Kingdom"
+              ],
+              "street-address": [
+                "30 High Steet"
+              ]
+            }
+          }
+        ],
+        "location": [
+          {
+            "type": [
+              "h-adr"
+            ],
+            "properties": {
+              "region": [
+                "Hertfordshire"
+              ],
+              "latitude": [
+                51.830093139767634
+              ],
+              "locality": [
+                "Welwyn"
+              ],
+              "longitude": [
+                -0.21556059980096257
+              ],
+              "country-name": [
+                "United Kingdom"
+              ],
+              "street-address": [
+                "30 High Steet"
+              ]
+            }
+          }
+        ],
+        "published": [
+          "2020-09-28T11:58:10+01:00"
+        ],
+        "entry-type": [
+          "checkin"
+        ],
+        "syndication": [
+          "https://www.swarmapp.com/user/506725/checkin/5f71c1c29428e17c5eda5ec2"
+        ]
+      }
+    },
+    {
+      "url": "2020/10/balazsbotond-urlcat",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "name": [
+          "balazsbotond/urlcat"
+        ],
+        "content": [
+          "> URL builder library for JavaScript."
+        ],
+        "category": [
+          "url",
+          "javascript",
+          "api"
+        ],
+        "published": [
+          "2020-10-05T12:45:16Z"
+        ],
+        "entry-type": [
+          "bookmark"
+        ],
+        "bookmark-of": [
+          "https://github.com/balazsbotond/urlcat"
+        ]
+      }
+    },
+    {
+      "url": "2020/08/source-control-in-the-1980s-using",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "content": [
+          "Source control in the 1980s using a pink dinosaur, part of [Paul Fellows' tales of Acornsoft, Arthur and RISC OS](http://www.rougol.jellybaby.net/meetings/2012/PaulFellows/):\r\n\r\n> We had 7 or 8 guys trying to write an operating system to go into a ROM, so you've got to get it right, and they're all doing different bits of it and some of these share system files. No CVS, no source control, no Sourcesafe, none of that. The solution was the main system header file with all the constants, SWI numbers and addresses of everything lived in. You could edit that if you had the pink dinosaur on your desk. If you did not have the pink dinosaur on your desk you could not edit it. If you edited it without the pink dinosaur, my Australian friend, Brian Cockburn, would come round and see you."
+        ],
+        "category": [
+          "sourcecontrol",
+          "dev",
+          "acorn",
+          "riscos",
+          "team"
+        ],
+        "published": [
+          "2020-08-21T14:37:14Z"
+        ],
+        "entry-type": [
+          "note"
+        ]
+      }
+    },
+    {
+      "url": "2018/04/leaving-venntro",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "name": [
+          "Leaving Venntro"
+        ],
+        "content": [
+          "After ten happy, successful and highly educational years, I've decided to leave my role as [Chief Technology Officer](https://www.linkedin.com/in/barryfrost) at [Venntro](https://venntro.com) this month. After so long with the company I felt the need to shake myself out of my comfort zone and look for a fresh challenge. \r\n\r\nI'm very excited about joining a new company where I can use my experiences creating high performance development teams, building a large B2C subscription platform and leading technology for an award-winning and profitable fast-growth business.\r\n\r\nIf you're looking for a CTO / VP of Engineering / Head of Development etc. in South-West London, North Surrey or along the M4 Corridor (or know of someone who is) I'd love to [talk](/contact). I'm planning to first enjoy some time at home with our [newborn](/2018/02/hello-to-my-son-charlie), but I'll be open to new opportunities from the end of May.\r\n\r\nAnd of course, I wish founders Ross and Steve and the whole of Venntro continued success for the future. I'm confident the platform is in very good hands with Ian as Venntro's new Head of Technology leading a great team of superb developers."
+        ],
+        "updated": [
+          "2018-04-03T12:41:12Z"
+        ],
+        "captures": [
+
+        ],
+        "category": [
+          "personal",
+          "venntro",
+          "career"
+        ],
+        "published": [
+          "2018-04-03T12:03:48Z"
+        ],
+        "entry-type": [
+          "article"
+        ],
+        "syndication": [
+          "https://twitter.com/barryf/status/981141346068193280",
+          "https://www.linkedin.com/feed/update/urn:li:activity:6386909799560413184"
+        ]
+      }
+    },
+    {
+      "url": "2019/09/in-enemy-territory-for-a-meeting",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "photo": [
+          "https://fastly.4sqi.net/img/general/original/506725_18b6X1CH-xEQUH2D5oas6Enfa7sV-3YfPvresfD8LiI.jpg"
+        ],
+        "checkin": [
+          {
+            "type": [
+              "h-card"
+            ],
+            "value": "https://foursquare.com/v/4b0c1159f964a520633623e3",
+            "properties": {
+              "url": [
+                "https://foursquare.com/v/4b0c1159f964a520633623e3"
+              ],
+              "name": [
+                "Stamford Bridge"
+              ],
+              "region": [
+                "Greater London"
+              ],
+              "latitude": [
+                51.4809251912416
+              ],
+              "locality": [
+                "Fulham"
+              ],
+              "longitude": [
+                -0.19154180035076734
+              ],
+              "postal-code": [
+                "SW6 1HS"
+              ],
+              "country-name": [
+                "United Kingdom"
+              ],
+              "street-address": [
+                "Fulham Rd"
+              ]
+            }
+          }
+        ],
+        "content": [
+          "In enemy territory for a meeting"
+        ],
+        "location": [
+          {
+            "type": [
+              "h-adr"
+            ],
+            "properties": {
+              "region": [
+                "Greater London"
+              ],
+              "latitude": [
+                51.4809251912416
+              ],
+              "locality": [
+                "Fulham"
+              ],
+              "longitude": [
+                -0.19154180035076734
+              ],
+              "postal-code": [
+                "SW6 1HS"
+              ],
+              "country-name": [
+                "United Kingdom"
+              ],
+              "street-address": [
+                "Fulham Rd"
+              ]
+            }
+          }
+        ],
+        "published": [
+          "2019-09-16T09:02:28+01:00"
+        ],
+        "entry-type": [
+          "photo"
+        ],
+        "syndication": [
+          "https://www.swarmapp.com/user/506725/checkin/5d7f4194b8f00e000884adf6"
+        ]
+      }
+    },
+    {
+      "url": "2020/06/and-even-better-the-audio-at",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "content": [
+          "And, even better, the audio at the end that you could download to your BBC Micro! 😍"
+        ],
+        "category": [
+          "nostalgia",
+          "bbcmicro"
+        ],
+        "published": [
+          "2020-06-18T15:18:52Z"
+        ],
+        "entry-type": [
+          "reply"
+        ],
+        "in-reply-to": [
+          "https://calumryan.com/note/3535"
+        ]
+      }
+    },
+    {
+      "url": "2020/03/14-131846",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "category": [
+          "indiewebcamp",
+          "iwclondon"
+        ],
+        "published": [
+          "2020-03-14T13:18:46Z"
+        ],
+        "repost-of": [
+          "https://twitter.com/cheukting_ho/status/1238814519926849536"
+        ],
+        "entry-type": [
+          "repost"
+        ],
+        "syndication": [
+          "https://twitter.com/barryf/status/1238816845047750656"
+        ]
+      }
+    },
+    {
+      "url": "2020/03/25-203756",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "like-of": [
+          "https://mxb.dev/blog/emergency-website-kit/"
+        ],
+        "category": [
+          "emergency",
+          "static"
+        ],
+        "published": [
+          "2020-03-25T20:37:56Z"
+        ],
+        "entry-type": [
+          "like"
+        ]
+      }
+    }
+  ]
+}
