@@ -97,6 +97,7 @@ async function create (scope, body) {
   const { post, syndicateTo } = formatPost(body)
   if (scope === 'draft') {
     post['post-status'] = 'draft'
+    post.properties['post-status'] = ['draft']
   }
 
   // TODO: uncomment this to prevent overwriting posts
