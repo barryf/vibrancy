@@ -22,6 +22,9 @@ async function startup () {
       type: item.type[0],
       properties
     }
+    if ('post-status' in properties) {
+      post['post-status'] = properties['post-status']
+    }
     await data.posts.put(post)
     await arc.queues.publish({
       name: 'update-categories',

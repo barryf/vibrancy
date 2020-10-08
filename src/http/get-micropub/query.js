@@ -22,7 +22,7 @@ function setBefore (opts, params) {
 
 function setStatusAndVisibility (opts, params, scopes) {
   // if we've *only* granted read access then enforce privacy
-  if (scopes === ['read']) {
+  if (scopes.length === 1 && scopes[0] === 'read') {
     if ('FilterExpression' in opts) {
       opts.FilterExpression = opts.FilterExpression + ' AND '
     } else {

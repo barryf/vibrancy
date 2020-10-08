@@ -57,7 +57,7 @@ const verifyTokenAndScopes = async function (token, scopes) {
       return {
         statusCode: 200,
         body: JSON.stringify({ message: 'Scope was authorised.' }),
-        scopes
+        scopes: tokenScopes
       }
     }
   }

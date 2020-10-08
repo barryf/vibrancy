@@ -6,6 +6,7 @@
         "h-entry"
       ],
       "properties": {
+        "post-status": ["draft"],
         "checkin": [
           {
             "type": [
