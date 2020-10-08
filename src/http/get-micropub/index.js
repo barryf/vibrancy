@@ -74,7 +74,7 @@ exports.handler = async function http (req) {
         return config.config
       case 'syndicate-to':
         return { 'syndicate-to': config.syndicateTo(params['post-type']) }
-      case 'channels':
+      case 'channel':
         return { channels: config.channels }
       case 'source':
         return await source(params, authResponse.scopes)
