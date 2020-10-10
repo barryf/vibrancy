@@ -30,7 +30,7 @@ async function getTokenResponse (token, endpoint) {
 }
 
 const verifyTokenAndScopes = async function (token, scopes) {
-  if (process.env.NODE_ENV !== 'production') return { statusCode: 200, scopes }
+  // if (process.env.NODE_ENV !== 'production') return { statusCode: 200, scopes }
 
   const data = await arc.tables()
   const tokenRecord = await data.tokens.get({ token })

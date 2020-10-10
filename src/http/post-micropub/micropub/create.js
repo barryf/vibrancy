@@ -82,6 +82,12 @@ function formatPost (body) {
   if ('mp-syndicate-to' in post.properties) {
     syndicateTo = post.properties['mp-syndicate-to']
   }
+  if ('post-status' in post.properties) {
+    post['post-status'] = post.properties['post-status'][0]
+  }
+  if ('visibility' in post.properties) {
+    post.visibility = post.properties.visibility[0]
+  }
   post.properties.published = [('published' in post.properties)
     ? post.properties.published[0]
     : new Date().toISOString()]
@@ -95,9 +101,11 @@ function formatPost (body) {
 async function create (scope, body) {
   // const data = await arc.tables()
   const { post, syndicateTo } = formatPost(body)
+
+  // force posts to drafts if scope is draft
   if (scope === 'draft') {
-    post['post-status'] = 'draft'
     post.properties['post-status'] = ['draft']
+    post['post-status'] = 'draft'
   }
 
   // TODO: uncomment this to prevent overwriting posts
