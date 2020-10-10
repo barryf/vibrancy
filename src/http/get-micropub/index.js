@@ -59,7 +59,7 @@ async function source (params, scopes) {
 
 exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
-  const acceptedScopes = ['read', 'create']
+  const acceptedScopes = ['read', 'create', 'update', 'delete', 'undelete']
   const authResponse = await auth.requireScopes(acceptedScopes, req.headers,
     body)
   if (process.env.NODE_ENV === 'production' &&
