@@ -26,6 +26,23 @@ function syndicateTo (postType = null) {
         { ...twitter, checked: true },
         { ...microblog, checked: true }
       ]
+    case 'like':
+      return [
+        { ...twitter }
+      ]
+    case 'reply':
+      return [
+        { ...twitter }
+      ]
+    case 'repost':
+      return [
+        { ...twitter }
+      ]
+    case 'photo':
+      return [
+        { ...twitter },
+        { ...microblog }
+      ]
     default:
       return [
         twitter,
