@@ -1,4 +1,10 @@
-on: push
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   deploy:
@@ -23,3 +29,11 @@ jobs:
       run: |-
         npm install @architect/architect
         npx arc deploy production
+        
+    - name: Push Build Status Notifications
+      if: ${{ always() }}
+      uses: desiderati/github-action-pushover@v1
+      with:
+        job-status: ${{ job.status }}
+        pushover-api-token: ${{ secrets.PUSHOVER_API_TOKEN }}
+        pushover-user-key: ${{ secrets.PUSHOVER_USER_KEY }}
