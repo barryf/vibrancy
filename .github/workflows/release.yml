@@ -1,3 +1,5 @@
+on: push
+
 jobs:
   deploy:
     name: Deploy Architect project to AWS
