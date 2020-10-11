@@ -1,7 +1,6 @@
 // const arc = require('@architect/functions')
 const {
   derivePostType,
-  sanitise,
   reservedUrls
 } = require('@architect/shared/utils')
 
@@ -54,7 +53,7 @@ function deriveUrl (post) {
 }
 
 function formatPost (body) {
-  let post, syndicateTo
+  let post
   if ('properties' in body) {
     // json format
     post = { ...body }
@@ -74,33 +73,17 @@ function formatPost (body) {
       }
     }
   }
-  if ('mp-channel' in post.properties) {
-    post.channel = post.properties['mp-channel']
-  } else {
-    post.channel = 'posts'
-  }
-  if ('mp-syndicate-to' in post.properties) {
-    syndicateTo = post.properties['mp-syndicate-to']
-  }
-  if ('post-status' in post.properties) {
-    post['post-status'] = post.properties['post-status'][0]
-  }
-  if ('visibility' in post.properties) {
-    post.visibility = post.properties.visibility[0]
-  }
   post.properties.published = [('published' in post.properties)
     ? post.properties.published[0]
     : new Date().toISOString()]
-  post.published = post.properties.published[0]
   post.url = deriveUrl(post)
   post['post-type'] = derivePostType(post)
-  sanitise(post)
-  return { post, syndicateTo }
+  return post
 }
 
 async function create (scope, body) {
   // const data = await arc.tables()
-  const { post, syndicateTo } = formatPost(body)
+  const post = formatPost(body)
 
   // force posts to drafts if scope is draft
   if (scope === 'draft') {
@@ -122,7 +105,6 @@ async function create (scope, body) {
 
   return {
     post,
-    syndicateTo,
     statusCode: 201,
     headers: {
       location: process.env.ROOT_URL + post.url

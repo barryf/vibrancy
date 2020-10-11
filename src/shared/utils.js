@@ -63,20 +63,6 @@ function isValidURL (string) {
   return true
 }
 
-function sanitise (post) {
-  const reservedProperties = ['action', 'access_token', 'h']
-  for (const prop in post.properties) {
-    if (prop.startsWith('mp-') || reservedProperties.includes(prop)) {
-      delete post.properties[prop]
-    }
-    if (prop.endsWith('[]')) {
-      const propModified = prop.slice(0, -2)
-      post.properties[propModified] = post.properties[prop]
-      delete post.properties[prop]
-    }
-  }
-}
-
 function jsonify (value, statusCode = 200) {
   return {
     headers: {
@@ -90,7 +76,6 @@ function jsonify (value, statusCode = 200) {
 module.exports = {
   derivePostType,
   isValidURL,
-  sanitise,
   jsonify,
   reservedUrls
 }

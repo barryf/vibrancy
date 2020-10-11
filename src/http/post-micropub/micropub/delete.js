@@ -7,7 +7,7 @@ async function deletePost (properties) {
   const post = await data.posts.get({ url })
 
   post.properties.deleted = [new Date().toISOString()]
-  post.properties.updated = post.deleted
+  post.properties.updated = post.properties.deleted
 
   return {
     post,

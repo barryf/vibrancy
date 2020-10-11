@@ -4,6 +4,38 @@ const update = require('./update')
 const deletePost = require('./delete')
 const undelete = require('./undelete')
 
+function setRootProperties (post) {
+  post.published = post.properties.published[0]
+  if ('mp-channel' in post.properties) {
+    post.channel = post.properties['mp-channel']
+  } else {
+    post.channel = 'posts' // default channel is posts
+  }
+  if ('post-status' in post.properties) {
+    post['post-status'] = post.properties['post-status'][0]
+  }
+  if ('visibility' in post.properties) {
+    post.visibility = post.properties.visibility[0]
+  }
+  if ('deleted' in post.properties) {
+    post.deleted = post.properties.deleted[0]
+  }
+}
+
+function sanitise (post) {
+  const reservedProperties = ['action', 'access_token', 'h']
+  for (const prop in post.properties) {
+    if (prop.startsWith('mp-') || reservedProperties.includes(prop)) {
+      delete post.properties[prop]
+    }
+    if (prop.endsWith('[]')) {
+      const propModified = prop.slice(0, -2)
+      post.properties[propModified] = post.properties[prop]
+      delete post.properties[prop]
+    }
+  }
+}
+
 async function action (scope, body) {
   const data = await arc.tables()
 
@@ -20,6 +52,20 @@ async function action (scope, body) {
 
   // if the action was successful...
   if (res.statusCode < 300) {
+    // set root properties indexed by ddb
+    setRootProperties(res.post)
+
+    // keep syndication options before sanitising
+    let syndicateTo
+    if ('mp-syndicate-to' in res.post.properties) {
+      syndicateTo = Array.isArray(res.post.properties['mp-syndicate-to'])
+        ? res.post.properties['mp-syndicate-to']
+        : [res.post.properties['mp-syndicate-to']]
+    }
+
+    // strip unwanted properties
+    sanitise(res.post)
+
     // add post to ddb
     await data.posts.put(res.post)
 
@@ -40,12 +86,12 @@ async function action (scope, body) {
     })
 
     // queue syndication if requested
-    if (res.syndicateTo) {
+    if (syndicateTo) {
       await arc.queues.publish({
         name: 'syndicate',
         payload: {
           url: res.post.url,
-          syndicateTo: res.syndicateTo
+          syndicateTo
         }
       })
     }
