@@ -66,7 +66,12 @@ async function action (scope, body) {
     // strip unwanted properties
     sanitise(res.post)
 
-    // add post to ddb
+    // if updating, delete post first to remove any unwanted properties
+    if (['update', 'delete', 'undelete'].includes(scope)) {
+      await data.posts.delete({ url: res.post.url })
+    }
+
+    // put post in ddb
     await data.posts.put(res.post)
 
     // queue writing the file to github
