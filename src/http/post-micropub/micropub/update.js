@@ -48,11 +48,13 @@ async function update (properties) {
             (p) => p != properties.delete[prop]) // eslint-disable-line
           if (post.properties[prop].length === 0) {
             delete post.properties[prop]
+            delete post[prop]
           }
         }
       } else {
         properties.delete.forEach(prop => {
           delete post.properties[prop]
+          delete post[prop]
         })
       }
     }
