@@ -1,5 +1,4 @@
 const arc = require('@architect/functions')
-const { sanitise } = require('@architect/shared/utils')
 
 function verifyObjectNotArray (properties, key) {
   if (!(typeof properties[key] === 'object' &&
@@ -67,19 +66,10 @@ async function update (properties) {
     }
   }
 
-  let syndicateTo
-  if ('mp-syndicate-to' in properties) {
-    syndicateTo = Array.isArray(properties['mp-syndicate-to'])
-      ? properties['mp-syndicate-to']
-      : [properties['mp-syndicate-to']]
-  }
-
-  sanitise(post)
   post.properties.updated = [new Date().toISOString()]
 
   return {
     post,
-    syndicateTo,
     statusCode: 204
   }
 }
