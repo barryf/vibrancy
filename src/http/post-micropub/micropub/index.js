@@ -17,9 +17,6 @@ function setRootProperties (post) {
   if ('visibility' in post.properties) {
     post.visibility = post.properties.visibility[0]
   }
-  if ('deleted' in post.properties) {
-    post.deleted = post.properties.deleted[0]
-  }
 }
 
 function sanitise (post) {
