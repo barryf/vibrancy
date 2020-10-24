@@ -20,7 +20,7 @@ function setBefore (opts, params) {
   }
 }
 
-function setStatusAndVisibility (opts, params, scopes) {
+function setStatusAndVisibility (opts, params, scopes = []) {
   // if we've *only* granted read access then enforce privacy
   if (scopes.length === 1 && scopes[0] === 'read') {
     if ('FilterExpression' in opts) {
