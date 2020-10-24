@@ -64,6 +64,7 @@ async function action (scope, body) {
     sanitise(res.post)
 
     // put post in ddb
+    console.log('res.post', res.post)
     await data.posts.put(res.post)
 
     // queue writing the file to github
