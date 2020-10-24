@@ -1,6 +1,6 @@
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
-const { jsonify } = require('@architect/shared/utils')
+const { jsonify } = require('./utils')
 
 const tokenEndpoint = process.env.TOKEN_ENDPOINT ||
   'https://tokens.indieauth.com/token'
@@ -30,7 +30,7 @@ async function getTokenResponse (token, endpoint) {
 }
 
 const verifyTokenAndScopes = async function (token, scopes) {
-  // if (process.env.NODE_ENV !== 'production') return { statusCode: 200, scopes }
+  if (process.env.NODE_ENV !== 'production') return { statusCode: 200, scopes }
 
   const data = await arc.tables()
   const tokenRecord = await data.tokens.get({ token })
