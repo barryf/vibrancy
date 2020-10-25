@@ -57,7 +57,7 @@ exports.handler = async function http (req) {
 
   return {
     headers: {
-      'Location': media.url, // eslint-disable-line
+      location: media.url,
       'Content-Type': 'application/json; charset=utf-8'
     },
     body: JSON.stringify({
