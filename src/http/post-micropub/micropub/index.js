@@ -7,15 +7,9 @@ const undelete = require('./undelete')
 function setRootProperties (post) {
   post.published = post.properties.published[0]
   if ('mp-channel' in post.properties) {
-    post.channel = post.properties['mp-channel']
+    post.channel = post.properties['mp-channel'][0]
   } else {
     post.channel = 'posts' // default channel is posts
-  }
-  if ('post-status' in post.properties) {
-    post['post-status'] = post.properties['post-status'][0]
-  }
-  if ('visibility' in post.properties) {
-    post.visibility = post.properties.visibility[0]
   }
 }
 
@@ -64,7 +58,6 @@ async function action (scope, body) {
     sanitise(res.post)
 
     // put post in ddb
-    console.log('res.post', res.post)
     await data.posts.put(res.post)
 
     // queue writing the file to github
@@ -75,6 +68,12 @@ async function action (scope, body) {
         url: res.post.url,
         method: scope
       }
+    })
+
+    // queue public post caching
+    await arc.queues.publish({
+      name: 'update-posts-public',
+      payload: { url: res.post.url }
     })
 
     // queue category caching

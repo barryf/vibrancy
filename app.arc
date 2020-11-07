@@ -15,11 +15,14 @@ post /webmention
 @queues
 write-github
 update-categories
+update-posts-public
 send-webmentions
 syndicate
 
 @tables
 posts
+  url *String
+posts-public
   url *String
 tokens
   token *String
@@ -37,6 +40,12 @@ posts
   post-type *String
   published **String
 posts
+  channel *String
+  published **String
+posts-public
+  post-type *String
+  published **String
+posts-public
   channel *String
   published **String
 webmentions
