@@ -20,27 +20,31 @@ function setBefore (opts, params) {
   }
 }
 
-function setStatusAndVisibility (opts, params, scopes = []) {
-  // if we've *only* granted read access then enforce privacy
-  if (scopes.length === 1 && scopes[0] === 'read') {
-    if ('FilterExpression' in opts) {
-      opts.FilterExpression = opts.FilterExpression + ' AND '
-    } else {
-      opts.FilterExpression = ''
-    }
-    opts.FilterExpression = opts.FilterExpression +
-      ' (visibility = :visibility ' +
-      ' OR attribute_not_exists(visibility)' +
-      ' ) AND (#postStatus = :postStatus' +
-      ' OR attribute_not_exists(#postStatus))'
-    opts.ExpressionAttributeNames = ('ExpressionAttributeNames' in opts)
-      ? opts.ExpressionAttributeNames : {}
-    opts.ExpressionAttributeNames['#postStatus'] = 'post-status'
-    opts.ExpressionAttributeValues = ('ExpressionAttributeValues' in opts)
-      ? opts.ExpressionAttributeValues : {}
-    opts.ExpressionAttributeValues[':visibility'] = 'public'
-    opts.ExpressionAttributeValues[':postStatus'] = 'published'
-  }
+// function setStatusAndVisibility (opts, params, scopes = []) {
+//   // if we've *only* granted read access then enforce privacy
+//   if (scopes.length === 1 && scopes[0] === 'read') {
+//     if ('FilterExpression' in opts) {
+//       opts.FilterExpression = opts.FilterExpression + ' AND '
+//     } else {
+//       opts.FilterExpression = ''
+//     }
+//     opts.FilterExpression = opts.FilterExpression +
+//       ' (visibility = :visibility ' +
+//       ' OR attribute_not_exists(visibility)' +
+//       ' ) AND (#postStatus = :postStatus' +
+//       ' OR attribute_not_exists(#postStatus))'
+//     opts.ExpressionAttributeNames = ('ExpressionAttributeNames' in opts)
+//       ? opts.ExpressionAttributeNames : {}
+//     opts.ExpressionAttributeNames['#postStatus'] = 'post-status'
+//     opts.ExpressionAttributeValues = ('ExpressionAttributeValues' in opts)
+//       ? opts.ExpressionAttributeValues : {}
+//     opts.ExpressionAttributeValues[':visibility'] = 'public'
+//     opts.ExpressionAttributeValues[':postStatus'] = 'published'
+//   }
+// }
+
+function isPublicClient (scopes) {
+  return (scopes.length === 1 && scopes[0] === 'read')
 }
 
 async function findPostItems (params, scopes) {
@@ -68,12 +72,15 @@ async function findPostsByPostType (params, scopes) {
       ':channel': params.channel,
       ':postType': params['post-type']
     },
-    FilterExpression: 'attribute_not_exists(deleted) AND channel = :channel'
+    FilterExpression: 'channel = :channel'
   }
   setLimit(opts, params)
   setBefore(opts, params)
-  setStatusAndVisibility(opts, params, scopes)
-  return await data.posts.query(opts)
+  if (isPublicClient(scopes)) {
+    return await data['posts-public'].query(opts)
+  } else {
+    return await data.posts.query(opts)
+  }
 }
 
 async function findPostsAll (params, scopes) {
@@ -84,13 +91,15 @@ async function findPostsAll (params, scopes) {
     KeyConditionExpression: 'channel = :channel',
     ExpressionAttributeValues: {
       ':channel': 'posts'
-    },
-    FilterExpression: 'attribute_not_exists(deleted)'
+    }
   }
   setLimit(opts, params)
   setBefore(opts, params)
-  setStatusAndVisibility(opts, params, scopes)
-  return await data.posts.query(opts)
+  if (isPublicClient(scopes)) {
+    return await data['posts-public'].query(opts)
+  } else {
+    return await data.posts.query(opts)
+  }
 }
 
 async function findPostsByPublished (params, scopes) {
@@ -102,8 +111,7 @@ async function findPostsByPublished (params, scopes) {
     ExpressionAttributeValues: {
       ':channel': 'posts',
       ':published': published
-    },
-    FilterExpression: 'attribute_not_exists(deleted)'
+    }
   }
   if ('before' in params) {
     const before = new Date(parseInt(params.before, 10)).toISOString()
@@ -115,8 +123,11 @@ async function findPostsByPublished (params, scopes) {
       'channel = :channel AND begins_with(published, :published)'
   }
   setLimit(opts, params)
-  setStatusAndVisibility(opts, params, scopes)
-  return await data.posts.query(opts)
+  if (isPublicClient(scopes)) {
+    return await data['posts-public'].query(opts)
+  } else {
+    return await data.posts.query(opts)
+  }
 }
 
 async function findPostsByCategory (params, scopes) {
@@ -127,12 +138,10 @@ async function findPostsByCategory (params, scopes) {
     KeyConditionExpression: 'cat = :category',
     ExpressionAttributeValues: {
       ':category': params.category
-    },
-    FilterExpression: 'attribute_not_exists(deleted)'
+    }
   }
   setLimit(opts, params)
   setBefore(opts, params)
-  setStatusAndVisibility(opts, params, scopes)
   const posts = await data['categories-posts'].query(opts)
   return {
     Items: posts.Items.map(item => {
@@ -142,12 +151,14 @@ async function findPostsByCategory (params, scopes) {
   }
 }
 
-async function getPost (url) {
+async function getPost (url, scopes) {
   const data = await arc.tables()
-  const postData = await data.posts.get({ url })
-  if (!(postData === undefined ||
-    ('visibility' in postData && postData.visibility === 'private'))) {
-    return postData
+  const post = await data.posts.get({ url })
+  if (post === undefined) return
+  if (!('visibility' in post.properties &&
+    post.properties.visibility[0] === 'private' &&
+    isPublicClient(scopes))) {
+    return post
   }
 }
 

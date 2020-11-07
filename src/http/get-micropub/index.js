@@ -5,9 +5,9 @@ const config = require('./config')
 const query = require('./query')
 const { setWebmentions } = require('./webmentions')
 
-async function getPost (params) {
+async function getPost (params, scopes) {
   const url = params.url.replace(process.env.ROOT_URL, '')
-  const postData = await query.getPost(url)
+  const postData = await query.getPost(url, scopes)
   if (postData === undefined) {
     return jsonify({
       error: 'not_found',
@@ -54,7 +54,7 @@ async function source (params, scopes) {
       error_description: 'URL parameter is invalid'
     }, 400)
   }
-  return getPost(params)
+  return getPost(params, scopes)
 }
 
 exports.handler = async function http (req) {
