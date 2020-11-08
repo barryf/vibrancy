@@ -29,7 +29,7 @@ exports.handler = async function subscribe (event) {
     }
     await data.posts.put(post)
 
-    await arc.queues.publish({
+    await arc.events.publish({
       name: 'write-github',
       payload: {
         folder: post.channel,

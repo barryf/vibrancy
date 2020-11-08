@@ -54,7 +54,7 @@ exports.handler = async function http (req) {
   }
   data.webmentions.put({ webmention })
 
-  await arc.queues.publish({
+  await arc.events.publish({
     name: 'write-github',
     payload: {
       folder: 'webmentions',

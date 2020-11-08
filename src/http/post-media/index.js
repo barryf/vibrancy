@@ -46,7 +46,7 @@ exports.handler = async function http (req) {
 
   await data.media.put(media)
 
-  await arc.queues.publish({
+  await arc.events.publish({
     name: 'write-github',
     payload: {
       folder: 'files',

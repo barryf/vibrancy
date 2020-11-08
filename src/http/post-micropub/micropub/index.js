@@ -53,15 +53,11 @@ async function action (scope, body) {
         ? res.post.properties['mp-syndicate-to']
         : [res.post.properties['mp-syndicate-to']]
     }
-
-    // strip unwanted properties
     sanitise(res.post)
 
-    // put post in ddb
     await data.posts.put(res.post)
 
-    // queue writing the file to github
-    await arc.queues.publish({
+    await arc.events.publish({
       name: 'write-github',
       payload: {
         folder: res.post.channel,
@@ -70,21 +66,19 @@ async function action (scope, body) {
       }
     })
 
-    // queue public post caching
     await arc.events.publish({
       name: 'update-posts-public',
       payload: { url: res.post.url }
     })
 
-    // queue category caching
-    await arc.queues.publish({
+    await arc.events.publish({
       name: 'update-categories',
       payload: { url: res.post.url }
     })
 
     // queue syndication if requested
     if (syndicateTo) {
-      await arc.queues.publish({
+      await arc.events.publish({
         name: 'syndicate',
         payload: {
           url: res.post.url,
@@ -93,7 +87,7 @@ async function action (scope, body) {
       })
     }
 
-    await arc.queues.publish({
+    await arc.events.publish({
       name: 'send-webmentions',
       payload: { url: res.post.url }
     })
