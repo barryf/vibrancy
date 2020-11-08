@@ -6,17 +6,17 @@ Content is served to authorised clients as [Microformats 2 JSON][mf2json]]. See 
 
 ## Status
 
-This project is currently under development and should be considered experimental and likely to change at any time. You're welcome to fork and hack on it but its primary purpose is to evolve based on my needs. Use at your own risk!
+This project is currently under development and should be considered highly experimental and likely to change at any time. You're welcome to fork and hack on it but its primary purpose is to evolve based on my needs. Use at your own risk!
 
 ## Goals
 
-- **Sub-second updates**. I'm impatient. I want near-instant updates without a rebuild cycle. My personal site has ~9K posts which even the fastest static site generators take over 10s to generate and deploy.
-- **Learn serverless, AWS and Node**. I'm used to Ruby, monoliths and RDBMSs. This is an attempt to try new technologies, learn and work around limitations.
+- **Sub-second updates**. I'm impatient. I want near-instant updates without a rebuild cycle. My personal site has ~9K posts which even the fastest static site generators take over 10s to generate and then longer to deploy.
+- **Learn serverless, AWS and Node.js**. I'm used to Ruby, monoliths and RDBMSs. This is an attempt to try new technologies, learn and work around limitations.
 - **For me to have fun!** I acknowledge the architecture is completely over-engineered for a personal website, but this is my playground so ¯\\\_(ツ)\_/¯
 
 ## How it works
 
-Vibrancy implements the Micropub server specification for posts to be created, updated, deleted and undeleted. Posts can also be read and listed via its API query interface.
+Vibrancy implements the Micropub server specification for posts to be created, updated, deleted and undeleted. Posts can also be read and queried via the API.
 
 There is no admin system. Using a third party client like [Micropublish][] or [Quill][] I can log in (via [IndieAuth][]) and administer my content.
 
@@ -65,3 +65,7 @@ Nope
 [barryfrost]: https://github.com/barryf/barryfrost
 [barryfrost.com]: https://barryfrost.com
 [micropub]: https://micropub.net
+[mf2json]: http://microformats.org/wiki/microformats2-json
+[micropublish]: https://micropublish.net
+[quill]: https://quill.p3k.io
+[indieauth]: https://www.w3.org/TR/indieauth/
