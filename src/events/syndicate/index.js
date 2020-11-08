@@ -29,6 +29,12 @@ exports.handler = async function subscribe (event) {
     }
     await data.posts.put(post)
 
+    // also update posts-public if needed
+    await arc.events.publish({
+      name: 'update-posts-public',
+      payload: { url: post.url }
+    })
+
     await arc.events.publish({
       name: 'write-github',
       payload: {
