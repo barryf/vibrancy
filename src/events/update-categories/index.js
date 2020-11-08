@@ -14,9 +14,9 @@ async function findExistingCategoriesPosts (url) {
   })
 }
 
-exports.handler = async function queue (event) {
+exports.handler = async function subscribe (event) {
   const data = await arc.tables()
-  const url = JSON.parse(event.Records[0].body).url
+  const url = JSON.parse(event.Records[0].Sns.Message).url
   const post = await data.posts.get({ url })
   const category = ('category' in post.properties)
     ? post.properties.category

@@ -14,12 +14,11 @@ post /webmention
 
 @queues
 write-github
-update-categories
-update-posts-public
 send-webmentions
 syndicate
 
 @events
+update-categories
 update-posts-public
 
 @tables
