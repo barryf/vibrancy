@@ -6,6 +6,10 @@ const tokenEndpoint = process.env.TOKEN_ENDPOINT ||
   'https://tokens.indieauth.com/token'
 
 async function requireScopes (scopes, headers, body) {
+  if (process.env.NODE_ENV !== 'production') {
+    return { statusCode: 200, scopes: ['read'] }
+  }
+
   let token = headers.Authorization || headers.authorization ||
     (body && 'access_token' in body ? body.access_token : '')
   token = token.trim().replace(/^Bearer /, '')
@@ -30,8 +34,6 @@ async function getTokenResponse (token, endpoint) {
 }
 
 const verifyTokenAndScopes = async function (token, scopes) {
-  if (process.env.NODE_ENV !== 'production') return { statusCode: 200, scopes }
-
   const data = await arc.tables()
   const tokenRecord = await data.tokens.get({ token })
   let tokenData
