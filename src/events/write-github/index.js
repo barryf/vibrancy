@@ -48,8 +48,8 @@ async function writeGitHubFile (path, method, file) {
   return await octokit.repos.createOrUpdateFileContents(params)
 }
 
-exports.handler = async function queue (event) {
-  const body = JSON.parse(event.Records[0].body)
+exports.handler = async function subscribe (event) {
+  const body = JSON.parse(event.Records[0].Sns.Message)
   const data = await arc.tables()
   let path, file
   let method = 'create'
