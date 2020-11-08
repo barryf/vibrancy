@@ -1,5 +1,6 @@
 const test = require('tape')
 const sandbox = require('@architect/sandbox')
+const arc = require('@architect/functions')
 const fetch = require('node-fetch')
 const { isValidURL } = require('../src/shared/utils')
 const url = 'http://localhost:3334/micropub'
@@ -12,7 +13,7 @@ test('start', async t => {
 
 test('set up post', async t => {
   t.plan(1)
-  const data = await sandbox.tables()
+  const data = await arc.tables()
   const post = {
     channel: 'posts',
     url: '2020/10/example',
