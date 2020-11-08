@@ -13,10 +13,10 @@ post /media
 post /webmention
 
 @queues
-send-webmentions
 syndicate
 
 @events
+send-webmentions
 update-categories
 update-posts-public
 write-github
