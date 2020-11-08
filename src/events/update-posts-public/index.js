@@ -1,8 +1,8 @@
 const arc = require('@architect/functions')
 
-exports.handler = async function queue (event) {
+exports.handler = async function subscribe (event) {
   const data = await arc.tables()
-  const url = JSON.parse(event.Records[0].body).url
+  const url = JSON.parse(event.Records[0].Sns.Message).url
   const post = await data.posts.get({ url })
 
   // remove public post if no longer public (not visible, a draft or deleted)

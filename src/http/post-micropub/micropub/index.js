@@ -71,7 +71,7 @@ async function action (scope, body) {
     })
 
     // queue public post caching
-    await arc.queues.publish({
+    await arc.events.publish({
       name: 'update-posts-public',
       payload: { url: res.post.url }
     })
