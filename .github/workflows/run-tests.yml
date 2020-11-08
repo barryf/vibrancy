@@ -22,6 +22,8 @@ jobs:
         aws-region: eu-west-2
 
     - name: Run npm tests
+      env:
+        MEDIA_ENDPOINT_URL: http://localhost:3334/
       run: |
         npm install
         npm test
