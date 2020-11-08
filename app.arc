@@ -19,6 +19,9 @@ update-posts-public
 send-webmentions
 syndicate
 
+@events
+update-posts-public
+
 @tables
 posts
   url *String
