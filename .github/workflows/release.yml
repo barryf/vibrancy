@@ -1,3 +1,5 @@
+name: Deploy to production
+
 on:
   push:
     branches:
@@ -5,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy Architect project to production
+    name: Deploy Architect project
     runs-on: ubuntu-latest
 
     steps:
