@@ -24,7 +24,7 @@ async function startup () {
     }
     await data.posts.put(post)
     await data['posts-public'].put(post)
-    await arc.queues.publish({
+    await arc.events.publish({
       name: 'update-categories',
       payload: { url: post.url }
     })
