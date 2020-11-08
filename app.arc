@@ -12,11 +12,9 @@ post /micropub
 post /media
 post /webmention
 
-@queues
-syndicate
-
 @events
 send-webmentions
+syndicate
 update-categories
 update-posts-public
 write-github

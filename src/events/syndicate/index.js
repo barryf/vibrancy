@@ -5,9 +5,9 @@ const twitter = require('./twitter')
 const pinboard = require('./pinboard')
 const microBlog = require('./micro-blog')
 
-exports.handler = async function queue (event) {
+exports.handler = async function subscribe (event) {
   const data = await arc.tables()
-  const body = JSON.parse(event.Records[0].body)
+  const body = JSON.parse(event.Records[0].Sns.Message)
 
   if (body.syndicateTo) {
     const post = await data.posts.get({ url: body.url })
