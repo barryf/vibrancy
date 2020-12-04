@@ -16,6 +16,8 @@ jobs:
 
     - name: Install Ruby
       uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.5'
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
