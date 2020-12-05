@@ -1,11 +1,12 @@
+.DS_Store
 node_modules
 
 .arc-env
+.env
+preferences.arc
 sam.json
 sam.yaml
 .sam.yaml.swp
-
-.DS_Store
 
 .bundle
 vendor
