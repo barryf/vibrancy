@@ -57,6 +57,17 @@ async function action (scope, body) {
 
     await data.posts.put(res.post)
 
+    // remove public post if no longer public (not visible, a draft or deleted)
+    if (
+      ('visibility' in res.post.properties && res.post.properties.visibility[0] !== 'public') ||
+      ('post-status' in res.post.properties && res.post.properties['post-status'][0] === 'draft') ||
+      ('deleted' in res.post.properties)
+    ) {
+      await data['posts-public'].delete({ url: res.post.url })
+    } else {
+      await data['posts-public'].put(res.post)
+    }
+
     await arc.events.publish({
       name: 'write-github',
       payload: {
@@ -64,11 +75,6 @@ async function action (scope, body) {
         url: res.post.url,
         method: scope
       }
-    })
-
-    await arc.events.publish({
-      name: 'update-posts-public',
-      payload: { url: res.post.url }
     })
 
     await arc.events.publish({
