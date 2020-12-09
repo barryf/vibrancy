@@ -14,14 +14,13 @@ async function findExistingCategoriesPosts (url) {
   })
 }
 
-exports.handler = async function subscribe (event) {
+async function updateCategories (post) {
   const data = await arc.tables()
-  const url = JSON.parse(event.Records[0].Sns.Message).url
-  const post = await data.posts.get({ url })
+
   const category = ('category' in post.properties)
     ? post.properties.category
     : []
-  const existingCategoriesPosts = await findExistingCategoriesPosts(url)
+  const existingCategoriesPosts = await findExistingCategoriesPosts(post.url)
 
   // is this post private, i.e. not visible, a draft or deleted?
   // delete any matching categories-posts records if so
@@ -57,3 +56,5 @@ exports.handler = async function subscribe (event) {
     }
   })
 }
+
+module.exports = { updateCategories }
