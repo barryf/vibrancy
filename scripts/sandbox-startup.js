@@ -24,10 +24,14 @@ async function startup () {
     }
     await data.posts.put(post)
     await data['posts-public'].put(post)
-    await arc.events.publish({
-      name: 'update-categories',
-      payload: { url: post.url }
-    })
+    if (post.properties.category) {
+      post.properties.category.forEach(async cat => {
+        await data['categories-posts'].put({
+          cat,
+          ...post
+        })
+      })
+    }
   })
 
   const webmentions = [

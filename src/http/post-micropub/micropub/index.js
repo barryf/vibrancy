@@ -57,45 +57,14 @@ async function action (scope, body) {
 
     await data.posts.put(res.post)
 
-    // remove public post if no longer public (not visible, a draft or deleted)
-    if (
-      ('visibility' in res.post.properties && res.post.properties.visibility[0] !== 'public') ||
-      ('post-status' in res.post.properties && res.post.properties['post-status'][0] === 'draft') ||
-      ('deleted' in res.post.properties)
-    ) {
-      await data['posts-public'].delete({ url: res.post.url })
-    } else {
-      await data['posts-public'].put(res.post)
-    }
-
+    // async tasks after post is created/updated
     await arc.events.publish({
-      name: 'write-github',
+      name: 'process-post',
       payload: {
-        folder: res.post.channel,
         url: res.post.url,
-        method: scope
+        syndicateTo,
+        scope
       }
-    })
-
-    await arc.events.publish({
-      name: 'update-categories',
-      payload: { url: res.post.url }
-    })
-
-    // queue syndication if requested
-    if (syndicateTo) {
-      await arc.events.publish({
-        name: 'syndicate',
-        payload: {
-          url: res.post.url,
-          syndicateTo
-        }
-      })
-    }
-
-    await arc.events.publish({
-      name: 'send-webmentions',
-      payload: { url: res.post.url }
     })
   }
 

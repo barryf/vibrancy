@@ -3,7 +3,7 @@ vibrancy
 
 @aws
 region eu-west-2
-concurrency 10
+concurrency 2
 
 @http
 get /
@@ -14,9 +14,8 @@ post /media
 post /webmention
 
 @events
+process-post
 send-webmentions
-syndicate
-update-categories
 write-github
 
 @tables

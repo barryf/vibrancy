@@ -1,14 +1,12 @@
-const arc = require('@architect/functions')
-
-// require syndicators
 const twitter = require('./twitter')
 const pinboard = require('./pinboard')
 const microBlog = require('./micro-blog')
 
-async function addSyndications (post, syndicateTo) {
+async function syndicate (post, syndicateTo) {
   if (!('syndication' in post.properties)) {
     post.properties.syndication = []
   }
+
   // iterate over each syndicateTo url
   for (const syndication of syndicateTo) {
     let url
@@ -30,37 +28,4 @@ async function addSyndications (post, syndicateTo) {
   }
 }
 
-exports.handler = async function subscribe (event) {
-  const data = await arc.tables()
-  const body = JSON.parse(event.Records[0].Sns.Message)
-
-  if (!body.syndicateTo) {
-    console.log('No "syndicateTo" was included in event message.')
-    return
-  }
-
-  if (!body.url) {
-    console.log('No "url" was included in event message.')
-  }
-
-  const post = await data.posts.get({ url: body.url })
-
-  await addSyndications(post, body.syndicateTo)
-
-  // update post and posts-public
-  await data.posts.put(post)
-
-  await arc.events.publish({
-    name: 'update-posts-public',
-    payload: { url: post.url }
-  })
-
-  await arc.events.publish({
-    name: 'write-github',
-    payload: {
-      folder: post.channel,
-      url: post.url,
-      method: 'update'
-    }
-  })
-}
+module.exports = { syndicate }
