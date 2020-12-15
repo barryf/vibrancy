@@ -20,29 +20,6 @@ function setBefore (opts, params) {
   }
 }
 
-// function setStatusAndVisibility (opts, params, scopes = []) {
-//   // if we've *only* granted read access then enforce privacy
-//   if (scopes.length === 1 && scopes[0] === 'read') {
-//     if ('FilterExpression' in opts) {
-//       opts.FilterExpression = opts.FilterExpression + ' AND '
-//     } else {
-//       opts.FilterExpression = ''
-//     }
-//     opts.FilterExpression = opts.FilterExpression +
-//       ' (visibility = :visibility ' +
-//       ' OR attribute_not_exists(visibility)' +
-//       ' ) AND (#postStatus = :postStatus' +
-//       ' OR attribute_not_exists(#postStatus))'
-//     opts.ExpressionAttributeNames = ('ExpressionAttributeNames' in opts)
-//       ? opts.ExpressionAttributeNames : {}
-//     opts.ExpressionAttributeNames['#postStatus'] = 'post-status'
-//     opts.ExpressionAttributeValues = ('ExpressionAttributeValues' in opts)
-//       ? opts.ExpressionAttributeValues : {}
-//     opts.ExpressionAttributeValues[':visibility'] = 'public'
-//     opts.ExpressionAttributeValues[':postStatus'] = 'published'
-//   }
-// }
-
 function isPublicClient (scopes) {
   return (scopes.length === 1 && scopes[0] === 'read')
 }
