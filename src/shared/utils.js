@@ -63,19 +63,8 @@ function isValidURL (string) {
   return true
 }
 
-function jsonify (value, statusCode = 200) {
-  return {
-    headers: {
-      'Content-Type': 'application/json; utf-8'
-    },
-    statusCode,
-    body: JSON.stringify(value)
-  }
-}
-
 module.exports = {
   derivePostType,
   isValidURL,
-  jsonify,
   reservedUrls
 }

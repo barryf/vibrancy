@@ -1,6 +1,5 @@
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
-const { jsonify } = require('./utils')
 
 const tokenEndpoint = process.env.TOKEN_ENDPOINT ||
   'https://tokens.indieauth.com/token'
@@ -14,10 +13,13 @@ async function requireScopes (scopes, headers, body) {
     (body && 'access_token' in body ? body.access_token : '')
   token = token.trim().replace(/^Bearer /, '')
   if (token === '') {
-    return jsonify({
-      error: 'unauthorized',
-      error_description: 'Request is missing an access token.'
-    }, 401)
+    return {
+      json: {
+        error: 'unauthorized',
+        error_description: 'Request is missing an access token.'
+      },
+      status: 401
+    }
   }
   return await verifyTokenAndScopes(token, scopes)
 }
@@ -45,11 +47,14 @@ const verifyTokenAndScopes = async function (token, scopes) {
       tokenEndpoint
     )
     if (!tokenData || tokenData.me !== process.env.ME_URL) {
-      return jsonify({
-        error: 'forbidden',
-        error_description: 'The authenticated user does not have permission' +
-          ' to perform this request.'
-      }, 403)
+      return {
+        json: {
+          error: 'forbidden',
+          error_description: 'The authenticated user does not have permission' +
+            ' to perform this request.'
+        },
+        status: 403
+      }
     }
     await data.tokens.put({ token, data: tokenData })
   }
@@ -63,11 +68,14 @@ const verifyTokenAndScopes = async function (token, scopes) {
       }
     }
   }
-  return jsonify({
-    error: 'insufficient_scope',
-    error_description: 'The user does not have sufficient scope to perform' +
-      ' this action.'
-  }, 401)
+  return {
+    json: {
+      error: 'insufficient_scope',
+      error_description: 'The user does not have sufficient scope to perform' +
+        ' this action.'
+    },
+    status: 401
+  }
 }
 
 module.exports = { requireScopes }

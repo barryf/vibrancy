@@ -1,5 +1,4 @@
 const arc = require('@architect/functions')
-const { jsonify } = require('@architect/shared/utils')
 
 function postToMf2 (post) {
   if ('deleted' in post && post.deleted) {
@@ -39,10 +38,13 @@ exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
   if (!('secret' in body) || body.secret !== process.env.WEBMENTION_IO_SECRET) {
-    return jsonify({
-      error: 'unauthorized',
-      error_description: 'Secret does not match.'
-    }, 403)
+    return {
+      json: {
+        error: 'unauthorized',
+        error_description: 'Secret does not match.'
+      },
+      status: 403
+    }
   }
 
   const webmention = {

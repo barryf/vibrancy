@@ -1,6 +1,6 @@
 const arc = require('@architect/functions')
 const auth = require('@architect/shared/auth')
-const { jsonify, isValidURL } = require('@architect/shared/utils')
+const { isValidURL } = require('@architect/shared/utils')
 const config = require('./config')
 const query = require('./query')
 const { setWebmentions } = require('./webmentions')
@@ -9,19 +9,25 @@ async function getPost (params, scopes) {
   const url = params.url.replace(process.env.ROOT_URL, '')
   const postData = await query.getPost(url, scopes)
   if (postData === undefined) {
-    return jsonify({
-      error: 'not_found',
-      error_description: 'Post was not found'
-    }, 404)
+    return {
+      json: {
+        error: 'not_found',
+        error_description: 'Post was not found'
+      },
+      status: 404
+    }
   }
   const post = { ...postData }
   if ('deleted' in post.properties) {
-    return jsonify({
-      error: 'gone',
-      error_description: 'This post is no longer available.',
-      type: 'entry',
-      properties: { deleted: post.properties.deleted[0] }
-    }, 410)
+    return {
+      json: {
+        error: 'gone',
+        error_description: 'This post is no longer available.',
+        type: 'entry',
+        properties: { deleted: post.properties.deleted[0] }
+      },
+      status: 410
+    }
   }
   await setWebmentions(post)
   return {
@@ -49,10 +55,13 @@ async function findPostItems (params, scopes) {
 async function source (params, scopes) {
   if (!('url' in params)) return findPostItems(params, scopes)
   if (!isValidURL(params.url)) {
-    return jsonify({
-      error: 'invalid_parameter',
-      error_description: 'URL parameter is invalid'
-    }, 400)
+    return {
+      json: {
+        error: 'invalid_parameter',
+        error_description: 'URL parameter is invalid'
+      },
+      status: 400
+    }
   }
   return getPost(params, scopes)
 }
