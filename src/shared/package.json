@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@architect/functions": "^3.12.1",
-    "node-fetch": "^2.6.1"
-  }
-}

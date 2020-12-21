@@ -6,11 +6,19 @@
     "start": "PORT=3333 arc sandbox",
     "test": "NODE_ENV=testing PORT=3334 tape test/*-test.js | tap-spec"
   },
-  "devDependencies": {
-    "@architect/functions": "^3.13.6",
-    "@architect/sandbox": "^2.0.1",
-    "aws-sdk": "^2.815.0",
+  "dependencies": {
+    "@architect/architect": "^8.4.2",
+    "@architect/functions": "^3.13.8",
+    "@octokit/rest": "^18.0.3",
+    "brevity": "^0.2.9",
+    "cloudinary": "^1.23.0",
+    "lambda-multipart-parser": "0.0.2",
     "node-fetch": "^2.6.1",
+    "twit": "^2.2.11"
+  },
+  "devDependencies": {
+    "@architect/sandbox": "^2.0.4",
+    "aws-sdk": "^2.815.0",
     "tap-spec": "^5.0.0",
     "tape": "^5.0.1"
   },
