@@ -3,7 +3,7 @@ vibrancy
 
 @aws
 region eu-west-2
-concurrency 2
+concurrency 100
 
 @http
 get /
