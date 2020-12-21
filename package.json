@@ -9,7 +9,7 @@
   "devDependencies": {
     "@architect/functions": "^3.13.6",
     "@architect/sandbox": "^2.0.1",
-    "aws-sdk": "^2.766.0",
+    "aws-sdk": "^2.815.0",
     "node-fetch": "^2.6.1",
     "tap-spec": "^5.0.0",
     "tape": "^5.0.1"
