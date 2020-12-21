@@ -1,11 +1,30 @@
 module.exports = [
   {
     type: 'note',
-    name: 'Note'
+    name: 'Note',
+    properties: [
+      'content',
+      'category',
+      'post-status',
+      'visibility'
+    ],
+    'required-properties': [
+      'content'
+    ]
   },
   {
     type: 'article',
-    name: 'Article'
+    name: 'Article',
+    properties: [
+      'name',
+      'content',
+      'category',
+      'post-status',
+      'visibility'
+    ],
+    'required-properties': [
+      'content'
+    ]
   },
   {
     type: 'bookmark',
@@ -16,14 +35,6 @@ module.exports = [
     name: 'Photo'
   },
   {
-    type: 'checkin',
-    name: 'Checkin'
-  },
-  {
-    type: 'repost',
-    name: 'Repost'
-  },
-  {
     type: 'like',
     name: 'Like'
   },
@@ -32,7 +43,15 @@ module.exports = [
     name: 'Reply'
   },
   {
+    type: 'repost',
+    name: 'Repost'
+  },
+  {
     type: 'rsvp',
     name: 'RSVP'
+  },
+  {
+    type: 'checkin',
+    name: 'Checkin'
   }
 ]

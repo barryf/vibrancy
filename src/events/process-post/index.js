@@ -1,20 +1,7 @@
 const arc = require('@architect/functions')
-const { syndicate } = require('./syndicate')
-const { updateCategories } = require('./update-categories')
-
-async function updatePostsPublic (post) {
-  const data = await arc.tables()
-
-  if (
-    ('visibility' in post.properties && post.properties.visibility[0] !== 'public') ||
-    ('post-status' in post.properties && post.properties['post-status'][0] === 'draft') ||
-    ('deleted' in post.properties)
-  ) {
-    await data['posts-public'].delete({ url: post.url })
-  } else {
-    await data['posts-public'].put(post)
-  }
-}
+const dataPosts = require('@architect/shared/data-posts')
+const syndicate = require('./syndicate')
+const updateCategories = require('./update-categories')
 
 exports.handler = async function subscribe (event) {
   const data = await arc.tables()
@@ -25,17 +12,14 @@ exports.handler = async function subscribe (event) {
 
   const post = await data.posts.get({ url })
 
-  // remove public post if no longer public (not visible, a draft or deleted)
-  await updatePostsPublic(post)
-
   // loop over categories, adding/removing as appropriate
   await updateCategories(post)
 
   // syndicate if requested
   if (syndicateTo) {
     await syndicate(post, syndicateTo)
-    // update post with syndications
-    await data.posts.put(post)
+    // update posts and posts-public with syndications
+    await dataPosts.put(post)
   }
 
   // fire webmentions asynchronously via ruby

@@ -57,4 +57,4 @@ async function updateCategories (post) {
   })
 }
 
-module.exports = { updateCategories }
+module.exports = updateCategories

@@ -28,4 +28,4 @@ async function syndicate (post, syndicateTo) {
   }
 }
 
-module.exports = { syndicate }
+module.exports = syndicate

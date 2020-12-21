@@ -1,4 +1,5 @@
 const arc = require('@architect/functions')
+const dataPosts = require('@architect/shared/data-posts')
 const create = require('./create')
 const update = require('./update')
 const deletePost = require('./delete')
@@ -28,8 +29,6 @@ function sanitise (post) {
 }
 
 async function action (scope, body) {
-  const data = await arc.tables()
-
   let res
   if (scope === 'create' || scope === 'draft') {
     res = await create(scope, body)
@@ -55,7 +54,7 @@ async function action (scope, body) {
     }
     sanitise(res.post)
 
-    await data.posts.put(res.post)
+    await dataPosts.put(res.post)
 
     // async tasks after post is created/updated
     await arc.events.publish({
