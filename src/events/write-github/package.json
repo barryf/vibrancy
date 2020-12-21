@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@architect/functions": "^3.12.3",
-    "@octokit/rest": "^18.0.3",
-    "node-fetch": "^2.6.1"
-  }
-}
