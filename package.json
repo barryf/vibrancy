@@ -10,6 +10,7 @@
     "@architect/architect": "^8.4.2",
     "@architect/functions": "^3.13.8",
     "@octokit/rest": "^18.0.3",
+    "@remy/webmention": "^1.4.5",
     "brevity": "^0.2.9",
     "cloudinary": "^1.23.0",
     "lambda-multipart-parser": "0.0.2",
