@@ -16,8 +16,8 @@ async function putPostsPublic (post) {
 
 async function put (post) {
   const data = await arc.tables()
-  data.posts.put(post)
-  putPostsPublic(post)
+  await data.posts.put(post)
+  await putPostsPublic(post)
 }
 
 module.exports = { put }
