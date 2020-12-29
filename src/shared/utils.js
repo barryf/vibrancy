@@ -63,8 +63,22 @@ function isValidURL (string) {
   return true
 }
 
+function findContexts (post) {
+  const urls = []
+  for (const prop of ['in-reply-to', 'repost-of', 'like-of', 'bookmark-of']) {
+    if ((prop in post.properties) && Array.isArray(post.properties[prop])) {
+      for (const i in post.properties[prop]) {
+        const url = post.properties[prop][i]
+        if (isValidURL(url)) urls.push(url)
+      }
+    }
+  }
+  return urls
+}
+
 module.exports = {
   derivePostType,
   isValidURL,
+  findContexts,
   reservedUrls
 }

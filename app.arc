@@ -17,6 +17,7 @@ post /webmention
 process-post
 send-webmentions
 write-github
+fetch-context
 
 @tables
 posts
@@ -32,6 +33,8 @@ categories-posts
   cat *String
   url **String
 media
+  url *String
+contexts
   url *String
 
 @indexes

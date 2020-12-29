@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const dataPosts = require('@architect/shared/data-posts')
+const { findContexts } = require('@architect/shared/utils')
 const syndicate = require('./syndicate')
 const updateCategories = require('./update-categories')
 
@@ -22,13 +23,13 @@ exports.handler = async function subscribe (event) {
     await dataPosts.put(post)
   }
 
-  // fire webmentions asynchronously via ruby
+  // fire webmentions asynchronously
   await arc.events.publish({
     name: 'send-webmentions',
     payload: { url }
   })
 
-  // finally write to github
+  // write to github
   await arc.events.publish({
     name: 'write-github',
     payload: {
@@ -37,4 +38,12 @@ exports.handler = async function subscribe (event) {
       method: scope
     }
   })
+
+  // fetch any contexts from the post
+  for (const contextUrl of findContexts(post)) {
+    await arc.events.publish({
+      name: 'fetch-context',
+      payload: { url: contextUrl }
+    })
+  }
 }

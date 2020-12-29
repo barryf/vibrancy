@@ -4,6 +4,7 @@ const { isValidURL } = require('@architect/shared/utils')
 const config = require('./config')
 const query = require('./query')
 const { setWebmentions } = require('./webmentions')
+const { setContexts } = require('./contexts')
 
 async function getPost (params, scopes) {
   const url = params.url.replace(process.env.ROOT_URL, '')
@@ -30,6 +31,7 @@ async function getPost (params, scopes) {
     }
   }
   await setWebmentions(post)
+  await setContexts(post)
   return {
     type: ['h-entry'],
     'post-type': [post['post-type']],
