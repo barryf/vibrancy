@@ -18,7 +18,7 @@ async function requireScopes (scopes, headers, body) {
         error: 'unauthorized',
         error_description: 'Request is missing an access token.'
       },
-      status: 401
+      statusCode: 401
     }
   }
   return await verifyTokenAndScopes(token, scopes)
@@ -53,7 +53,7 @@ const verifyTokenAndScopes = async function (token, scopes) {
           error_description: 'The authenticated user does not have permission' +
             ' to perform this request.'
         },
-        status: 403
+        statusCode: 403
       }
     }
     await data.tokens.put({ token, data: tokenData })
@@ -74,7 +74,7 @@ const verifyTokenAndScopes = async function (token, scopes) {
       error_description: 'The user does not have sufficient scope to perform' +
         ' this action.'
     },
-    status: 401
+    statusCode: 401
   }
 }
 

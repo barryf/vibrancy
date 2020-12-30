@@ -15,7 +15,7 @@ async function getPost (params, scopes) {
         error: 'not_found',
         error_description: 'Post was not found'
       },
-      status: 404
+      statusCode: 404
     }
   }
   const post = { ...postData }
@@ -27,7 +27,7 @@ async function getPost (params, scopes) {
         type: 'entry',
         properties: { deleted: post.properties.deleted[0] }
       },
-      status: 410
+      statusCode: 410
     }
   }
   await setWebmentions(post)
@@ -62,7 +62,7 @@ async function source (params, scopes) {
         error: 'invalid_parameter',
         error_description: 'URL parameter is invalid'
       },
-      status: 400
+      statusCode: 400
     }
   }
   return getPost(params, scopes)
