@@ -53,7 +53,7 @@ const verifyTokenAndScopes = async function (token, scopes) {
           error_description: 'The authenticated user does not have permission' +
             ' to perform this request.'
         },
-        statusCode: 403
+        statusCode: 401
       }
     }
     await data.tokens.put({ token, data: tokenData })
