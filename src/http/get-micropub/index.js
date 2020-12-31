@@ -33,7 +33,7 @@ async function getPost (params, scopes) {
   await setWebmentions(post)
   await setContexts(post)
   return {
-    type: ['h-entry'],
+    type: [post.type],
     'post-type': [post['post-type']],
     properties: post.properties
   }
@@ -46,7 +46,7 @@ async function findPostItems (params, scopes) {
     post.url = `${process.env.ROOT_URL}${post.url}`
     return {
       url: [post.url],
-      type: ['h-entry'],
+      type: [post.type],
       'post-type': [post['post-type']],
       properties: post.properties
     }
