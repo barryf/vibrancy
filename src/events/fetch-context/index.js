@@ -23,7 +23,8 @@ async function fetchContext (url) {
     return null
   }
   const mf2 = await response.json()
-  if (!('items' in mf2)) return null
+  console.log('mf2', mf2)
+  if (!('items' in mf2) || !mf2.items.length) return null
   return mf2.items[0].properties
 }
 
