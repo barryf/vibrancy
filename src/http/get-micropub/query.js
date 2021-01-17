@@ -143,7 +143,7 @@ async function findWebmentions (absoluteUrl) {
   const data = await arc.tables()
   return await data.webmentions.query({
     IndexName: 'target-published-index',
-    ScanIndexForward: false,
+    ScanIndexForward: true,
     KeyConditionExpression: 'target = :target',
     ExpressionAttributeValues: {
       ':target': absoluteUrl
