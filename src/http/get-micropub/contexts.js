@@ -10,11 +10,18 @@ async function setContexts (post) {
         const url = post.properties[prop][i]
         if (isValidURL(url)) {
           const context = await data.contexts.get({ url })
-          if (context && context.properties) {
-            post.properties[prop][i] = {
-              type: ['h-cite'],
-              properties: { url: [url], ...context.properties }
+          if (context) {
+            if (context.properties) {
+              post.properties[prop][i] = {
+                type: ['h-cite'],
+                properties: { url: [url], ...context.properties }
+              }
             }
+          } else {
+            await arc.events.publish({
+              name: 'fetch-context',
+              payload: { url }
+            })
           }
         }
       }
