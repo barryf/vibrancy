@@ -15,8 +15,8 @@ async function startup () {
     const postType = item.properties['entry-type'][0].replace(/^h-/, '')
     delete properties['entry-type']
     const post = {
-      channel: 'posts',
-      url: item.url,
+      channel: item.channel ? item.channel[0] : 'posts',
+      url: item.url[0],
       published: item.properties.published[0],
       'post-type': postType,
       type: item.type[0],

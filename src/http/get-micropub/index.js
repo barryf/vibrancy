@@ -34,6 +34,7 @@ async function getPost (params, scopes) {
   await setContexts(post)
   return {
     type: [post.type],
+    channel: [post.channel || 'posts'],
     'post-type': [post['post-type']],
     properties: post.properties
   }

@@ -1,7 +1,7 @@
 {
   "items": [
     {
-      "url": "2020/09/29-180505",
+      "url": ["2020/09/29-180505"],
       "type": [
         "h-entry"
       ],
@@ -79,7 +79,7 @@
       }
     },
     {
-      "url": "2020/10/balazsbotond-urlcat",
+      "url": ["2020/10/balazsbotond-urlcat"],
       "type": [
         "h-entry"
       ],
@@ -107,7 +107,7 @@
       }
     },
     {
-      "url": "2020/08/source-control-in-the-1980s-using",
+      "url": ["2020/08/source-control-in-the-1980s-using"],
       "type": [
         "h-entry"
       ],
@@ -131,7 +131,7 @@
       }
     },
     {
-      "url": "2018/04/leaving-venntro",
+      "url": ["2018/04/leaving-venntro"],
       "type": [
         "h-entry"
       ],
@@ -166,7 +166,7 @@
       }
     },
     {
-      "url": "2019/09/in-enemy-territory-for-a-meeting",
+      "url": ["2019/09/in-enemy-territory-for-a-meeting"],
       "type": [
         "h-entry"
       ],
@@ -256,7 +256,7 @@
       }
     },
     {
-      "url": "2020/06/and-even-better-the-audio-at",
+      "url": ["2020/06/and-even-better-the-audio-at"],
       "type": [
         "h-entry"
       ],
@@ -280,7 +280,7 @@
       }
     },
     {
-      "url": "2020/03/14-131846",
+      "url": ["2020/03/14-131846"],
       "type": [
         "h-entry"
       ],
@@ -304,7 +304,7 @@
       }
     },
     {
-      "url": "2020/03/25-203756",
+      "url": ["2020/03/25-203756"],
       "type": [
         "h-entry"
       ],
@@ -325,13 +325,14 @@
       }
     },
     {
-      "url": "2016/11/colophon",
+      "url": ["about"],
+      "channel": ["pages"],
       "type": [
         "h-entry"
       ],
       "properties": {
         "name": [
-          "Colophon or basically the README for this site's engine's predecessor, Transformative"
+          "About"
         ],
         "content": [
           "Transformative is a microblogging engine that powers my personal website [barryfrost.com][bf]. It's written in Ruby and supports several key [IndieWeb][] technologies as detailed below.\r\n\r\nAll my notes, articles, bookmarks, photos and more are hosted on my personal domain rather than in someone else's silo. I can choose how it looks and works while having fun building it for myself.\r\n\r\n## IndieWeb\r\n\r\n- [Microformats2][] (h-entry, h-event, h-cite, h-card)\r\n- [Webmention][] sending and receiving\r\n- [Micropub][] create, update and delete/undelete\r\n- [POSSE][] syndication to Twitter via [Silo.pub][silopub] and Pinboard\r\n- Reply-/repost-/like- [contexts][] fetched and displayed above posts\r\n- [Backfeed][] of replies, reposts and likes imported via [Brid.gy][bridgy]\r\n- Authorisation via [IndieAuth][] and [`rel=me`][relme]\r\n- [PubSub(HubBub)][pubsub] hub pinging\r\n- [`person-tag`][persontag] support\r\n\r\nImplementation reports are available showing Transformative's compliance with the [Webmention][wm-ir] and [Micropub][mp-ir] specifications.\r\n\r\n## How it works\r\n\r\nTransformative has several parts. The most obvious is a [Sinatra][] web app that serves content from a database cache. It also exposes APIs so that compatible clients can create and edit content. Posts are first stored as flat JSON files in a git repository and then sucked down into the database and cached. Any external contexts, replies, likes and reposts are also imported.\r\n\r\n### Storage\r\n\r\nAll content is stored on GitHub in my [content][] repo. Whenever a file is added or changed, either via a Micropub post to my endpoint or via a git push, GitHub notifies Transformative via a webhook.\r\n\r\nThe post is then pulled from GitHub and copied to a local Postgres database as a full [Microformats2 JSON][mf2json] document. Note: this database is a cache that can be rebuilt from the content repo at any time; the canonical store for all content is the GitHub repo.\r\n\r\nImages and other media files are also stored in the content repo but are copied to and served from an Amazon S3 bucket.\r\n\r\n### Micropub\r\n\r\nRather than build an admin system for creating and modifying posts, I've attempted to do without. I've exposed an API endpoint that's compliant with the Micropub specification for posting and editing using a compatible third-party app.\r\n\r\nUsing a tool like [Quill][] or [Micropublish][] I can log in and then post notes, bookmarks and likes to my site. A successful post is stored on GitHub and cached on my server which then fires off any webmentions, syndicates to silos like Twitter and fetches reply/repost/like contexts for display if appropriate.\r\n\r\nAlternatively, I can write (or edit) a post as a file and simply push via git to my GitHub content repo and Transformative pulls it down and does the rest.\r\n\r\n### Webmentions\r\n\r\nInstead of a comments form, my site supports replies, reposts, likes or mentions via Webmention from another IndieWeb site. If someone wants to respond to a post they can write a note on their own site using Microformats2 h-entry markup and send a webmention ping to my endpoint.\r\n\r\nThe commenter's h-entry will then be parsed, stored and added underneath my post with an icon indicating its type. Further webmentions from the same permalink will update or remove it if the link (or the whole post) is gone.\r\n\r\nAnd using the magic of [Bridgy][], responses to my tweets, Facebook posts and Instagram photos that have been syndicated from my site are pulled back in as webmentions.\r\n\r\n## Requirements\r\n\r\n- Ruby 2.3.1 or newer\r\n- PostgreSQL 9.4 or newer -- required for its JSONB support\r\n- GitHub account -- post canonical storage\r\n- AWS S3 bucket -- media file hosting\r\n\r\n## Installation\r\n\r\nTransformative currently powers my personal site but should be considered experimental and likely to change at any time. You're welcome to fork and hack on it but its primary purpose is to evolve based on my needs. Use at your own risk!\r\n\r\n### Hosting\r\n\r\nI recommend hosting Transformative with [Heroku][]. I started building a new VPS with this setup and realised I could save myself the time by using a relatively cheap Heroku instance.\r\n\r\n### Database\r\n\r\nCreate a fresh database instance with one table named `posts`:\r\n\r\n    # CREATE TABLE posts (url VARCHAR(255) PRIMARY KEY, data JSONB);\r\n\r\n### GitHub\r\n\r\n1. Create a public repo in GitHub (suggested name: \"content\")\r\n2. Create a new webhook under this repo\r\n- Payload URL: your Micropub endpoint, e.g. https://barryfrost.com/micropub\r\n- Content type: `application/json`\r\n- Secret: Generate/decide on a secure password or token to use when setting `GITHUB_SECRET`\r\n- Select just the `push` event\r\n1. Generate a Personal Access Token with repo permissions and keep a note of it to use when setting `GITHUB_ACCESS_TOKEN `.\r\n\r\n### Environment variables\r\n\r\nYou will need to define the following environment variables:\r\n\r\n- `SITE_URL` e.g. https://barryfrost.com/\r\n- `MEDIA_URL` e.g. https://barryfrost-media.s3.amazonaws.com/\r\n- `GITHUB_USER` e.g. barryf\r\n- `GITHUB_REPO` -- name of an empty repo to use as your content store\r\n- `GITHUB_ACCESS_TOKEN` -- a personal access token generated from your GitHub account\r\n- `GITHUB_SECRET` -- a (strong) random password/token you've generated for the webhook\r\n- `SILOPUB_TWITTER_TOKEN` -- a token generated by SiloPub when syndicating to Twitter\r\n- `DATABASE_URL` -- your Postgres connection (Heroku will create this for you on deploy)\r\n\r\nOptional variables:\r\n\r\n- `CAMO_KEY` -- your [Camo][] instance private key\r\n- `PUSHOVER_USER`, `PUSHOVER_TOKEN` -- account details for use with Pushover\r\n- `PINBOARD_AUTH_TOKEN` -- Pinboard API key\r\n- `PUBSUBHUBBUB_HUB` e.g. https://barryfrost.superfeedr.com\r\n\r\n<br>\r\n\r\n_You can view the [source code for Transformative][source] on GitHub._\r\n\r\n[bf]: https://barryfrost.com\r\n[indieweb]: https://indieweb.org\r\n[microformats2]: http://microformats.org/wiki/microformats2\r\n[webmention]: https://webmention.net\r\n[micropub]: https://micropub.net\r\n[backfeed]: http://indieweb.org/backfeed\r\n[posse]: http://indieweb.org/POSSE\r\n[silopub]: https://silo.pub\r\n[contexts]: http://indieweb.org/reply-context\r\n[indieauth]: https://indieauth.com\r\n[relme]: http://indieweb.org/rel-me\r\n[pubsub]: http://indieweb.org/pubsub\r\n[persontag]: http://indieweb.org/person-tag\r\n[wm-ir]: https://github.com/w3c/webmention/blob/master/implementation-reports/transformative.md\r\n[mp-ir]: https://micropub.rocks/implementation-report/server/30/Qr4kVp0CSxFGY9Zfpsfh\r\n[sinatra]: sinatrarb.com\r\n[content]: https://github.com/barryf/content\r\n[mf2json]: http://microformats.org/wiki/microformats2-parsing\r\n[quill]: https://quill.p3k.io\r\n[micropublish]: https://micropublish.net\r\n[bridgy]: https://brid.gy\r\n[heroku]: https://www.heroku.com\r\n[camo]: https://github.com/atmos/camo\r\n[source]: https://github.com/barryf/transformative\r\n"
