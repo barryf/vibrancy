@@ -1,4 +1,5 @@
 const reservedUrls = `
+  all
   notes
   articles
   bookmarks
