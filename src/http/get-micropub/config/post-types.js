@@ -23,6 +23,7 @@ module.exports = [
       'visibility'
     ],
     'required-properties': [
+      'name',
       'content'
     ]
   },
