@@ -10,15 +10,15 @@ function deriveUrl (post) {
   if ('mp-slug' in post.properties &&
     post.properties['mp-slug'][0] !== '' &&
     post.properties['mp-slug'][0].match(/^\/?[a-z0-9][a-z0-9/-]*$/)) {
-    // if we have a leading slash then this is a top-level page
-    if (post.properties['mp-slug'][0].substr(0, 1) === '/') {
-      return post.properties['mp-slug'][0].substr(1,
-        post.properties['mp-slug'][0].length - 1)
+    // is this a page and we've got a slug - just use that
+    if ('mp-channel' in post.properties &&
+      !reservedUrls.includes(post.properties['mp-slug'][0]) &&
+      post.properties['mp-channel'][0] === 'pages') {
+      return post.properties['mp-slug'][0]
     } else {
       slug = post.properties['mp-slug'][0]
     }
   }
-  // convert published string to a date object and construct yyyy/mm prefix
   const published = new Date(post.properties.published[0])
   const yyyy = published.getFullYear().toString()
   const m = (published.getMonth() + 1).toString()
@@ -76,6 +76,8 @@ function formatPost (body) {
   post.properties.published = [('published' in post.properties)
     ? post.properties.published[0]
     : new Date().toISOString()]
+  // store type as simple value
+  post.type = post.type[0]
   post.url = deriveUrl(post)
   post['post-type'] = derivePostType(post)
   return post
