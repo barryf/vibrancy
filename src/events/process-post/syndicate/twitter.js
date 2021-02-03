@@ -55,9 +55,14 @@ function generateStatus (post, mediaIds = null) {
 
   // add in-reply-to if appropriate
   if (post.properties['in-reply-to']) {
-    // TODO: the twitter reply might not be first element
-    const replyTo = post.properties['in-reply-to'][0]
-    if (replyTo.indexOf('twitter.com') > -1) {
+    let replyTo
+    for (const r of post.properties['in-reply-to']) {
+      if (r.indexOf('twitter.com') > -1) {
+        replyTo = r
+        break
+      }
+    }
+    if (replyTo) {
       const parsedUrl = new URL(replyTo)
       const statusId = tweetIdFromUrl(replyTo)
       status.in_reply_to_status_id = statusId
