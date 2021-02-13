@@ -39,11 +39,13 @@ async function updateCategories (post) {
   }
 
   // add categories-posts records for each of the post's categories
+  // and a category record to the master list of categories
   category.forEach(async cat => {
     await data['categories-posts'].put({
       cat,
       ...post
     })
+    await data.categories.put({ cat })
   })
 
   // remove any categories-posts records which no longer exist for this post

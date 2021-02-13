@@ -35,6 +35,8 @@ media
   url *String
 contexts
   url *String
+categories
+  cat *String
 
 @indexes
 posts

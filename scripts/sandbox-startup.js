@@ -30,6 +30,7 @@ async function startup () {
           cat,
           ...post
         })
+        await data.categories.put({ cat })
       })
     }
   })
