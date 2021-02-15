@@ -51,6 +51,9 @@ posts-public
 posts-public
   channel *String
   published **String
+posts-public
+  homepage *Number
+  published **String
 webmentions
   target *String
   published **String

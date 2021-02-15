@@ -1,6 +1,7 @@
 const arc = require('@architect/functions')
 const fs = require('fs')
 const path = require('path')
+const dataPosts = require('../src/shared/data-posts')
 
 async function startup () {
   if (process.env.NODE_ENV === 'production' || process.env.PORT === '3334') return
@@ -22,8 +23,7 @@ async function startup () {
       type: item.type[0],
       properties
     }
-    await data.posts.put(post)
-    await data['posts-public'].put(post)
+    await dataPosts.put(post)
     if (post.properties.category) {
       post.properties.category.forEach(async cat => {
         await data['categories-posts'].put({

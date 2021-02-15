@@ -31,6 +31,8 @@ async function findPostItems (params, scopes) {
     return await findPostsByCategory(params, scopes)
   } else if ('published' in params) {
     return await findPostsByPublished(params, scopes)
+  } else if ('homepage' in params) {
+    return await findPostsHomepage(params)
   } else {
     return await findPostsAll(params, scopes)
   }
@@ -58,6 +60,21 @@ async function findPostsByPostType (params, scopes) {
   } else {
     return await data.posts.query(opts)
   }
+}
+
+async function findPostsHomepage (params) {
+  const data = await arc.tables()
+  const opts = {
+    IndexName: 'homepage-published-index',
+    ScanIndexForward: false,
+    KeyConditionExpression: 'homepage = :homepage',
+    ExpressionAttributeValues: {
+      ':homepage': 1
+    }
+  }
+  setLimit(opts, params)
+  setBefore(opts, params)
+  return await data['posts-public'].query(opts)
 }
 
 async function findPostsAll (params, scopes) {
