@@ -1,11 +1,13 @@
-// reads posts from local files and writes to dynamodb instance
+// read posts from local files and write to dynamodb instance
+// usage: node upload-posts.js FULL_PATH_TO_CONTENT_DIR
+// e.g. /Users/barryf/Dropbox/barryfrost.com/content/posts/
 
 const fs = require('fs')
 const path = require('path')
 const AWS = require('aws-sdk')
 const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
-const contentDir = '/Users/barryf/Dropbox/barryfrost.com/content/posts/'
+const contentDir = process.argv[2]
 const table = ''
 
 function traverseDir (dir, files) {
@@ -40,12 +42,12 @@ for (const file of files) {
     properties: post.properties
   }
 
+  console.log(url)
+
   DynamoDB.put({
     TableName: table,
     Item: item
   }, (err) => {
     console.error(err)
   })
-
-  console.log(url)
 }
