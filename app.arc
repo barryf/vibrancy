@@ -17,6 +17,7 @@ process-post
 send-webmentions
 write-github
 fetch-context
+notify-push
 
 @tables
 posts

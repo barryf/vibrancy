@@ -65,6 +65,15 @@ exports.handler = async function http (req) {
     }
   })
 
+  await arc.events.publish({
+    name: 'notify-push',
+    payload: {
+      url: body.target,
+      title: 'Webmention received',
+      message: body.source
+    }
+  })
+
   return {
     statusCode: 202
   }

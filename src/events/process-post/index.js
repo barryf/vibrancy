@@ -46,4 +46,14 @@ exports.handler = async function subscribe (event) {
       payload: { url: contextUrl }
     })
   }
+
+  // notify me, but this doesn't mean above async tasks were successful
+  await arc.events.publish({
+    name: 'notify-push',
+    payload: {
+      url,
+      title: 'Post ' + (('updated' in post.properties) ? 'updated' : 'created'),
+      message: post['post-type']
+    }
+  })
 }
