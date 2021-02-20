@@ -11,9 +11,9 @@ async function send ({ message, title = null, url = null }) {
   if (title) body.title = title
   if (url) body.url = url
 
-  const response = fetch('https://api.pushover.net/1/messages.json', {
-    method: 'post',
-    body
+  const response = await fetch('https://api.pushover.net/1/messages.json', {
+    method: 'POST',
+    body: new URLSearchParams(body)
   })
   if (response.statusCode < 300) {
     console.error(response)

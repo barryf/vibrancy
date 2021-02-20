@@ -51,9 +51,9 @@ exports.handler = async function subscribe (event) {
   await arc.events.publish({
     name: 'notify-push',
     payload: {
-      url,
-      title: 'Post ' + (('updated' in post.properties) ? 'updated' : 'created'),
-      message: post['post-type']
+      url: process.env.ROOT_URL + url,
+      message: (('updated' in post.properties) ? 'Updated' : 'Created') +
+        ` ${post['post-type']}`
     }
   })
 }
