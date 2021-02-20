@@ -19,10 +19,7 @@ async function putPostsPublic (post) {
 // this is only set in the public-posts table because only public are shown
 function setHomepageFlag (post) {
   const postTypes = ['article', 'note', 'photo']
-  post.homepage = (
-    post.channel === 'posts' &&
-    postTypes.includes(post['post-type'])
-  ) ? 1 : 0
+  post.homepage = (post.channel === 'posts' && postTypes.includes(post['post-type'])) ? 1 : 0
 }
 
 async function put (post) {
