@@ -69,7 +69,7 @@ exports.handler = async function http (req) {
     name: 'notify-push',
     payload: {
       url: body.target,
-      title: 'Webmention received',
+      title: `Received ${body.post['wm-property']}`,
       message: body.source
     }
   })

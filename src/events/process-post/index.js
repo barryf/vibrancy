@@ -52,8 +52,9 @@ exports.handler = async function subscribe (event) {
     name: 'notify-push',
     payload: {
       url: process.env.ROOT_URL + url,
-      message: (('updated' in post.properties) ? 'Updated' : 'Created') +
-        ` ${post['post-type']}`
+      title: (('updated' in post.properties) ? 'Updated' : 'Created') +
+        ` ${post['post-type']}`,
+      message: url
     }
   })
 }
