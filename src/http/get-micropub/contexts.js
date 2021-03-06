@@ -12,13 +12,9 @@ async function setContexts (post) {
           const context = await data.contexts.get({ url })
           if (context) {
             if (context.properties) {
-              const properties = { url: [url], ...context.properties }
-              if (properties.name && properties.content && properties.name[0] === properties.content[0]) {
-                delete properties.name
-              }
               post.properties[prop][i] = {
                 type: ['h-cite'],
-                properties
+                properties: { url: [url], ...context.properties }
               }
             }
           } else {
