@@ -3,6 +3,7 @@ module.exports = [
     type: 'note',
     name: 'Note',
     properties: [
+      'summary',
       'content',
       'category',
       'post-status',
@@ -17,6 +18,7 @@ module.exports = [
     name: 'Article',
     properties: [
       'name',
+      'summary',
       'content',
       'category',
       'post-status',
