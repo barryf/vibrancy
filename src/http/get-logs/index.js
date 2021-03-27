@@ -46,7 +46,7 @@ function render (logs) {
     ${log.message}
   </summary>
   ID ${log.id}
-  <pre>${log.description || ''}</pre>
+  ${'description' in log && log.description ? '<pre>' + log.description + '</pre>' : ''}
 </details>
 `
   }
