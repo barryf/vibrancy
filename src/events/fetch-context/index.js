@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
+const logger = require('@architect/shared/logger')
 
 const granaryBaseUrl = 'https://granary.io/'
 
@@ -19,7 +20,7 @@ async function fetchContext (url) {
   const response = await fetch(getGranaryUrl(url))
   if (response.statusCode >= 400) {
     const text = await response.text()
-    console.log('Failed to fetch context', url, text)
+    logger.warn('Failed to fetch context', `${url}\n${text}`)
     return null
   }
   const mf2 = await response.json()
@@ -35,4 +36,5 @@ exports.handler = async function subscribe (event) {
     url,
     properties
   })
+  logger.info(`Context fetched ${url}`)
 }

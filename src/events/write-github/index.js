@@ -1,4 +1,5 @@
 const arc = require('@architect/functions')
+const logger = require('@architect/shared/logger')
 const fetch = require('node-fetch')
 const { Octokit } = require('@octokit/rest')
 const octokit = new Octokit({
@@ -79,10 +80,11 @@ exports.handler = async function subscribe (event) {
     path = `files/${body.filePath}`
     //
   } else {
-    console.error('Unknown folder', body.folder)
+    logger.error('Unknown folder when writing to GitHub', body.folder)
   }
 
   if (file) {
     await writeGitHubFile(path, method, file)
+    logger.info(`Wrote file to GitHub ${path}`)
   }
 }

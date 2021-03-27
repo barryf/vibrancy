@@ -2,6 +2,7 @@ const path = require('path')
 const fetch = require('node-fetch')
 const brevity = require('brevity')
 const Twit = require('twit')
+const logger = require('@architect/shared/logger')
 
 // adapted from @grantcodes' Postr's syndicator-twitter
 // https://github.com/grantcodes/postr/blob/master/packages/syndicator-twitter/index.js
@@ -105,7 +106,7 @@ function generateStatus (post, mediaIds = null) {
       280
     )
   } else {
-    console.error('Error generating Twitter status', status, post)
+    logger.error('Error generating Twitter status', JSON.stringify(status, null, 2))
   }
 
   return status
@@ -166,7 +167,7 @@ async function sendTweet (post) {
       return await postStatus(status)
     }
   }
-  console.error('Unknown error posting to Twitter')
+  logger.error('Unknown error posting to Twitter')
   return false
 }
 
@@ -189,7 +190,7 @@ async function syndicate (post) {
       return tweetUrl
     }
   } catch (err) {
-    console.error('Error syndicating to Twitter', err)
+    logger.error('Error syndicating to Twitter', JSON.stringify(err, null, 2))
   }
   return null
 }

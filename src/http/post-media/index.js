@@ -1,5 +1,6 @@
 const cloudinary = require('cloudinary').v2
 const arc = require('@architect/functions')
+const logger = require('@architect/shared/logger')
 const parser = require('lambda-multipart-parser')
 const { requireScopes } = require('@architect/shared/auth')
 
@@ -45,6 +46,8 @@ exports.handler = async function http (req) {
   const media = await upload(file, contentType)
 
   await data.media.put(media)
+
+  logger.info(`Media uploaded to Cloudinary ${media.url}`)
 
   await arc.events.publish({
     name: 'write-github',

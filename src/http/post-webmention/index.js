@@ -1,4 +1,5 @@
 const arc = require('@architect/functions')
+const logger = require('@architect/shared/logger')
 
 function postToMf2 (post) {
   if ('deleted' in post && post.deleted) {
@@ -38,6 +39,7 @@ exports.handler = async function http (req) {
   const body = arc.http.helpers.bodyParser(req)
 
   if (!('secret' in body) || body.secret !== process.env.WEBMENTION_IO_SECRET) {
+    logger.warn('Webmention secret does not match', JSON.stringify(body, null, 2))
     return {
       json: {
         error: 'unauthorized',
@@ -55,6 +57,8 @@ exports.handler = async function http (req) {
     properties: postToMf2(body.post)
   }
   data.webmentions.put({ webmention })
+
+  logger.info(`Webmention received from ${body.source}`, JSON.stringify(body, null, 2))
 
   await arc.events.publish({
     name: 'write-github',

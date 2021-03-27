@@ -1,4 +1,5 @@
 const arc = require('@architect/functions')
+const logger = require('@architect/shared/logger')
 const dataPosts = require('@architect/shared/data-posts')
 const create = require('./create')
 const update = require('./update')
@@ -55,6 +56,8 @@ async function action (scope, body) {
     sanitise(res.post)
 
     await dataPosts.put(res.post)
+
+    logger.info(`${scope.toUpperCase()}D ${res.post.url}`)
 
     // async tasks after post is created/updated
     await arc.events.publish({

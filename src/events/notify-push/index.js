@@ -1,10 +1,11 @@
 const fetch = require('node-fetch')
+const logger = require('@architect/shared/logger')
 
 async function send ({ message, title = null, url = null }) {
   const token = process.env.PUSHOVER_TOKEN
   const user = process.env.PUSHOVER_USER
   if (!token || !user) {
-    console.log('Pushover ENV variable(s) missing.')
+    logger.warn('Pushover ENV variable is missing')
     return
   }
   const body = { token, user, message }
@@ -16,7 +17,7 @@ async function send ({ message, title = null, url = null }) {
     body: new URLSearchParams(body)
   })
   if (response.statusCode < 300) {
-    console.error(response)
+    logger.error('Pushover request failed', JSON.stringify(response, null, 2))
   }
 }
 
