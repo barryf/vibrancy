@@ -14,10 +14,10 @@ async function requireScopes (scopes, headers, body) {
   token = token.trim().replace(/^Bearer /, '')
   if (token === '') {
     return {
-      json: {
+      body: JSON.stringify({
         error: 'unauthorized',
         error_description: 'Request is missing an access token.'
-      },
+      }),
       statusCode: 401
     }
   }
@@ -48,11 +48,11 @@ const verifyTokenAndScopes = async function (token, scopes) {
     )
     if (!tokenData || tokenData.me !== process.env.ME_URL) {
       return {
-        json: {
+        body: JSON.stringify({
           error: 'forbidden',
           error_description: 'The authenticated user does not have permission' +
             ' to perform this request.'
-        },
+        }),
         statusCode: 401
       }
     }
@@ -69,11 +69,11 @@ const verifyTokenAndScopes = async function (token, scopes) {
     }
   }
   return {
-    json: {
+    body: JSON.stringify({
       error: 'insufficient_scope',
       error_description: 'The user does not have sufficient scope to perform' +
         ' this action.'
-    },
+    }),
     statusCode: 401
   }
 }

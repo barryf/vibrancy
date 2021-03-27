@@ -41,10 +41,10 @@ exports.handler = async function http (req) {
   if (!('secret' in body) || body.secret !== process.env.WEBMENTION_IO_SECRET) {
     logger.warn('Webmention secret does not match', JSON.stringify(body, null, 2))
     return {
-      json: {
+      body: JSON.stringify({
         error: 'unauthorized',
         error_description: 'Secret does not match.'
-      },
+      }),
       statusCode: 403
     }
   }

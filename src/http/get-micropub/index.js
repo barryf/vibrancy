@@ -11,22 +11,22 @@ async function getPost (params, scopes) {
   const postData = await query.getPost(url, scopes)
   if (postData === undefined) {
     return {
-      json: {
+      body: JSON.stringify({
         error: 'not_found',
         error_description: 'Post was not found'
-      },
+      }),
       statusCode: 404
     }
   }
   const post = { ...postData }
   if ('deleted' in post.properties) {
     return {
-      json: {
+      body: JSON.stringify({
         error: 'gone',
         error_description: 'This post is no longer available.',
         type: 'entry',
         properties: { deleted: post.properties.deleted[0] }
-      },
+      }),
       statusCode: 410
     }
   }
@@ -59,10 +59,10 @@ async function source (params, scopes) {
   if (!('url' in params)) return findPostItems(params, scopes)
   if (!isValidURL(params.url)) {
     return {
-      json: {
+      body: JSON.stringify({
         error: 'invalid_parameter',
         error_description: 'URL parameter is invalid'
-      },
+      }),
       statusCode: 400
     }
   }
@@ -74,8 +74,7 @@ exports.handler = async function http (req) {
   const acceptedScopes = ['read', 'create', 'update', 'delete', 'undelete']
   const authResponse = await auth.requireScopes(acceptedScopes, req.headers,
     body)
-  if (process.env.NODE_ENV === 'production' &&
-    authResponse.statusCode !== 200) return authResponse
+  if (authResponse.statusCode !== 200) return authResponse
 
   const params = req.queryStringParameters || {}
   if ('q' in params) {
