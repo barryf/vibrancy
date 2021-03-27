@@ -27,6 +27,7 @@ posts-public
   url *String
 tokens
   token *String
+  expires TTL
 webmentions
   source *String
   target **String

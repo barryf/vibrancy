@@ -56,7 +56,9 @@ const verifyTokenAndScopes = async function (token, scopes) {
         statusCode: 401
       }
     }
-    await data.tokens.put({ token, data: tokenData })
+    // expire token after 7 days
+    const expires = Math.floor(new Date().setDate(new Date().getDate() + 7) / 1000)
+    await data.tokens.put({ token, data: tokenData, expires })
   }
   if ('scope' in tokenData) {
     const tokenScopes = tokenData.scope.split(' ')
