@@ -4,7 +4,8 @@ const arc = require('@architect/functions')
 async function log (type, message, description) {
   const data = await arc.tables()
   const published = new Date()
-  const expires = published.setDate(published.getDate() + 7)
+  const expiresMS = published.setDate(published.getDate() + 7)
+  const expires = Math.floor(expiresMS / 1000)
   const log = {
     log: 'log',
     id: crypto.randomBytes(8).toString('hex'),
