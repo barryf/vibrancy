@@ -8,6 +8,7 @@ region eu-west-2
 get /
 get /micropub
 get /media
+get /logs
 post /micropub
 post /media
 post /webmention
@@ -38,6 +39,9 @@ contexts
   url *String
 categories
   cat *String
+logs
+  id *String
+  expires TTL
 
 @indexes
 posts
@@ -65,4 +69,7 @@ categories-posts
   url *String
 media
   type *String
+  published **String
+logs
+  log *String
   published **String

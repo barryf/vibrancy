@@ -5,6 +5,7 @@ const config = require('./config')
 const query = require('./query')
 const { setWebmentions } = require('./webmentions')
 const { setContexts } = require('./contexts')
+const logger = require('@architect/shared/logger')
 
 async function getPost (params, scopes) {
   const url = params.url.replace(process.env.ROOT_URL, '')
@@ -18,6 +19,7 @@ async function getPost (params, scopes) {
       statusCode: 404
     }
   }
+  logger.info(`GET ${url}`, JSON.stringify(postData, null, 2))
   const post = { ...postData }
   if ('deleted' in post.properties) {
     return {
