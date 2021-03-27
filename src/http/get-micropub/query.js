@@ -20,8 +20,9 @@ function setBefore (opts, params) {
   }
 }
 
+// assumption is that public clients won't have the create scope
 function isPublicClient (scopes) {
-  return (scopes.length === 1 && scopes[0] === 'read')
+  return !scopes.includes('create')
 }
 
 async function findPostItems (params, scopes) {
