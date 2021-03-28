@@ -10,7 +10,7 @@ function setRootProperties (post) {
   post.published = post.properties.published[0]
   if ('mp-channel' in post.properties) {
     post.channel = post.properties['mp-channel'][0]
-  } else {
+  } else if (!('channel' in post)) {
     post.channel = 'posts' // default channel is posts
   }
 }
