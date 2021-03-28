@@ -1,4 +1,4 @@
-// const arc = require('@architect/functions')
+const arc = require('@architect/functions')
 const {
   derivePostType,
   reservedUrls
@@ -84,7 +84,7 @@ function formatPost (body) {
 }
 
 async function create (scope, body) {
-  // const data = await arc.tables()
+  const data = await arc.tables()
   const post = formatPost(body)
 
   // force posts to drafts if scope is draft
@@ -94,16 +94,16 @@ async function create (scope, body) {
   }
 
   // TODO: uncomment this to prevent overwriting posts
-  // const findPost = await data.posts.get({ url: post.url })
-  // if (findPost !== undefined || reservedUrls.includes(post.url)) {
-  //   return {
-  //     statusCode: 400,
-  //     body: JSON.stringify({
-  //       error: 'invalid_parameter',
-  //       error_description: 'A post with this URL already exists'
-  //     })
-  //   }
-  // }
+  const findPost = await data.posts.get({ url: post.url })
+  if (findPost !== undefined || reservedUrls.includes(post.url)) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: 'invalid_parameter',
+        error_description: 'A post with this URL already exists'
+      })
+    }
+  }
 
   return {
     post,
