@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const auth = require('@architect/shared/auth')
+const logger = require('@architect/shared/logger')
 const { isValidURL } = require('@architect/shared/utils')
 const config = require('./config')
 const query = require('./query')
@@ -10,6 +11,7 @@ async function getPost (params, scopes) {
   const url = params.url.replace(process.env.ROOT_URL, '')
   const postData = await query.getPost(url, scopes)
   if (postData === undefined) {
+    logger.warn(`Post is not found ${url}`)
     return {
       body: JSON.stringify({
         error: 'not_found',
@@ -20,6 +22,7 @@ async function getPost (params, scopes) {
   }
   const post = { ...postData }
   if ('deleted' in post.properties) {
+    logger.warn(`Post is gone ${url}`)
     return {
       body: JSON.stringify({
         error: 'gone',
