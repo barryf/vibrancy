@@ -11,5 +11,6 @@ async function sendWebmentions (url, limit = 0, send = true) {
 
 exports.handler = async function subscribe (event) {
   const body = JSON.parse(event.Records[0].Sns.Message)
-  await sendWebmentions(body.url)
+  const url = new URL(body.url, process.env.ROOT_URL)
+  await sendWebmentions(url)
 }
