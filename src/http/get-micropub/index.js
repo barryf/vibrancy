@@ -34,7 +34,9 @@ async function getPost (params, scopes) {
     }
   }
   await setWebmentions(post)
-  await setContexts(post)
+  if ('include-contexts' in params) {
+    await setContexts(post)
+  }
   return {
     type: [post.type],
     channel: [post.channel || 'posts'],
