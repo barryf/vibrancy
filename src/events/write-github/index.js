@@ -10,7 +10,7 @@ const octokit = new Octokit({
 const githubConfig = {
   owner: 'barryf',
   repo: 'content',
-  ref: 'transform-fm-md' // TODO: replace with master branch
+  ref: 'master'
 }
 
 function formatPostFile (post) {
