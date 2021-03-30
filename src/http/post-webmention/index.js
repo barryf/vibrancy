@@ -1,6 +1,21 @@
 const arc = require('@architect/functions')
 const logger = require('@architect/shared/logger')
 
+function wmType (wmProperty) {
+  switch (wmProperty) {
+    case 'in-reply-to':
+      return 'comment'
+    case 'like-of':
+      return 'like'
+    case 'mention-of':
+      return 'mention'
+    case 'repost-of':
+      return 'repost'
+    default:
+      return 'webmention'
+  }
+}
+
 function postToMf2 (post) {
   if ('deleted' in post && post.deleted) {
     return {
@@ -27,7 +42,7 @@ function postToMf2 (post) {
       properties.content = [post.content.text]
     }
   }
-  for (const prop in
+  for (const prop of
     ['in-reply-to', 'like-of', 'repost-of', 'rsvp', 'bookmark-of']) {
     if (prop in post) properties[prop] = [post[prop]]
   }
@@ -56,7 +71,7 @@ exports.handler = async function http (req) {
     'wm-property': body.post['wm-property'],
     properties: postToMf2(body.post)
   }
-  data.webmentions.put({ webmention })
+  await data.webmentions.put(webmention)
 
   logger.info(`Webmention received from ${body.source}`, JSON.stringify(body, null, 2))
 
@@ -69,13 +84,18 @@ exports.handler = async function http (req) {
     }
   })
 
+  // send pushover notification
+  const payload = {
+    url: body.target,
+    title: `Received ${wmType(body.post['wm-property'])}`,
+    message: body.source
+  }
+  if (('author' in body.post) && ('name' in body.post.author)) {
+    payload.message = body.post.author.name + '\n' + body.source
+  }
   await arc.events.publish({
     name: 'notify-push',
-    payload: {
-      url: body.target,
-      title: `Received ${body.post['wm-property']}`,
-      message: body.source
-    }
+    payload
   })
 
   return {
