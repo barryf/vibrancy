@@ -1,6 +1,23 @@
 {
   "items": [
     {
+      "url": ["homepage"],
+      "channel": ["pages"],
+      "type": ["h-entry"],
+      "properties": {
+        "name": ["Homepage"],
+        "content": [
+          { "html": "<p><span class=\"uppercase font-bold\">Hello, I’m Barry</span> (he/him), a software engineer and technology leader with experience building teams, websites and apps. I live in a village in Hertfordshire, UK, with my wife and two sons.</p>\n<p>This is my personal website where I post all my <a href=\"/articles\">articles</a>, <a href=\"/notes\">notes</a>,  <a href=\"/photos\">photos</a>, <a href=\"/bookmarks\">bookmarks</a> and <a href=\"/checkins\">check-ins</a> using my own <a rel=\"me\" href=\"https://github.com/barryf\">software</a>. View the full <a href=\"/archives\">archives</a>.</p>\n<p>Read more <a href=\"/about\">about me</a>, how to <a href=\"/contact\">contact me</a> and how to <a href=\"/follow\">follow</a> my content.</p>" }
+        ],
+        "published": [
+          "2021-03-15T21:03:00Z"
+        ],
+        "entry-type": [
+          "article"
+        ]
+      }
+    },
+    {
       "url": ["2020/09/29-180505"],
       "type": [
         "h-entry"
@@ -93,7 +110,10 @@
         "category": [
           "url",
           "javascript",
-          "api"
+          "api",
+          "http",
+          "https",
+          "http://bbc.co.uk"
         ],
         "published": [
           "2020-10-05T12:45:16Z"
@@ -162,6 +182,9 @@
         "syndication": [
           "https://twitter.com/barryf/status/981141346068193280",
           "https://www.linkedin.com/feed/update/urn:li:activity:6386909799560413184"
+        ],
+        "barry": [
+          "foo"
         ]
       }
     },
@@ -370,7 +393,7 @@
           "Earlier @TVsPointless featured \"Famous Barrys\" and now @TheHawk147 is cleaning up at #MastersSnooker. It's a good day to be a Barry."
         ],
         "entry-type": [
-          "photo"
+          "note"
         ]
       }
     }
