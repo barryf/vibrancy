@@ -7,9 +7,7 @@ const updateCategories = require('./update-categories')
 exports.handler = async function subscribe (event) {
   const data = await arc.tables()
   const body = JSON.parse(event.Records[0].Sns.Message)
-  const url = body.url
-  const syndicateTo = body.syndicateTo
-  const scope = body.scope
+  const { url, syndicateTo, scope } = body
 
   const post = await data.posts.get({ url })
 

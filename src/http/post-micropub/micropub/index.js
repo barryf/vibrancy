@@ -46,14 +46,19 @@ async function action (scope, body) {
     // set root properties indexed by ddb
     setRootProperties(res.post)
 
-    // keep syndication options before sanitising
-    let syndicateTo
-    if ('mp-syndicate-to' in res.post.properties) {
-      syndicateTo = Array.isArray(res.post.properties['mp-syndicate-to'])
-        ? res.post.properties['mp-syndicate-to']
-        : [res.post.properties['mp-syndicate-to']]
-    }
+    // remove unwanted properties
     sanitise(res.post)
+
+    // find syndication options
+    let syndicateTo
+    if ('mp-syndicate-to' in body) {
+      syndicateTo = body['mp-syndicate-to']
+    } else if (('properties' in body) && ('mp-syndicate-to' in body.properties)) {
+      syndicateTo = body.properties['mp-syndicate-to']
+    }
+    if (!Array.isArray(syndicateTo)) {
+      syndicateTo = [syndicateTo]
+    }
 
     await dataPosts.put(res.post)
 
