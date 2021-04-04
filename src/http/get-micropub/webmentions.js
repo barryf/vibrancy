@@ -1,7 +1,7 @@
 const query = require('./query')
 
 async function setWebmentions (post) {
-  const absoluteUrl = new URL(post.url, process.env.ROOT_URL)
+  const absoluteUrl = new URL(post.url, process.env.ROOT_URL).href
   const webmentionsData = await query.findWebmentions(absoluteUrl)
   if (webmentionsData.Count > 0) {
     const webmentionProperties = {
