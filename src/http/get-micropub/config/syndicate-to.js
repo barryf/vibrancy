@@ -10,8 +10,7 @@ function syndicateTo (postType = null) {
   switch (postType) {
     case 'note':
       return [
-        { ...twitter, checked: true },
-        { ...microblog, checked: true }
+        { ...twitter, checked: true }
       ]
     case 'bookmark':
       return [
@@ -19,8 +18,7 @@ function syndicateTo (postType = null) {
       ]
     case 'article':
       return [
-        { ...twitter, checked: true },
-        { ...microblog, checked: true }
+        { ...twitter, checked: true }
       ]
     case 'like':
       return [
@@ -36,14 +34,12 @@ function syndicateTo (postType = null) {
       ]
     case 'photo':
       return [
-        { ...twitter },
-        { ...microblog }
+        { ...twitter }
       ]
     default:
       return [
         twitter,
-        pinboard,
-        microblog
+        pinboard
       ]
   }
 }

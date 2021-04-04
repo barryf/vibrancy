@@ -1,6 +1,5 @@
 const twitter = require('./twitter')
 const pinboard = require('./pinboard')
-const microBlog = require('./micro-blog')
 const logger = require('@architect/shared/logger')
 
 async function syndicate (post, syndicateTo) {
