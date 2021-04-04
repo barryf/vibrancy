@@ -1,6 +1,7 @@
 const arc = require('@architect/functions')
 const logger = require('@architect/shared/logger')
 const dataPosts = require('@architect/shared/data-posts')
+const { derivePostType } = require('@architect/shared/utils')
 const create = require('./create')
 const update = require('./update')
 const deletePost = require('./delete')
@@ -8,6 +9,7 @@ const undelete = require('./undelete')
 
 function setRootProperties (post) {
   post.published = post.properties.published[0]
+  post['post-type'] = derivePostType(post)
   if ('mp-channel' in post.properties) {
     post.channel = post.properties['mp-channel'][0]
   } else if (!('channel' in post)) {

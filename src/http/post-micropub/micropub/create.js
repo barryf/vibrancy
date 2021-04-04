@@ -1,8 +1,5 @@
 const arc = require('@architect/functions')
-const {
-  derivePostType,
-  reservedUrls
-} = require('@architect/shared/utils')
+const { reservedUrls } = require('@architect/shared/utils')
 
 function deriveUrl (post) {
   let slug = ''
@@ -79,7 +76,6 @@ function formatPost (body) {
   // store type as simple value
   post.type = post.type[0]
   post.url = deriveUrl(post)
-  post['post-type'] = derivePostType(post)
   return post
 }
 
