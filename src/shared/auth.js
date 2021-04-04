@@ -6,7 +6,7 @@ const tokenEndpoint = process.env.TOKEN_ENDPOINT ||
 
 async function requireScopes (scopes, headers, body) {
   if (process.env.NODE_ENV !== 'production') {
-    return { statusCode: 200, scopes: ['read'] }
+    return { statusCode: 200, scopes: ['create', 'read'] }
   }
 
   let token = headers.Authorization || headers.authorization ||
