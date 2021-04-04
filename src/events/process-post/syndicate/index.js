@@ -24,9 +24,6 @@ async function syndicate (post, syndicateTo) {
       await pinboard.syndicate(post)
       logger.info('Syndicated to Pinboard')
       // no return value :(
-    } else if (syndication.indexOf('https://micro.blog') > -1) {
-      url = await microBlog.syndicate(post)
-      logger.info(`Syndicated to Micro.blog ${url}`)
     }
     if (url) post.syndication.push(url)
   }

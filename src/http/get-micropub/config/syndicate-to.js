@@ -7,10 +7,6 @@ function syndicateTo (postType = null) {
     uid: 'https://pinboard.in/barryf',
     name: 'Pinboard'
   }
-  const microblog = {
-    uid: 'https://micro.blog/barryf',
-    name: 'Micro.blog'
-  }
   switch (postType) {
     case 'note':
       return [
