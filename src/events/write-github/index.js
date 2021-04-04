@@ -28,10 +28,10 @@ async function formatFileFile (url) {
   return Buffer.from(file).toString('base64')
 }
 
-async function writeGitHubFile (path, method, file) {
+async function writeGitHubFile (path, method, file, entity) {
   const params = {
     path,
-    message: `File ${method}d by Vibrancy`,
+    message: `${entity} ${method}d by Vibrancy`,
     content: file,
     branch: githubConfig.ref,
     ...githubConfig
@@ -44,7 +44,7 @@ async function writeGitHubFile (path, method, file) {
     })
     params.sha = response.data.sha
   } catch (err) {
-    // assume file was not found
+    logger.error('Error fetching file from GitHub', JSON.stringify(err, null, 2))
   }
   return await octokit.repos.createOrUpdateFileContents(params)
 }
@@ -54,6 +54,7 @@ exports.handler = async function subscribe (event) {
   const data = await arc.tables()
   let path, file
   let method = 'create'
+  let entity = 'file'
 
   if (body.folder === 'posts' || body.folder === 'pages') {
     const post = await data.posts.get({ url: body.url })
@@ -62,6 +63,7 @@ exports.handler = async function subscribe (event) {
     file = formatPostFile(post)
     // path like posts/2020/09/foo.json
     path = `${post.channel}/${post.url}.json`
+    entity = post.channel === 'posts' ? post['post-type'] : 'page'
     //
   } else if (body.folder === 'webmentions') {
     const webmention = await data.webmentions.get({
@@ -74,6 +76,7 @@ exports.handler = async function subscribe (event) {
     const targetPath = body.target.replace(process.env.ROOT_URL, '')
     const sourcePath = body.source.replace(/[^A-Za-z0-9]/g, '-')
     path = `webmentions/${targetPath}/${sourcePath}.json`
+    entity = webmention['wm-property']
     //
   } else if (body.folder === 'files') {
     file = await formatFileFile(body.url)
@@ -84,7 +87,11 @@ exports.handler = async function subscribe (event) {
   }
 
   if (file) {
-    await writeGitHubFile(path, method, file)
-    logger.info(`Wrote file to GitHub ${path}`)
+    try {
+      await writeGitHubFile(path, method, file, entity)
+      logger.info(`Wrote ${entity} to GitHub ${path}`)
+    } catch (err) {
+      logger.error('Error writing file to GitHub', JSON.stringify(err, null, 2))
+    }
   }
 }
