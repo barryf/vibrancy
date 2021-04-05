@@ -24,7 +24,12 @@ async function syndicate (post, syndicateTo) {
       logger.info('Syndicated to Pinboard')
       // no return value :(
     }
-    if (url) post.syndication.push(url)
+    if (url) post.properties.syndication.push(url)
+  }
+
+  // remove syndication key if it's an empty array
+  if (post.properties.syndication.length === 0) {
+    delete post.properties.syndication
   }
 }
 
