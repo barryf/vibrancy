@@ -71,7 +71,11 @@ async function source (params, scopes) {
       statusCode: 400
     }
   }
-  return getPost(params, scopes)
+  try {
+    return getPost(params, scopes)
+  } catch (err) {
+    logger.error('Error when getting post', JSON.stringify(err, null, 2))
+  }
 }
 
 exports.handler = async function http (req) {
