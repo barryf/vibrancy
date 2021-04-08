@@ -69,6 +69,8 @@ exports.handler = async function http (req) {
     }
   }
 
+  logger.info(`Webmention received from ${body.source}`, JSON.stringify(body, null, 2))
+
   const id = createId(body.source, body.target)
   const webmention = {
     id,
@@ -79,8 +81,6 @@ exports.handler = async function http (req) {
     properties: postToMf2(body.post)
   }
   await data.webmentions.put(webmention)
-
-  logger.info(`Webmention received from ${body.source}`, JSON.stringify(body, null, 2))
 
   await arc.events.publish({
     name: 'write-github',
