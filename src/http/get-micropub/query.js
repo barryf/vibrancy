@@ -49,10 +49,8 @@ async function findPostsByPostType (params, scopes) {
       '#postType': 'post-type'
     },
     ExpressionAttributeValues: {
-      ':channel': params.channel,
       ':postType': params['post-type']
-    },
-    FilterExpression: 'channel = :channel'
+    }
   }
   setLimit(opts, params)
   setBefore(opts, params)
