@@ -63,6 +63,8 @@ posts-public
 webmentions
   target *String
   published **String
+webmentions
+  id *String
 categories-posts
   cat *String
   published **String

@@ -68,10 +68,7 @@ exports.handler = async function subscribe (event) {
     entity = post.channel === 'posts' ? post['post-type'] : 'page'
     //
   } else if (body.folder === 'webmentions') {
-    const webmention = await data.webmentions.get({
-      source: body.source,
-      target: body.target
-    })
+    const webmention = await data.webmentions.get({ id: body.id })
     const fileContent = JSON.stringify(webmention, null, 2)
     file = Buffer.from(fileContent, 'utf8').toString('base64')
     // path like webmentions/2020/09/foo/https---example-org-bar-html.json

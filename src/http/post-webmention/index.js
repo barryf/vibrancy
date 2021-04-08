@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const arc = require('@architect/functions')
 const logger = require('@architect/shared/logger')
 
@@ -49,6 +50,10 @@ function postToMf2 (post) {
   return properties
 }
 
+function createId (source, target) {
+  return crypto.createHash('md5').update(`${source} ${target}`).digest('hex')
+}
+
 exports.handler = async function http (req) {
   const data = await arc.tables()
   const body = arc.http.helpers.bodyParser(req)
@@ -64,7 +69,9 @@ exports.handler = async function http (req) {
     }
   }
 
+  const id = createId(body.source, body.target)
   const webmention = {
+    id,
     source: body.source,
     target: body.target,
     published: body.post.published,
@@ -79,8 +86,7 @@ exports.handler = async function http (req) {
     name: 'write-github',
     payload: {
       folder: 'webmentions',
-      source: body.source,
-      target: body.target
+      id
     }
   })
 
