@@ -44,7 +44,9 @@ async function writeGitHubFile (path, method, file, entity) {
     })
     params.sha = response.data.sha
   } catch (err) {
-    logger.error('Error fetching file from GitHub', JSON.stringify(err, null, 2))
+    if (err.status !== 404) {
+      logger.error('Error fetching file from GitHub', JSON.stringify(err, null, 2))
+    }
   }
   return await octokit.repos.createOrUpdateFileContents(params)
 }
