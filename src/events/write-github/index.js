@@ -72,8 +72,8 @@ exports.handler = async function subscribe (event) {
     const fileContent = JSON.stringify(webmention, null, 2)
     file = Buffer.from(fileContent, 'utf8').toString('base64')
     // path like webmentions/2020/09/foo/https---example-org-bar-html.json
-    const targetPath = body.target.replace(process.env.ROOT_URL, '')
-    const sourcePath = body.source.replace(/[^A-Za-z0-9]/g, '-')
+    const targetPath = webmention.target.replace(process.env.ROOT_URL, '')
+    const sourcePath = webmention.source.replace(/[^A-Za-z0-9]/g, '-')
     path = `webmentions/${targetPath}/${sourcePath}.json`
     entity = webmention['wm-property']
     //
