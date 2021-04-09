@@ -69,14 +69,18 @@ exports.handler = async function http (req) {
     }
   }
 
-  logger.info(`Webmention received from ${body.source}`, JSON.stringify(body, null, 2))
+  const source = body.post.url
+  const target = body.target
+  const id = createId(source, target)
+  const published = body.post.published || body.post['wm-received'] || new Date().toISOString()
 
-  const id = createId(body.source, body.target)
+  logger.info(`Webmention received from ${source}`, JSON.stringify(body, null, 2))
+
   const webmention = {
     id,
-    source: body.source,
-    target: body.target,
-    published: body.post.published,
+    source,
+    target,
+    published,
     'wm-property': body.post['wm-property'],
     properties: postToMf2(body.post)
   }
@@ -92,12 +96,12 @@ exports.handler = async function http (req) {
 
   // send pushover notification
   const payload = {
-    url: body.target,
+    url: target,
     title: `Received ${wmType(body.post['wm-property'])}`,
-    message: body.source
+    message: source
   }
   if (('author' in body.post) && ('name' in body.post.author)) {
-    payload.message = body.post.author.name + '\n' + body.source
+    payload.message = body.post.author.name + '\n' + source
   }
   await arc.events.publish({
     name: 'notify-push',

@@ -29,8 +29,7 @@ tokens
   token *String
   expires TTL
 webmentions
-  source *String
-  target **String
+  id *String
 categories-posts
   cat *String
   url **String
