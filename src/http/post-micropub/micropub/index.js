@@ -58,7 +58,7 @@ async function action (scope, body) {
     } else if (('properties' in body) && ('mp-syndicate-to' in body.properties)) {
       syndicateTo = body.properties['mp-syndicate-to']
     }
-    if (!Array.isArray(syndicateTo)) {
+    if (syndicateTo && !Array.isArray(syndicateTo)) {
       syndicateTo = [syndicateTo]
     }
 
