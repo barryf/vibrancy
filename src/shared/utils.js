@@ -35,12 +35,11 @@ function derivePostType (post) {
   } else if (('like-of' in post.properties) &&
     isValidURL(post.properties['like-of'][0])) {
     return 'like'
-  } else if (('video' in post.properties) &&
-    isValidURL(post.properties.video[0])) {
-    return 'video'
-  } else if (('photo' in post.properties) &&
-    isValidURL(post.properties.photo[0])) {
-    return 'photo'
+  } else if ('photo' in post.properties) {
+    if ((post.properties.photo[0].value && isValidURL(post.properties.photo[0].value)) ||
+      isValidURL(post.properties.photo[0])) {
+      return 'photo'
+    }
   } else if (('bookmark-of' in post.properties) &&
     isValidURL(post.properties['bookmark-of'][0])) {
     return 'bookmark'
