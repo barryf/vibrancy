@@ -11,7 +11,6 @@ async function getPost (params, scopes) {
   const url = params.url.replace(process.env.ROOT_URL, '')
   const postData = await query.getPost(url, scopes)
   if (postData === undefined) {
-    logger.warn(`Post is not found ${url}`)
     return {
       body: JSON.stringify({
         error: 'not_found',
