@@ -17,11 +17,6 @@ async function setContexts (post) {
                 properties: { url: [url], ...context.properties }
               }
             }
-          } else {
-            await arc.events.publish({
-              name: 'fetch-context',
-              payload: { url }
-            })
           }
         }
       }
