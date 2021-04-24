@@ -84,29 +84,37 @@ exports.handler = async function http (req) {
     'wm-property': body.post['wm-property'],
     properties: postToMf2(body.post)
   }
-  await data.webmentions.put(webmention)
 
-  await arc.events.publish({
-    name: 'write-github',
-    payload: {
-      folder: 'webmentions',
-      id
+  const existingWebmention = data.webmentions.get({ id })
+
+  // ignore webmention if it's unchanged
+  if (JSON.stringify(webmention) === JSON.stringify(existingWebmention)) {
+    logger.info("Ignored webmention because it's been received previously")
+  } else {
+    await data.webmentions.put(webmention)
+
+    await arc.events.publish({
+      name: 'write-github',
+      payload: {
+        folder: 'webmentions',
+        id
+      }
+    })
+
+    // send pushover notification
+    const payload = {
+      url: target,
+      title: `Received ${wmType(body.post['wm-property'])}`,
+      message: source
     }
-  })
-
-  // send pushover notification
-  const payload = {
-    url: target,
-    title: `Received ${wmType(body.post['wm-property'])}`,
-    message: source
+    if (('author' in body.post) && ('name' in body.post.author)) {
+      payload.message = body.post.author.name + '\n' + source
+    }
+    await arc.events.publish({
+      name: 'notify-push',
+      payload
+    })
   }
-  if (('author' in body.post) && ('name' in body.post.author)) {
-    payload.message = body.post.author.name + '\n' + source
-  }
-  await arc.events.publish({
-    name: 'notify-push',
-    payload
-  })
 
   return {
     statusCode: 202
