@@ -33,11 +33,12 @@ async function postStatus (status) {
 }
 
 function generateStatus (post, mediaIds = null) {
+  const absoluteUrl = new URL(post.url, process.env.ROOT_URL).href
   let content = null
   if (post.properties.summary) {
-    content = post.properties.summary[0] + ' ' + post.url
+    content = post.properties.summary[0] + ' ' + absoluteUrl
   } else if (post.properties.name) {
-    content = post.properties.name[0] + ' ' + post.url
+    content = post.properties.name[0] + ' ' + absoluteUrl
   } else if (post.properties.content &&
     typeof post.properties.content[0] === 'string') {
     content = post.properties.content[0]
