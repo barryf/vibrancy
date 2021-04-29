@@ -28,6 +28,10 @@ function sanitise (post) {
       post.properties[propModified] = post.properties[prop]
       delete post.properties[prop]
     }
+    // remove empty/whitespace strings e.g. name: [""]
+    if (post.properties[prop].length === 1 && post.properties[prop][0].trim() === '') {
+      delete post.properties[prop]
+    }
   }
 }
 
