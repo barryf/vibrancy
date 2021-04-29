@@ -31,7 +31,7 @@ async function formatFileFile (url) {
 async function writeGitHubFile (path, method, file, entity) {
   const params = {
     path,
-    message: `${entity} ${method}d by Vibrancy`,
+    message: `${entity} ${method}d`,
     content: file,
     branch: githubConfig.ref,
     ...githubConfig
