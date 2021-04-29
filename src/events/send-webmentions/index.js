@@ -6,7 +6,9 @@ async function sendWebmentions (url, limit = 0, send = true) {
   const wm = new Webmention({ limit, send })
   wm.fetch(url)
   await events.once(wm, 'end')
-  logger.info('Dispatched webmentions', JSON.stringify(wm.endpoints, null, 2))
+  if (Array.isArray(wm.endpoints) && wm.endpoints.length) {
+    logger.info(`Sent ${wm.endpoints} webmentions`, JSON.stringify(wm.endpoints, null, 2))
+  }
 }
 
 exports.handler = async function subscribe (event) {
