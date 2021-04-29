@@ -8,7 +8,8 @@ const deletePost = require('./delete')
 const undelete = require('./undelete')
 
 function setRootProperties (post) {
-  post.published = post.properties.published[0]
+  // set published to utc date without seconds
+  post.published = new Date(post.properties.published[0]).toISOString().replace(/\.000Z$/, 'Z')
   post['post-type'] = derivePostType(post)
   if ('mp-channel' in post.properties) {
     post.channel = post.properties['mp-channel'][0]
