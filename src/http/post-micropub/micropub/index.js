@@ -30,7 +30,11 @@ function sanitise (post) {
       delete post.properties[prop]
     }
     // remove empty/whitespace strings e.g. name: [""]
-    if (post.properties[prop].length === 1 && post.properties[prop][0].trim() === '') {
+    if (
+      Array.isArray(post.properties[prop]) &&
+      post.properties[prop].length === 1 &&
+      post.properties[prop][0].trim() === ''
+    ) {
       delete post.properties[prop]
     }
   }
