@@ -33,7 +33,7 @@ function sanitise (post) {
     if (
       Array.isArray(post.properties[prop]) &&
       post.properties[prop].length === 1 &&
-      post.properties[prop][0].trim() === ''
+      post.properties[prop][0] === ''
     ) {
       delete post.properties[prop]
     }
