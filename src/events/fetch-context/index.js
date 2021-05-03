@@ -18,7 +18,7 @@ function getGranaryUrl (url) {
 
 async function fetchContext (url) {
   const response = await fetch(getGranaryUrl(url))
-  if (response.statusCode >= 400) {
+  if (!response.ok) {
     const text = await response.text()
     logger.warn('Failed to fetch context', `${url}\n${text}`)
     return null

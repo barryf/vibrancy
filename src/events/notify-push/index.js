@@ -16,7 +16,7 @@ async function send ({ message, title = null, url = null }) {
     method: 'POST',
     body: new URLSearchParams(body)
   })
-  if (response.statusCode < 300) {
+  if (!response.ok) {
     logger.error('Pushover request failed', JSON.stringify(response, null, 2))
   }
 }

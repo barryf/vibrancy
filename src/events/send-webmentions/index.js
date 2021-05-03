@@ -33,7 +33,7 @@ async function sendWebmention (source, target) {
   })
   const json = await response.json()
   const message = JSON.stringify(json, null, 2)
-  if (response.statusCode < 300) {
+  if (response.ok) {
     logger.info(`Queued webmention with Telegraph from ${source} to ${target}`, message)
   } else {
     logger.error(`Error received from Telegraph for ${source} to ${target}`, message)
