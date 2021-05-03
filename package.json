@@ -9,7 +9,6 @@
   "dependencies": {
     "@architect/functions": "^3.13.9",
     "@octokit/rest": "^18.0.3",
-    "@remy/webmention": "^1.4.5",
     "brevity": "^0.2.9",
     "cheerio": "^1.0.0-rc.6",
     "cloudinary": "^1.23.0",
@@ -18,6 +17,7 @@
     "twit": "^2.2.11"
   },
   "devDependencies": {
+    "@architect/architect": "^8.5.10",
     "@architect/sandbox": "^2.0.4",
     "aws-sdk": "^2.815.0",
     "tap-spec": "^5.0.0",
