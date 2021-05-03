@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
+const logger = require('./logger')
 
 const tokenEndpoint = process.env.TOKEN_ENDPOINT ||
   'https://tokens.indieauth.com/token'
@@ -32,7 +33,9 @@ async function getTokenResponse (token, endpoint) {
       Authorization: `Bearer ${token}`
     }
   })
-  return await response.json()
+  const result = await response.json()
+  logger.info('Requested token from endpoint')
+  return result
 }
 
 const verifyTokenAndScopes = async function (token, scopes) {
