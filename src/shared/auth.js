@@ -34,7 +34,8 @@ async function getTokenResponse (token, endpoint) {
     }
   })
   const result = await response.json()
-  logger.info('Requested token from endpoint')
+  const tokenEnd = token.slice(-6)
+  logger.info('Token response fetched from token endpoint', tokenEnd)
   return result
 }
 
