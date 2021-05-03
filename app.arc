@@ -19,6 +19,7 @@ send-webmentions
 write-github
 fetch-context
 notify-push
+notify-endpoints
 
 @tables
 posts

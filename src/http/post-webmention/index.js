@@ -116,6 +116,12 @@ exports.handler = async function http (req) {
     })
   }
 
+  // notify any endpoints (e.g. barryfrost) that post changed
+  await arc.events.publish({
+    name: 'notify-endpoints',
+    payload: { url: target.replace(process.env.ROOT_URL, '') }
+  })
+
   return {
     statusCode: 202
   }
