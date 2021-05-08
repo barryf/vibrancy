@@ -101,7 +101,7 @@ function generateStatus (post, mediaIds = null) {
   if (status.status) {
     status.status = brevity.shorten(
       status.status,
-      post.url,
+      absoluteUrl,
       false,
       false,
       280
