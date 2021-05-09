@@ -18,7 +18,7 @@ async function syndicate (post, syndicateTo) {
     // ok to syndicate
     if (syndication.indexOf('https://twitter.com') > -1) {
       url = await twitter.syndicate(post)
-      logger.info(`Syndicated to Twitter ${url}`)
+      if (url) logger.info(`Syndicated to Twitter ${url}`)
     } else if (syndication.indexOf('https://pinboard.in') > -1) {
       await pinboard.syndicate(post)
       logger.info('Syndicated to Pinboard')

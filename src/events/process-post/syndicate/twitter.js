@@ -25,6 +25,17 @@ const twit = new Twit({
   access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 })
 
+function imageOptimise (url) {
+  const height = 675
+  const cloudinaryName = process.env.CLOUDINARY_CLOUD_NAME
+  const starts = `https://res.cloudinary.com/${cloudinaryName}/image/upload/`
+  if (url.startsWith(starts)) {
+    return url.replace(starts, `${starts}h_${height},fl_progressive/`)
+  } else {
+    return url
+  }
+}
+
 async function postStatus (status) {
   const { data } = await twit.post('statuses/update', status)
   const tweetUrl = 'https://twitter.com/' + data.user.screen_name + '/status/' +
@@ -32,7 +43,7 @@ async function postStatus (status) {
   return tweetUrl
 }
 
-function generateStatus (post, mediaIds = null) {
+function generateStatus (post, mediaIds = []) {
   const absoluteUrl = new URL(post.url, process.env.ROOT_URL).href
   let content = null
   if (post.properties.summary) {
@@ -51,7 +62,7 @@ function generateStatus (post, mediaIds = null) {
   }
 
   // add media
-  if (mediaIds) {
+  if (Array.isArray(mediaIds) && mediaIds.length) {
     status.media_ids = mediaIds.join(',')
   }
 
@@ -109,23 +120,19 @@ function generateStatus (post, mediaIds = null) {
   } else {
     logger.error('Error generating Twitter status', JSON.stringify(status, null, 2))
   }
-
   return status
 }
 
 async function mediaUpload (image) {
-  if (typeof image === 'string') {
-    const res = await fetch(image)
-    image = Buffer.from(res.body.arrayBuffer())
-  }
-  if (image instanceof Buffer) {
-    const media = await twit.post('media/upload', { media: image })
-    return media.media_id_string
-  }
-  throw new Error('Error posting image to Twitter')
+  const response = await fetch(image)
+  const buffer = await response.buffer()
+  image = Buffer.from(buffer).toString('base64')
+  const media = await twit.post('media/upload', { media: image })
+  return media.data.media_id_string
 }
 
 async function sendTweet (post) {
+  const mediaIds = []
   // if it is a repost then first check if it is a retweet
   if (post.properties['repost-of'] && isTweetUrl(post['repost-of'][0])) {
     const statusId = tweetIdFromUrl(post.properties['repost-of'][0])
@@ -147,53 +154,47 @@ async function sendTweet (post) {
     return likeUrl
   } else {
     // check for photos
-    let mediaIds = []
-    let status = null
     if (post.properties.photo) {
       // trim to 4 photos as twitter doesn't support more
       const photos = post.properties.photo.slice(0, 4)
-      for (let photo of photos) {
-        if (photo.value) {
-          photo = photo.value
+      for (const p of photos) {
+        let photo
+        if (p.value) {
+          photo = imageOptimise(p.value)
+        } else if (p.buffer) {
+          photo = p.buffer
+        } else {
+          photo = imageOptimise(p)
         }
-        if (photo.buffer) {
-          photo = photo.buffer
-        }
-        mediaIds.push(await mediaUpload(photo))
+        const mediaId = await mediaUpload(photo)
+        mediaIds.push(mediaId)
       }
     }
-    mediaIds = mediaIds.length ? mediaIds : false
-    status = generateStatus(post)
+    const status = generateStatus(post, mediaIds)
     if (status) {
       return await postStatus(status)
     }
   }
   logger.error('Unknown error posting to Twitter')
-  return false
 }
 
 async function syndicate (post) {
-  try {
-    // if there is an existing syndication to twitter do not syndicate this post
-    if (post.properties.syndication.find(tweet => isTweetUrl(tweet))) {
-      // there is already a twitter syndication for this post so skip it
-      return null
-    } else if (
-      (post.properties['like-of'] &&
+  // if there is an existing syndication to twitter do not syndicate this post
+  if (post.properties.syndication.find(tweet => isTweetUrl(tweet))) {
+    // there is already a twitter syndication for this post so skip it
+    return null
+  } else if (
+    (post.properties['like-of'] &&
         !isTweetUrl(post.properties['like-of'][0])) ||
       (post.properties['in-reply-to'] &&
         !isTweetUrl(post.properties['in-reply-to'][0]))
-    ) {
-      // don't post likes and replies of external urls
-      return null
-    } else {
-      const tweetUrl = await sendTweet(post)
-      return tweetUrl
-    }
-  } catch (err) {
-    logger.error('Error syndicating to Twitter', JSON.stringify(err, null, 2))
+  ) {
+    // don't post likes and replies of external urls
+    return null
+  } else {
+    const tweetUrl = await sendTweet(post)
+    return tweetUrl
   }
-  return null
 }
 
 module.exports = { syndicate }
