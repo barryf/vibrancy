@@ -88,6 +88,7 @@ exports.handler = async function http (req) {
   const existingWebmention = data.webmentions.get({ id })
 
   // ignore webmention if it's unchanged
+  logger.info('Webmention comparison', JSON.stringify(webmention) + '\n' + JSON.stringify(existingWebmention))
   if (JSON.stringify(webmention) === JSON.stringify(existingWebmention)) {
     logger.info("Ignored webmention because it's been received previously")
   } else {
