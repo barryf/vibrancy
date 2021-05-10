@@ -1,4 +1,5 @@
 const crypto = require('crypto')
+const util = require('util')
 const arc = require('@architect/functions')
 const logger = require('@architect/shared/logger')
 
@@ -25,7 +26,7 @@ function postToMf2 (post) {
   }
   const properties = {
     url: [post.url],
-    name: [post.name],
+    name: post.name ? [post.name] : [],
     published: [post.published],
     author: [{
       type: ['h-card'],
@@ -88,8 +89,8 @@ exports.handler = async function http (req) {
   const existingWebmention = await data.webmentions.get({ id })
 
   // ignore webmention if it's unchanged
-  logger.info('Webmention comparison', JSON.stringify(webmention) + '\n' + JSON.stringify(existingWebmention))
-  if (JSON.stringify(webmention) === JSON.stringify(existingWebmention)) {
+  // logger.info('Webmention comparison', JSON.stringify(webmention) + '\n' + JSON.stringify(existingWebmention))
+  if (util.isDeepStrictEqual(webmention, existingWebmention)) {
     logger.info("Ignored webmention because it's been received previously")
   } else {
     await data.webmentions.put(webmention)
