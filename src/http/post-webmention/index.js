@@ -85,7 +85,7 @@ exports.handler = async function http (req) {
     properties: postToMf2(body.post)
   }
 
-  const existingWebmention = data.webmentions.get({ id })
+  const existingWebmention = await data.webmentions.get({ id })
 
   // ignore webmention if it's unchanged
   logger.info('Webmention comparison', JSON.stringify(webmention) + '\n' + JSON.stringify(existingWebmention))
