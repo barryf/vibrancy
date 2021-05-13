@@ -21,7 +21,6 @@ async function getPost (params, scopes) {
   }
   const post = { ...postData }
   if ('deleted' in post.properties) {
-    logger.warn(`Post is gone ${url}`)
     return {
       body: JSON.stringify({
         error: 'gone',
