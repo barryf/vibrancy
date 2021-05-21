@@ -9,7 +9,8 @@ async function setWebmentions (post) {
       'like-of': 'like',
       'repost-of': 'repost',
       rsvp: 'rsvp',
-      'bookmark-of': 'bookmark'
+      'bookmark-of': 'bookmark',
+      'mention-of': 'mention'
     }
     webmentionsData.Items.forEach(webmention => {
       for (const prop in webmentionProperties) {
