@@ -11,7 +11,7 @@ async function startup () {
   const postsRaw = fs.readFileSync(path.join(__dirname, '/posts.json'), 'utf8')
   const items = JSON.parse(postsRaw)
 
-  items.items.forEach(async item => {
+  for (const item of items.items) {
     const properties = item.properties
     const postType = item.properties['entry-type'][0].replace(/^h-/, '')
     delete properties['entry-type']
@@ -25,22 +25,23 @@ async function startup () {
     }
     await dataPosts.put(post)
     if (post.properties.category) {
-      post.properties.category.forEach(async cat => {
+      for (const cat of post.properties.category) {
         await data['categories-posts'].put({
           cat,
           ...post
         })
         await data.categories.put({ cat })
-      })
+      }
     }
-  })
+  }
 
   const webmentionsRaw = fs.readFileSync(path.join(__dirname, '/webmentions.json'), 'utf8')
   const webmentions = JSON.parse(webmentionsRaw)
 
-  webmentions.items.forEach(async item => {
-    await data.webmentions.put(item)
-  })
+  for (const item of webmentions.items) {
+    const id = `${item.source} ${item.target}`
+    await data.webmentions.put({ ...item, id })
+  }
 }
 
 (async () => {
