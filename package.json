@@ -17,11 +17,9 @@
     "twit": "^2.2.11"
   },
   "devDependencies": {
-    "@architect/architect": "^8.5.10",
-    "@architect/sandbox": "^2.0.4",
-    "aws-sdk": "^2.815.0",
-    "tap-spec": "^5.0.0",
-    "tape": "^5.0.1"
+    "@architect/sandbox": "^3.5.1",
+    "tap-spec": "latest",
+    "tape": "latest"
   },
   "repository": {
     "type": "git",
