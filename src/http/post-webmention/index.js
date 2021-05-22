@@ -128,3 +128,5 @@ exports.handler = async function http (req) {
     statusCode: 202
   }
 }
+
+exports._postToMf2 = postToMf2
