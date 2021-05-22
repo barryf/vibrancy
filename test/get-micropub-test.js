@@ -3,7 +3,7 @@ const sandbox = require('@architect/sandbox')
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
 const { isValidURL } = require('../src/shared/utils')
-const url = 'http://localhost:3334/micropub'
+const micropubUrl = 'http://localhost:3334/micropub'
 
 test('start', async t => {
   t.plan(1)
@@ -15,6 +15,7 @@ test('set up post', async t => {
   t.plan(1)
   const data = await arc.tables()
   const post = {
+    type: 'h-entry',
     channel: 'posts',
     url: '2020/10/example',
     published: '2020-10-03T17:11:06Z',
@@ -29,44 +30,47 @@ test('set up post', async t => {
     }
   }
   await data.posts.put(post)
-  // await data.queues.publish({
-  //   name: 'update-categories',
-  //   payload: { url: post.url }
-  // })
   t.ok(true, 'post created')
 })
 
-test('index returns Micropub endpoint', async t => {
+test('querying for post returns correct data', async t => {
   t.plan(1)
+  const url = `${micropubUrl}?q=source&url=http://localhost:4444/2020/10/example`
   const response = await fetch(url)
+  const post = await response.json()
+  const found = post.properties.content[0] === 'example'
+  t.ok(found, "Returns content property with value 'example'")
+})
+
+test("index returns 'Micropub endpoint'", async t => {
+  t.plan(1)
+  const response = await fetch(micropubUrl)
   const body = await response.text()
   t.equal(body, 'Micropub endpoint')
 })
 
 test('q=config returns config object with q key', async t => {
   t.plan(1)
-  const response = await fetch(`${url}?q=config`)
+  const response = await fetch(`${micropubUrl}?q=config`)
   const body = await response.json()
   t.ok(('q' in body))
 })
 
 test('q=config returns a media endpoint', async t => {
-  t.plan(3)
-  const response = await fetch(`${url}?q=config`)
+  t.plan(2)
+  const response = await fetch(`${micropubUrl}?q=config`)
   const body = await response.json()
-  t.ok(('media-endpoint' in body))
-  t.ok(body['media-endpoint'])
-  t.ok(isValidURL(body['media-endpoint']))
+  t.ok(body['media-endpoint'], 'found media-endpoint object')
+  t.ok(isValidURL(body['media-endpoint']), 'media-endpoint is a valid URL')
 })
 
 test('q=syndicate-to returns syndications', async t => {
-  t.plan(4)
-  const response = await fetch(`${url}?q=syndicate-to`)
+  t.plan(3)
+  const response = await fetch(`${micropubUrl}?q=syndicate-to`)
   const body = await response.json()
-  t.ok(('syndicate-to' in body))
-  t.ok(body['syndicate-to'])
-  t.ok(Array.isArray(body['syndicate-to']))
-  t.ok(body['syndicate-to'].length > 0)
+  t.ok(body['syndicate-to'], 'found syndicate-to object')
+  t.ok(Array.isArray(body['syndicate-to']), 'syndicate-to is an array')
+  t.ok(body['syndicate-to'].length > 0, 'syndicate-to is not empty')
 })
 
 test('end', async t => {
