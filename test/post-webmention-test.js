@@ -1,6 +1,13 @@
 const util = require('util')
 const test = require('tape')
+const sandbox = require('@architect/sandbox')
 const index = require('../src/http/post-webmention')
+
+test('start', async t => {
+  t.plan(1)
+  const result = await sandbox.start()
+  t.equal(result, 'Sandbox successfully started')
+})
 
 test('post is correctly formatted to mf2', async t => {
   t.plan(1)
@@ -37,4 +44,10 @@ test('post is correctly formatted to mf2', async t => {
   const mf2 = index._postToMf2(original)
   const result = util.isDeepStrictEqual(mf2, expected)
   t.ok(result, 'postToMf2 correctly formats jf2')
+})
+
+test('end', async t => {
+  t.plan(1)
+  const result = await sandbox.end()
+  t.equal(result, 'Sandbox successfully shut down')
 })
