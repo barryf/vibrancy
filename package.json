@@ -19,6 +19,7 @@
   "devDependencies": {
     "@architect/sandbox": "^3.5.1",
     "tap-spec": "latest",
+    "trim": ">=0.0.3",
     "tape": "latest"
   },
   "repository": {
