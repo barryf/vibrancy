@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy Architect project
+    name: Deploy to production
     runs-on: ubuntu-latest
 
     steps:
@@ -21,15 +21,18 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-2
 
+    - name: Install dependencies
+      run: npm install
+
     - name: Run tests
+      run: npm test
+
+    - name: Deploy
       run: |-
-        npm install -D
-        npm test
+        npm install @architect/architect
+        npx arc deploy --production
 
-    - name: Production deploy
-      run: npx arc deploy --production
-
-    - name: Build status Pushover notification
+    - name: Pushover notification
       if: ${{ always() }}
       uses: desiderati/github-action-pushover@v1
       with:
