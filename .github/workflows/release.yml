@@ -22,7 +22,9 @@ jobs:
         aws-region: eu-west-2
 
     - name: Run tests
-      run: npm test
+      run: |-
+        npm install -D
+        npm test
 
     - name: Production deploy
       run: |-
