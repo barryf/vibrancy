@@ -27,9 +27,7 @@ jobs:
         npm test
 
     - name: Production deploy
-      run: |-
-        npm install @architect/architect
-        npx arc deploy --production
+      run: npx arc deploy --production
 
     - name: Build status Pushover notification
       if: ${{ always() }}

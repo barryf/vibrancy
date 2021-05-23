@@ -17,10 +17,11 @@
     "twit": "^2.2.11"
   },
   "devDependencies": {
+    "@architect/architect": "^8.5.13",
     "@architect/sandbox": "^3.5.1",
     "tap-spec": "latest",
-    "trim": ">=0.0.3",
-    "tape": "latest"
+    "tape": "latest",
+    "trim": ">=0.0.3"
   },
   "repository": {
     "type": "git",
