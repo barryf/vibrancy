@@ -25,6 +25,9 @@ jobs:
       run: npm install
 
     - name: Run tests
+      env:
+        ROOT_URL: http://localhost:4444/
+        MEDIA_ENDPOINT_URL: http://localhost:3334/
       run: npm test
 
     - name: Deploy
