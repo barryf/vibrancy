@@ -23,6 +23,8 @@ async function findLinks (url) {
 }
 
 async function sendWebmention (source, target) {
+  if (!process.env.TELEGRAPH_TOKEN) return
+
   const response = await fetch('https://telegraph.p3k.io/webmention', {
     method: 'post',
     body: new URLSearchParams({
