@@ -35,11 +35,10 @@ function derivePostType (post) {
   } else if (('like-of' in post.properties) &&
     isValidURL(post.properties['like-of'][0])) {
     return 'like'
-  } else if ('photo' in post.properties) {
-    if ((post.properties.photo[0].value && isValidURL(post.properties.photo[0].value)) ||
-      isValidURL(post.properties.photo[0])) {
-      return 'photo'
-    }
+  } else if (('photo' in post.properties) &&
+    ((post.properties.photo[0].value && isValidURL(post.properties.photo[0].value)) ||
+    isValidURL(post.properties.photo[0]))) {
+    return 'photo'
   } else if (('bookmark-of' in post.properties) &&
     isValidURL(post.properties['bookmark-of'][0])) {
     return 'bookmark'
@@ -49,6 +48,9 @@ function derivePostType (post) {
     return 'article'
   } else if ('checkin' in post.properties) {
     return 'checkin'
+  } else if (('listen-of' in post.properties) &&
+    isValidURL(post.properties['listen-of'][0])) {
+    return 'listen'
   } else {
     return 'note'
   }
@@ -65,7 +67,7 @@ function isValidURL (string) {
 
 function findContexts (post) {
   const urls = []
-  for (const prop of ['in-reply-to', 'repost-of', 'like-of', 'bookmark-of']) {
+  for (const prop of ['in-reply-to', 'repost-of', 'like-of', 'bookmark-of', 'listen-of']) {
     if ((prop in post.properties) && Array.isArray(post.properties[prop])) {
       for (const i in post.properties[prop]) {
         const url = post.properties[prop][i]

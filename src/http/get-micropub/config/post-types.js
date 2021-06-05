@@ -56,5 +56,9 @@ module.exports = [
   {
     type: 'checkin',
     name: 'Checkin'
+  },
+  {
+    type: 'listen',
+    name: 'Listen'
   }
 ]

@@ -3,8 +3,9 @@ const { isValidURL } = require('@architect/shared/utils')
 
 async function setContexts (post) {
   const data = await arc.tables()
+  const urlProps = ['in-reply-to', 'repost-of', 'like-of', 'bookmark-of', 'listen-of']
 
-  for (const prop of ['in-reply-to', 'repost-of', 'like-of', 'bookmark-of']) {
+  for (const prop of urlProps) {
     if ((prop in post.properties) && Array.isArray(post.properties[prop])) {
       for (const i in post.properties[prop]) {
         const url = post.properties[prop][i]
