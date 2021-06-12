@@ -37,12 +37,14 @@ exports.handler = async function subscribe (event) {
     }
   })
 
-  // fetch any contexts from the post
-  for (const contextUrl of findContexts(post)) {
-    await arc.events.publish({
-      name: 'fetch-context',
-      payload: { url: contextUrl }
-    })
+  // fetch any contexts from the post unless deleted
+  if (!('deleted' in post.properties)) {
+    for (const contextUrl of findContexts(post)) {
+      await arc.events.publish({
+        name: 'fetch-context',
+        payload: { url: contextUrl }
+      })
+    }
   }
 
   // notify any endpoints (e.g. barryfrost) that post changed
