@@ -3,6 +3,14 @@ const fetch = require('node-fetch')
 const logger = require('@architect/shared/logger')
 const { isValidURL } = require('@architect/shared/utils')
 
+const denyListHosts = [
+  'twitter.com',
+  'mobile.twitter.com',
+  'maps.google.com',
+  'pca.st',
+  'github.com'
+]
+
 async function findLinks (url) {
   const response = await fetch(url)
   const content = await response.text()
@@ -24,6 +32,10 @@ async function findLinks (url) {
 
 async function sendWebmention (source, target) {
   if (!process.env.TELEGRAPH_TOKEN) return
+
+  // don't try to send webmentions to hosts we know can't receive them
+  const host = new URL(target).host
+  if (denyListHosts.includes(host)) return
 
   const response = await fetch('https://telegraph.p3k.io/webmention', {
     method: 'post',
