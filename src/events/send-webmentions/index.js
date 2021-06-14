@@ -8,7 +8,9 @@ const denyListHosts = [
   'mobile.twitter.com',
   'maps.google.com',
   'pca.st',
-  'github.com'
+  'github.com',
+  'res.cloudinary.com',
+  'www.swarmapp.com'
 ]
 
 async function findLinks (url) {
