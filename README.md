@@ -1,4 +1,4 @@
-# Vibrancy
+# vibrancy
 
 Vibrancy is a Headless CMS and [Micropub](https://micropub.net/) endpoint that acts as the backend to my personal website. 
 
@@ -9,3 +9,7 @@ See the separate [barryfrost](https://github.com/barryf/barryfrost) project for 
 ## Status
 
 This project is currently under active development and should be considered highly experimental and likely to change at any time. You're free to fork and hack on it but its primary purpose is to evolve based on my needs. Use at your own risk!
+
+## Licence
+
+The source code is available under the MIT licence.
