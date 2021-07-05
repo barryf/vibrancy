@@ -4,7 +4,7 @@
   "description": "Personal website Micropub server",
   "scripts": {
     "start": "PORT=3333 arc sandbox",
-    "test": "NODE_ENV=testing PORT=3334 tape test/*-test.js | tap-spec"
+    "test": "NODE_ENV=testing PORT=3334 tape test/*-test.js"
   },
   "dependencies": {
     "@architect/functions": "^3.13.9",
@@ -19,7 +19,6 @@
   },
   "devDependencies": {
     "@architect/sandbox": "^3.5.1",
-    "tap-spec": "^5.0.0",
     "tape": "^5.2.2"
   },
   "repository": {
