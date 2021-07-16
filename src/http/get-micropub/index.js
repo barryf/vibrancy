@@ -16,6 +16,7 @@ async function getPost (params, scopes) {
         error: 'not_found',
         error_description: 'Post was not found'
       }),
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       statusCode: 404
     }
   }
@@ -28,6 +29,7 @@ async function getPost (params, scopes) {
         type: 'entry',
         properties: { deleted: post.properties.deleted[0] }
       }),
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       statusCode: 410
     }
   }
@@ -66,6 +68,7 @@ async function source (params, scopes) {
         error: 'invalid_parameter',
         error_description: 'URL parameter is invalid'
       }),
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       statusCode: 400
     }
   }

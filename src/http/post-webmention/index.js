@@ -14,6 +14,7 @@ exports.handler = async function http (req) {
         error: 'unauthorized',
         error_description: 'Secret does not match.'
       }),
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       statusCode: 403
     }
   }
