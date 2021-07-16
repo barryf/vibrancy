@@ -33,6 +33,7 @@ const config = {
 module.exports = {
   q,
   config,
+  postTypes,
   syndicateTo,
   category,
   channels

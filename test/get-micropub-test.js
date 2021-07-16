@@ -73,6 +73,15 @@ test('q=syndicate-to returns syndications', async t => {
   t.ok(body['syndicate-to'].length > 0, 'syndicate-to is not empty')
 })
 
+test('q=post-types returns a valid response', async t => {
+  t.plan(3)
+  const response = await fetch(`${micropubUrl}?q=post-types`)
+  const body = await response.json()
+  t.ok(body['post-types'], 'found post-types object')
+  t.ok(Array.isArray(body['post-types']), 'post-types is an array')
+  t.ok(body['post-types'].length > 0, 'post-types is not empty')
+})
+
 test('end', async t => {
   t.plan(1)
   const result = await sandbox.end()
