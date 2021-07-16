@@ -97,7 +97,8 @@ async function create (scope, body) {
       body: JSON.stringify({
         error: 'invalid_parameter',
         error_description: 'A post with this URL already exists'
-      })
+      }),
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
     }
   }
 

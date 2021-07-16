@@ -19,6 +19,7 @@ async function requireScopes (scopes, headers, body) {
         error: 'unauthorized',
         error_description: 'Request is missing an access token.'
       }),
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       statusCode: 401
     }
   }
@@ -57,6 +58,7 @@ const verifyTokenAndScopes = async function (token, scopes) {
           error_description: 'The authenticated user does not have permission' +
             ' to perform this request.'
         }),
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
         statusCode: 401
       }
     }
@@ -70,6 +72,7 @@ const verifyTokenAndScopes = async function (token, scopes) {
       return {
         statusCode: 200,
         body: JSON.stringify({ message: 'Scope was authorised.' }),
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
         scopes: tokenScopes
       }
     }
@@ -80,6 +83,7 @@ const verifyTokenAndScopes = async function (token, scopes) {
       error_description: 'The user does not have sufficient scope to perform' +
         ' this action.'
     }),
+    headers: { 'Content-Type': 'application/json; charset=utf-8' },
     statusCode: 401
   }
 }

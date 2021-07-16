@@ -64,7 +64,8 @@ async function update (properties) {
       body: JSON.stringify({
         error: 'invalid_request',
         error_description: e.message
-      })
+      }),
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
     }
   }
 
