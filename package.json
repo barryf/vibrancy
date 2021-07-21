@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@architect/functions": "^3.13.9",
+    "@gitbeaker/node": "^31.0.0",
     "@octokit/rest": "^18.0.3",
     "brevity": "^0.2.9",
     "cheerio": "^1.0.0-rc.6",
