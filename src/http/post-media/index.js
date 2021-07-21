@@ -50,7 +50,7 @@ exports.handler = async function http (req) {
   logger.info(`Media uploaded to Cloudinary ${media.url}`)
 
   await arc.events.publish({
-    name: 'write-github',
+    name: 'write-file',
     payload: {
       folder: 'files',
       url: media.url,

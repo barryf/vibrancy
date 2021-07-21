@@ -27,9 +27,9 @@ exports.handler = async function subscribe (event) {
     payload: { url }
   })
 
-  // write to github
+  // write file to github/other
   await arc.events.publish({
-    name: 'write-github',
+    name: 'write-file',
     payload: {
       folder: post.channel,
       url,
