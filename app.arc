@@ -16,8 +16,7 @@ post /webmention
 @events
 process-post
 send-webmentions
-write-github
-write-gitlab
+write-file
 fetch-context
 notify-push
 notify-endpoints
