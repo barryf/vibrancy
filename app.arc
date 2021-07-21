@@ -17,6 +17,7 @@ post /webmention
 process-post
 send-webmentions
 write-github
+write-gitlab
 fetch-context
 notify-push
 notify-endpoints
