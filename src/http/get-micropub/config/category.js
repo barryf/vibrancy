@@ -10,6 +10,8 @@ async function category (filter = '') {
     if (filter) {
       if (c.cat.startsWith(filter)) {
         return c.cat
+      } else {
+        return null
       }
     } else {
       return c.cat

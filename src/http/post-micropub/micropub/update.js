@@ -65,7 +65,7 @@ async function update (properties) {
         error: 'invalid_request',
         error_description: e.message
       }),
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
     }
   }
 
