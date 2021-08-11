@@ -13,7 +13,7 @@ async function syndicate (post) {
   }
   if (post.properties.category && Array.isArray(post.properties.category)) {
     opts.tags = post.properties.category.map(cat => {
-      if (!isValidURL(cat)) return cat.trim()
+      if (!isValidURL(cat)) { return cat.trim() } else { return null }
     }).filter((el) => el != null) // remove nulls
       .filter((v, i, a) => a.indexOf(v) === i) // unique
       .join(',')
