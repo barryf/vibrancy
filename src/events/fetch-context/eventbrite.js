@@ -1,14 +1,14 @@
 const fetch = require('node-fetch')
 const logger = require('@architect/shared/logger')
 
-async function isEventbriteUrl (url) {
+function isEventbriteUrl (url) {
   return ((url.indexOf('https://eventbrite.com') > -1) ||
     (url.indexOf('https://www.eventbrite.com') > -1) ||
     (url.indexOf('https://eventbrite.co.uk') > -1) ||
     (url.indexOf('https://www.eventbrite.co.uk') > -1))
 }
 
-async function getEventbriteUrl (url) {
+function getEventbriteUrl (url) {
   const parsed = new URL(url)
   return 'https://eventbrite-mf2.herokuapp.com' + parsed.pathname
 }

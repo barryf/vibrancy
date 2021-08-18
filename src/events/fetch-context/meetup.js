@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const logger = require('@architect/shared/logger')
 
-async function isMeetupUrl (url) {
+function isMeetupUrl (url) {
   return ((url.indexOf('https://meetup.com') > -1) ||
     (url.indexOf('https://www.meetup.com') > -1))
 }
