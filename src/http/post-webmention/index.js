@@ -22,7 +22,15 @@ exports.handler = async function http (req) {
   const source = body.post.url
   const target = body.target
   const id = createId(source, target)
-  const published = body.post.published || body.post['wm-received'] || new Date().toISOString()
+
+  // convert to utc
+  let published = body.post.published || body.post['wm-received']
+  try {
+    published = new Date(published)
+  } catch (e) {
+    published = new Date()
+  }
+  published = published.toISOString().replace(/\.000Z$/, 'Z')
 
   logger.info(`Webmention received from ${source}`, JSON.stringify(body, null, 2))
 
