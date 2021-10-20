@@ -8,7 +8,6 @@ GRANARY_TWITTER_ACCESS_TOKEN_KEY
 GRANARY_TWITTER_ACCESS_TOKEN_SECRET
 ME_URL https://barryfrost.com/
 MEDIA_ENDPOINT_URL https://api.barryfrost.com/media
-MICRO_BLOG_TOKEN
 MICROPUB_URL https://api.barryfrost.com/micropub
 NOTIFY_ENDPOINTS https://barryfrost.com/notify
 PINBOARD_ACCOUNT barryf
