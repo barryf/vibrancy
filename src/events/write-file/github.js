@@ -7,9 +7,9 @@ const octokit = new Octokit({
 })
 
 const githubConfig = {
-  owner: 'barryf',
-  repo: 'content',
-  ref: 'master'
+  owner: process.env.GITHUB_OWNER,
+  repo: process.env.GITHUB_REPO,
+  ref: process.env.GITHUB_BRANCH || 'master'
 }
 
 async function writeFile (path, method, file, entity) {

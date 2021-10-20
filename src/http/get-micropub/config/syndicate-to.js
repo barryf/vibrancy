@@ -1,10 +1,10 @@
 function syndicateTo (postType = null) {
   const twitter = {
-    uid: 'https://twitter.com/barryf',
-    name: 'Twitter (barryf)'
+    uid: `https://twitter.com/${process.env.TWITTER_ACCOUNT}`,
+    name: 'Twitter'
   }
   const pinboard = {
-    uid: 'https://pinboard.in/barryf',
+    uid: `https://pinboard.in/${process.env.PINBOARD_ACCOUNT}`,
     name: 'Pinboard'
   }
   switch (postType) {
