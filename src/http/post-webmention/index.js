@@ -19,6 +19,9 @@ exports.handler = async function http (req) {
     }
   }
 
+  // remove secret from body to avoid being logged
+  delete body.secret
+
   const source = body.post.url
   const target = body.target
   const id = createId(source, target)
