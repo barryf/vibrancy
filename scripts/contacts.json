@@ -1,0 +1,28 @@
+{
+  "contacts": [
+    {
+      "name": "Barry Frost",
+      "nickname": "barryfrost.com",
+      "url": "https://barryfrost.com/",
+      "silos": {
+        "twitter": "barryf"
+      }
+    },
+    {
+      "name": "Jamie Tanna",
+      "nickname": "www.jvt.me",
+      "url": "https://www.jvt.me/",
+      "silos": {
+        "twitter": "jamietanna"
+      }
+    },
+    {
+      "name": "Aaron Parecki",
+      "nickname": "aaronparecki.com",
+      "url": "https://aaronparecki.com/",
+      "silos": {
+        "twitter": "aaronpk"
+      }
+    }
+  ]
+}

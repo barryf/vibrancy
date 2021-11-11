@@ -1,6 +1,7 @@
 const syndicateTo = require('./syndicate-to')
 const category = require('./category')
 const postTypes = require('./post-types')
+const contact = require('./contact')
 
 const channels = [
   {
@@ -19,7 +20,8 @@ const q = [
   'source',
   'post-types',
   'category',
-  'channels'
+  'channels',
+  'contact'
 ]
 
 const config = {
@@ -36,5 +38,6 @@ module.exports = {
   postTypes,
   syndicateTo,
   category,
-  channels
+  channels,
+  contact
 }
