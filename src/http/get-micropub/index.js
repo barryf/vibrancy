@@ -101,6 +101,8 @@ exports.handler = async function http (req) {
         return await source(params, authResponse.scopes)
       case 'post-types':
         return await { 'post-types': config.postTypes }
+      case 'contact':
+        return await config.contact(params.filter)
     }
   }
   return {

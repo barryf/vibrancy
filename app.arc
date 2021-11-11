@@ -43,6 +43,8 @@ categories
 logs
   id *String
   expires TTL
+contacts
+  nickname *String
 
 @indexes
 posts

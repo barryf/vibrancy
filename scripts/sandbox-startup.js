@@ -37,10 +37,15 @@ async function startup () {
 
   const webmentionsRaw = fs.readFileSync(path.join(__dirname, '/webmentions.json'), 'utf8')
   const webmentions = JSON.parse(webmentionsRaw)
-
   for (const item of webmentions.items) {
     const id = `${item.source} ${item.target}`
     await data.webmentions.put({ ...item, id })
+  }
+
+  const contactsRaw = fs.readFileSync(path.join(__dirname, '/contacts.json'), 'utf8')
+  const contacts = JSON.parse(contactsRaw)
+  for (const c of contacts.contacts) {
+    await data.contacts.put(c)
   }
 }
 
