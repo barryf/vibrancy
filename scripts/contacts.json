@@ -6,7 +6,8 @@
       "url": "https://barryfrost.com/",
       "silos": {
         "twitter": "barryf"
-      }
+      },
+      "_internal_url": "https://barryfrost.com/contacts/barryfrost-com"
     },
     {
       "name": "Jamie Tanna",
@@ -14,7 +15,8 @@
       "url": "https://www.jvt.me/",
       "silos": {
         "twitter": "jamietanna"
-      }
+      },
+      "_internal_url": "https://barryfrost.com/contacts/www-jvt-me"
     },
     {
       "name": "Aaron Parecki",
@@ -22,7 +24,8 @@
       "url": "https://aaronparecki.com/",
       "silos": {
         "twitter": "aaronpk"
-      }
+      },
+      "_internal_url": "https://barryfrost.com/contacts/aaronparecki-com"
     }
   ]
 }
