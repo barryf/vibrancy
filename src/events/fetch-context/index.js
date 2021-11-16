@@ -1,5 +1,6 @@
 const arc = require('@architect/functions')
 const logger = require('@architect/shared/logger')
+const booksMf2 = require('./books-mf2')
 const eventbrite = require('./eventbrite')
 const granary = require('./granary')
 const meetup = require('./meetup')
@@ -10,6 +11,8 @@ async function getHandler (url) {
     return meetup
   } else if (eventbrite.isEventbriteUrl(url)) {
     return eventbrite
+  } else if (booksMf2.isBooksMf2Url(url)) {
+    return booksMf2
   } else {
     return granary
   }
