@@ -1,6 +1,10 @@
 const fetch = require('node-fetch')
 const logger = require('@architect/shared/logger')
 
+function name () {
+  return 'Granary'
+}
+
 function getGranaryUrl (url) {
   const granaryBaseUrl = 'https://granary.io/'
   const safeUrl = encodeURIComponent(url)
@@ -26,4 +30,4 @@ async function fetchContext (url) {
   return mf2.items[0].properties
 }
 
-module.exports = { fetchContext }
+module.exports = { name, fetchContext }

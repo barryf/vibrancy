@@ -60,5 +60,18 @@ module.exports = [
   {
     type: 'listen',
     name: 'Listen'
+  },
+  {
+    type: 'read',
+    name: 'Read',
+    properties: [
+      'content',
+      'read-of',
+      'read-status'
+    ],
+    'required-properties': [
+      'read-of',
+      'read-status'
+    ]
   }
 ]
