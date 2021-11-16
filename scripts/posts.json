@@ -396,6 +396,92 @@
           "note"
         ]
       }
+    },
+    {
+      "url": "2021/11/ghatp",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "entry-type": [
+          "read"
+        ],
+        "published": [
+          "2021-11-13T07:51:00+0000"
+        ],
+        "read-status": [
+          "finished"
+        ],
+        "read-of": [
+          {
+            "type": [
+              "h-cite"
+            ],
+            "properties": {
+              "url": [
+                "https://openlibrary.org/books/OL26318312M"
+              ],
+              "uid": [
+                "isbn:9780316217651"
+              ],
+              "name": [
+                "Gods of risk"
+              ],
+              "author": [
+                "James S. A. Corey"
+              ],
+              "photo": {
+                "value": "https://covers.openlibrary.org/b/id/7992542.jpg",
+                "alt": "Cover picture of Gods of risk"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "url": "2021/11/ghatp-url",
+      "type": [
+        "h-entry"
+      ],
+      "properties": {
+        "entry-type": [
+          "read"
+        ],
+        "published": [
+          "2021-11-13T07:51:00+0000"
+        ],
+        "read-status": [
+          "finished"
+        ],
+        "read-of": [
+          "https://books-mf2.herokuapp.com/isbn/9780316332897"
+        ]
+      }
+    },
+    {
+      "url": "2021/11/99ib8",
+      "type": [
+        "h-entry"
+      ],
+      "properties" : {
+        "entry-type": [
+          "read"
+        ],
+        "summary" : [ "Finished reading: Cibola Burn by James S. A. Corey, ISBN: 9780316217620" ],
+        "read-status" : [ "finished" ],
+        "read-of" : [
+          {
+            "type" : [ "h-cite" ],
+            "properties" : {
+              "name" : [ "Cibola Burn" ],
+              "author" : [ "James S. A. Corey" ],
+              "uid" : [ "isbn:9780316217620" ]
+            }
+          }
+        ],
+        "published" : [ "2020-10-09T23:08:24.411Z" ]
+      }
     }
   ]
 }

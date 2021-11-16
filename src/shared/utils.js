@@ -5,6 +5,7 @@ const reservedUrls = `
   bookmarks
   photos
   checkins
+  reads
   reposts
   likes
   replies
@@ -51,6 +52,9 @@ function derivePostType (post) {
   } else if (('listen-of' in post.properties) &&
     isValidURL(post.properties['listen-of'][0])) {
     return 'listen'
+  } else if (('read-of' in post.properties) && post.properties['read-status'] &&
+    ['to-read', 'reading', 'finished'].includes(post.properties['read-status'][0])) {
+    return 'read'
   } else {
     return 'note'
   }
@@ -67,7 +71,7 @@ function isValidURL (string) {
 
 function findContexts (post) {
   const urls = []
-  for (const prop of ['in-reply-to', 'repost-of', 'like-of', 'bookmark-of', 'listen-of']) {
+  for (const prop of ['in-reply-to', 'repost-of', 'like-of', 'bookmark-of', 'listen-of', 'read-of']) {
     if ((prop in post.properties) && Array.isArray(post.properties[prop])) {
       for (const i in post.properties[prop]) {
         const url = post.properties[prop][i]
