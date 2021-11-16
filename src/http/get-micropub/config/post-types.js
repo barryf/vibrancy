@@ -34,6 +34,22 @@ module.exports = [
     name: 'Bookmark'
   },
   {
+    type: 'contact',
+    name: 'Contacts',
+    properties: [
+      'name',
+      'nickname',
+      'url',
+      'photo',
+      'rel=twitter'
+    ],
+    'required-properties': [
+      'name',
+      'nickname',
+      'url'
+    ]
+  },
+  {
     type: 'photo',
     name: 'Photo'
   },

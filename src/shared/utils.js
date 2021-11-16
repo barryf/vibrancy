@@ -3,6 +3,7 @@ const reservedUrls = `
   notes
   articles
   bookmarks
+  contacts
   photos
   checkins
   reposts
@@ -14,6 +15,10 @@ const reservedUrls = `
 `.trim().split(/\s+/)
 
 function derivePostType (post) {
+  if (post.type === 'h-card') {
+    return 'contact'
+  }
+
   // See https://www.w3.org/TR/post-type-discovery/
   let content = ''
   if ('content' in post.properties) {
