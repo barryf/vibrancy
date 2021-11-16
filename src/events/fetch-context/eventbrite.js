@@ -1,6 +1,10 @@
 const fetch = require('node-fetch')
 const logger = require('@architect/shared/logger')
 
+function name () {
+  return 'Eventbrite'
+}
+
 function isEventbriteUrl (url) {
   return ((url.indexOf('https://eventbrite.com') > -1) ||
     (url.indexOf('https://www.eventbrite.com') > -1) ||
@@ -29,6 +33,7 @@ async function fetchContext (url) {
 }
 
 module.exports = {
+  name,
   isEventbriteUrl,
   fetchContext
 }

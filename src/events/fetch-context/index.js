@@ -19,9 +19,11 @@ async function getContext (handler, url) {
   // if our fetching fails, fallback to OpenGraph
   const properties = await handler.fetchContext(url)
   if (properties) {
+    logger.info(`Context fetched ${url} using ${handler.name()}`, JSON.stringify(properties))
     return properties
   }
 
+  logger.info(`Context fetching ${url} using fallback ${openGraph.name()}`, JSON.stringify(properties))
   return await openGraph.fetchContext(url)
 }
 
@@ -34,5 +36,4 @@ exports.handler = async function subscribe (event) {
     url,
     properties
   })
-  logger.info(`Context fetched ${url}`, JSON.stringify(properties))
 }
