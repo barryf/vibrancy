@@ -5,21 +5,19 @@ const granary = require('./granary')
 const meetup = require('./meetup')
 const openGraph = require('./open-graph')
 
-async function getContext (url) {
-  // for specific sites, use custom parsing
+async function getHandler (url) {
   if (meetup.isMeetupUrl(url)) {
-    const properties = await meetup.fetchContext(url)
-    if (properties) {
-      return properties
-    }
+    return meetup
   } else if (eventbrite.isEventbriteUrl(url)) {
-    const properties = await eventbrite.fetchContext(url)
-    if (properties) {
-      return properties
-    }
+    return eventbrite
+  } else {
+    return granary
   }
-  // otherwise fallback to Granary, and then OpenGraph
-  const properties = await granary.fetchContext(url)
+}
+
+async function getContext (handler, url) {
+  // if our fetching fails, fallback to OpenGraph
+  const properties = await handler.fetchContext(url)
   if (properties) {
     return properties
   }
@@ -30,7 +28,8 @@ async function getContext (url) {
 exports.handler = async function subscribe (event) {
   const data = await arc.tables()
   const { url } = JSON.parse(event.Records[0].Sns.Message)
-  const properties = await getContext(url)
+  const handler = await getHandler(url)
+  const properties = await getContext(handler, url)
   await data.contexts.put({
     url,
     properties
