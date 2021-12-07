@@ -4,7 +4,7 @@
   "description": "Personal website Micropub server",
   "scripts": {
     "start": "PORT=3333 arc sandbox",
-    "test": "NODE_ENV=testing PORT=3334 tape test/*-test.js",
+    "test": "NODE_ENV=testing PORT=3334 MEDIA_ENDPOINT_URL=http://localhost:3334/ ROOT_URL=http://localhost:4444/ tape test/*-test.js",
     "lint": "standard"
   },
   "dependencies": {

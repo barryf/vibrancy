@@ -21,7 +21,4 @@ jobs:
       run: npm run lint
 
     - name: Run tests
-      env:
-        MEDIA_ENDPOINT_URL: http://localhost:3334/
-        ROOT_URL: http://localhost:4444/
       run: npm test

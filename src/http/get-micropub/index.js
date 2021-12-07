@@ -6,6 +6,7 @@ const config = require('./config')
 const query = require('./query')
 const { setWebmentions } = require('./webmentions')
 const { setContexts } = require('./contexts')
+const { hashtagReplacements } = require('./hashtag-replacement')
 
 async function getPost (params, scopes) {
   const url = params.url.replace(process.env.ROOT_URL, '')
@@ -103,6 +104,8 @@ exports.handler = async function http (req) {
         return await { 'post-types': config.postTypes }
       case 'contact':
         return await config.contact(params.filter)
+      case 'hashtag-replacement':
+        return await hashtagReplacements(params.filter)
     }
   }
   return {
