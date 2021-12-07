@@ -82,6 +82,22 @@ test('q=post-types returns a valid response', async t => {
   t.ok(body['post-types'].length > 0, 'post-types is not empty')
 })
 
+test('q=hashtag-replacement returns HTTP 200', async t => {
+  const response = await fetch(`${micropubUrl}?q=hashtag-replacement`)
+  t.ok(response.status === 200, 'hashtag-replacement should be present')
+})
+
+test('q=hashtag-replacement returns JSON', async t => {
+  const response = await fetch(`${micropubUrl}?q=hashtag-replacement`)
+  t.ok(response.headers.get('content-type') === 'application/json', 'hashtag-replacement should be UTF-8 JSON')
+})
+
+test('q=hashtag-replacement returns empty object by default', async t => {
+  const response = await fetch(`${micropubUrl}?q=hashtag-replacement`)
+  const body = await response.json()
+  t.ok(Object.keys(body).length === 0, 'hashtag-replacement should not have any values')
+})
+
 test('end', async t => {
   t.plan(1)
   const result = await sandbox.end()
