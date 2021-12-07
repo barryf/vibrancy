@@ -10,11 +10,6 @@ const undelete = require('./undelete')
 function setRootProperties (post) {
   // set published to utc date without seconds
   post.published = new Date(post.properties.published[0]).toISOString().replace(/\.000Z$/, 'Z')
-  if ('mp-channel' in post.properties) {
-    post.channel = post.properties['mp-channel'][0]
-  } else if (!('channel' in post)) {
-    post.channel = 'posts' // default channel is posts
-  }
 }
 
 function sanitise (post) {
@@ -59,10 +54,6 @@ async function action (scope, body) {
     // remove unwanted properties
     sanitise(res.post)
 
-    // derive the post type
-    res.post['post-type'] = derivePostType(res.post)
-
-    // find syndication options
     let syndicateTo
     if ('mp-syndicate-to' in body) {
       syndicateTo = body['mp-syndicate-to']

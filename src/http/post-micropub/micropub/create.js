@@ -1,5 +1,15 @@
 const arc = require('@architect/functions')
-const { reservedUrls } = require('@architect/shared/utils')
+const { derivePostType, reservedUrls } = require('@architect/shared/utils')
+
+function setChannel (post) {
+  if ('mp-channel' in post.properties) {
+    post.channel = post.properties['mp-channel'][0]
+  } else if (post['post-type'] === 'contact') {
+    post.channel = 'contacts'
+  } else if (!('channel' in post)) {
+    post.channel = 'posts' // default channel is posts
+  }
+}
 
 function deriveUrl (post) {
   let slug = ''
@@ -16,6 +26,13 @@ function deriveUrl (post) {
       slug = post.properties['mp-slug'][0]
     }
   }
+
+  if (post.channel === 'contacts') {
+    return `contacts/${post.properties.nickname[0]}`
+  }
+
+  console.log(JSON.stringify(post));
+
   const published = new Date(post.properties.published[0])
   const yyyy = published.getFullYear().toString()
   const m = (published.getMonth() + 1).toString()
@@ -75,7 +92,14 @@ function formatPost (body) {
     : new Date().toISOString()]
   // store type as simple value
   post.type = post.type[0]
+
+  post['post-type'] = derivePostType(post)
+  console.log({post});
+  setChannel(post)
+  console.log({post});
+
   post.url = deriveUrl(post)
+  console.log({post});
   return post
 }
 
