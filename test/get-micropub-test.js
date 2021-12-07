@@ -5,6 +5,29 @@ const fetch = require('node-fetch')
 const { isValidURL } = require('../src/shared/utils')
 const micropubUrl = 'http://localhost:3334/micropub'
 
+async function addReplacements () {
+  const data = await arc.tables()
+  data['hashtag-replacements'].put({
+    hashtag: '#IndieWeb',
+    replacement: 'indieweb'
+  })
+  data['hashtag-replacements'].put({
+    hashtag: '#IndieAuth',
+    replacement: 'indieauth'
+  })
+  data['hashtag-replacements'].put({
+    hashtag: '#TechNott',
+    replacement: 'tech-nottingham'
+  })
+}
+
+async function removeReplacements () {
+  const data = await arc.tables()
+  await data['hashtag-replacements'].delete({ hashtag: '#IndieWeb' })
+  await data['hashtag-replacements'].delete({ hashtag: '#IndieAuth' })
+  await data['hashtag-replacements'].delete({ hashtag: '#TechNott' })
+}
+
 test('start', async t => {
   t.plan(1)
   const result = await sandbox.start()
@@ -95,7 +118,72 @@ test('q=hashtag-replacement returns JSON', async t => {
 test('q=hashtag-replacement returns empty object by default', async t => {
   const response = await fetch(`${micropubUrl}?q=hashtag-replacement`)
   const body = await response.json()
-  t.ok(Object.keys(body).length === 0, 'hashtag-replacement should not have any values')
+  t.ok(Object.keys(body.replacements).length === 0, 'hashtag-replacement should not have any values')
+})
+
+test('q=hashtag-replacement returns replacements when present', async t => {
+  await addReplacements()
+
+  const response = await fetch(`${micropubUrl}?q=hashtag-replacement`)
+  const body = await response.json()
+
+  const expected = {
+    replacements: {
+      '#IndieAuth': 'indieauth',
+      '#IndieWeb': 'indieweb',
+      '#TechNott': 'tech-nottingham'
+    }
+  }
+
+  t.deepEqual(body, expected)
+
+  t.teardown(async function () {
+    await removeReplacements()
+  })
+})
+
+test('q=hashtag-replacement returns empty replacements when filtered, but not present', async t => {
+  const response = await fetch(`${micropubUrl}?q=hashtag-replacement&filter=indie`)
+  const body = await response.json()
+
+  const expected = {
+    replacements: {}
+  }
+
+  t.deepEqual(body, expected)
+})
+
+test('q=hashtag-replacement returns filtered replacements when filtered and present', async t => {
+  await addReplacements()
+
+  const response = await fetch(`${micropubUrl}?q=hashtag-replacement&filter=Indie`)
+  const body = await response.json()
+
+  const expected = {
+    replacements: {
+      '#IndieAuth': 'indieauth',
+      '#IndieWeb': 'indieweb'
+    }
+  }
+
+  t.deepEqual(body, expected)
+
+  t.teardown(async function () {
+    await removeReplacements()
+  })
+})
+
+test('q=hashtag-replacement filtering is case sensitive', async t => {
+  await addReplacements()
+
+  const response = await fetch(`${micropubUrl}?q=hashtag-replacement&filter=INDIE`)
+  const body = await response.json()
+
+  t.ok(Object.keys(body.replacements).length === 0, 'hashtag-replacement should not have any values')
+
+  t.teardown(async function () {
+    await removeReplacements()
+  })
 })
 
 test('end', async t => {

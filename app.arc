@@ -45,6 +45,9 @@ logs
   expires TTL
 contacts
   nickname *String
+hashtag-replacements
+  hashtag *String
+  replacement String
 
 @indexes
 posts

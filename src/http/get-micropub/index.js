@@ -105,7 +105,7 @@ exports.handler = async function http (req) {
       case 'contact':
         return await config.contact(params.filter)
       case 'hashtag-replacement':
-        return await hashtagReplacements()
+        return await hashtagReplacements(params.filter)
     }
   }
   return {
