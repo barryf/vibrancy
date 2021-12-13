@@ -29,34 +29,34 @@ async function updateCategories (post) {
     ('post-status' in post.properties && post.properties['post-status'][0] === 'draft') ||
     ('deleted' in post.properties)
   ) {
-    existingCategoriesPosts.Items.forEach(async item => {
+    for (const item of existingCategoriesPosts.Items) {
       await data['categories-posts'].delete({
         cat: item.cat,
         url: post.url
       })
-    })
+    }
     return
   }
 
   // add categories-posts records for each of the post's categories
   // and a category record to the master list of categories
-  category.forEach(async cat => {
+  for (const cat of category) {
     await data['categories-posts'].put({
       cat,
       ...post
     })
     await data.categories.put({ cat })
-  })
+  }
 
   // remove any categories-posts records which no longer exist for this post
-  existingCategoriesPosts.Items.forEach(async item => {
+  for (const item of existingCategoriesPosts.Items) {
     if (!category.includes(item.cat)) {
       await data['categories-posts'].delete({
         cat: item.cat,
         url: post.url
       })
     }
-  })
+  }
 }
 
 module.exports = updateCategories
