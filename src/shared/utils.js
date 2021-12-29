@@ -14,6 +14,9 @@ const reservedUrls = `
 `.trim().split(/\s+/)
 
 function derivePostType (post) {
+  if ('h-review' in post.type) {
+    return 'review'
+  }
   // See https://www.w3.org/TR/post-type-discovery/
   let content = ''
   if ('content' in post.properties) {

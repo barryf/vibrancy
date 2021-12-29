@@ -396,6 +396,32 @@
           "note"
         ]
       }
+    },
+    {
+      "url": ["2021/12/die-hard"],
+      "type": [
+        "h-review"
+      ],
+      "properties": {
+        "summary": [
+          "Die Hard, 1988 - ★★★★"
+        ],
+        "name": [
+          "Die Hard"
+        ],
+        "rating": [
+          4
+        ],
+        "published": [
+          "2021-12-29T14:04:09.000Z"
+        ],
+        "entry-type": ["review"],
+        "content": [
+          {
+            "html": " <p><img src=\"https://a.ltrbxd.com/resized/film-poster/5/1/5/5/6/51556-die-hard-0-500-0-750-crop.jpg?k=8c0fbeec43\"/></p> <p>Watched on Saturday December 25, 2021.</p> "
+          }
+        ]
+      }
     }
   ]
 }

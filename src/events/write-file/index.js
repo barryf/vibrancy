@@ -11,7 +11,7 @@ if (process.env.FILE_PROVIDER === 'gitlab') {
 
 function formatPostFile (post) {
   const fileContent = JSON.stringify({
-    type: ['h-entry'],
+    type: [post.type],
     'post-type': [post['post-type']],
     properties: post.properties
   }, null, 2)
