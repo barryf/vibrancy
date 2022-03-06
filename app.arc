@@ -3,6 +3,7 @@ vibrancy
 
 @aws
 region eu-west-2
+architecture arm64
 
 @http
 get /
