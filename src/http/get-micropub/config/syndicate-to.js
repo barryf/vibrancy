@@ -7,10 +7,15 @@ function syndicateTo (postType = null) {
     uid: `https://pinboard.in/${process.env.PINBOARD_ACCOUNT}`,
     name: 'Pinboard'
   }
+  const mastodon = {
+    uid: process.env.MASTODON_URL,
+    name: 'Mastodon'
+  }
   switch (postType) {
     case 'note':
       return [
-        { ...twitter, checked: true }
+        { ...twitter, checked: true },
+        { ...mastodon, checked: true }
       ]
     case 'bookmark':
       return [
@@ -18,7 +23,8 @@ function syndicateTo (postType = null) {
       ]
     case 'article':
       return [
-        { ...twitter, checked: true }
+        { ...twitter, checked: true },
+        { ...mastodon, checked: true }
       ]
     case 'like':
       return [
