@@ -1,5 +1,6 @@
 const fetch = require('node-fetch')
 const crypto = require('crypto')
+const logger = require('@architect/shared/logger')
 
 function generateStatus (post) {
   const absoluteUrl = new URL(post.url, process.env.ROOT_URL).href
@@ -31,7 +32,8 @@ async function syndicate (post) {
     })
   })
   if (response.statusCode !== 200) return
-  const status = response.json()
+  const status = await response.json()
+  logger.info('Mastodon response', JSON.stringify(status, null, 2))
   const url = `${process.env.MASTODON_URL}/${status.id}`
   return url
 }
