@@ -31,7 +31,6 @@ async function syndicate (post) {
       status: text
     })
   })
-  if (response.statusCode >= 300) return
   const status = await response.json()
   logger.info('Mastodon response', JSON.stringify(status, null, 2))
   const url = `${process.env.MASTODON_URL}/${status.id}`
