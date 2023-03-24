@@ -3,25 +3,24 @@
   "version": "0.1.0",
   "description": "Personal website Micropub server",
   "scripts": {
-    "start": "PORT=3333 arc sandbox",
+    "start": "npx arc sandbox",
     "test": "NODE_ENV=testing PORT=3334 tape test/*-test.js",
     "lint": "standard"
   },
   "dependencies": {
-    "@architect/functions": "^3.14.2",
+    "@architect/functions": "^5.4.0",
     "@gitbeaker/node": "^31.1.0",
     "@octokit/rest": "^18.12.0",
     "brevity": "^0.2.9",
     "cheerio": "^1.0.0-rc.6",
     "cloudinary": "^1.27.1",
     "lambda-multipart-parser": "0.0.2",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^2.6.9",
     "open-graph-scraper": "^4.9.2",
     "twit": "^2.2.11"
   },
   "devDependencies": {
     "@architect/architect": "^10.10.3",
-    "@architect/sandbox": "^5.4.2",
     "standard": "^16.0.4",
     "tape": "^5.3.1"
   },
