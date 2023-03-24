@@ -4,7 +4,7 @@
   "description": "Personal website Micropub server",
   "scripts": {
     "start": "npx arc sandbox",
-    "test": "NODE_ENV=testing PORT=3334 tape test/*-test.js",
+    "test": "NODE_ENV=testing tape test/*-test.js",
     "lint": "standard"
   },
   "dependencies": {

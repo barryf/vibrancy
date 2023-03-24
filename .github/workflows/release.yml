@@ -30,7 +30,7 @@ jobs:
     - name: Run tests
       env:
         ROOT_URL: http://localhost:4444/
-        MEDIA_ENDPOINT_URL: http://localhost:3334/
+        MEDIA_ENDPOINT_URL: http://localhost:3333/
       run: npm test
 
     - name: Deploy

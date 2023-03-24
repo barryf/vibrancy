@@ -4,7 +4,7 @@ const path = require('path')
 const dataPosts = require('../src/shared/data-posts')
 
 async function startup () {
-  if (process.env.NODE_ENV === 'production' || process.env.PORT === '3334') return
+  if (process.env.NODE_ENV === 'production') return
 
   const data = await arc.tables()
 

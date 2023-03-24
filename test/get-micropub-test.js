@@ -3,7 +3,7 @@ const sandbox = require('@architect/sandbox')
 const arc = require('@architect/functions')
 const fetch = require('node-fetch')
 const { isValidURL } = require('../src/shared/utils')
-const micropubUrl = 'http://localhost:3334/micropub'
+const micropubUrl = 'http://localhost:3333/micropub'
 
 test('start', async t => {
   t.plan(1)
