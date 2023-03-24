@@ -20,8 +20,8 @@
     "twit": "^2.2.11"
   },
   "devDependencies": {
-    "@architect/architect": "^9.2.2",
-    "@architect/sandbox": "^3.5.1",
+    "@architect/architect": "^10.10.3",
+    "@architect/sandbox": "^5.4.2",
     "standard": "^16.0.4",
     "tape": "^5.3.1"
   },

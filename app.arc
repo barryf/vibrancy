@@ -46,7 +46,7 @@ logs
 contacts
   nickname *String
 
-@indexes
+@tables-indexes
 posts
   post-type *String
   published **String
