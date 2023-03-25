@@ -6,23 +6,34 @@ on:
       - master
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Build app
-        uses: architect/action-build@v3
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.11.0
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+      - name: Arc hydrate
+        run: arc hydrate
+      - name: Run tests
+        run: npm test
 
   deploy:
-    needs: build
     runs-on: ubuntu-latest
-
     steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.11.0
       - name: Deploy app
         uses: architect/action-deploy@v1
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
       - name: Pushover notification
         uses: desiderati/github-action-pushover@v1
         with:
