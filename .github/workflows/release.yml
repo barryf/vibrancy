@@ -8,6 +8,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      ROOT_URL http://localhost:4444/
     steps:
       - name: Cancel previous runs
         uses: styfle/cancel-workflow-action@0.11.0
