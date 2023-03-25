@@ -7,7 +7,8 @@ const micropubUrl = 'http://localhost:3333/micropub'
 
 test('start', async t => {
   t.plan(1)
-  const result = await sandbox.start()
+  const env = { ROOT_URL: process.env.ROOT_URL }
+  const result = await sandbox.start({ env })
   t.equal(result, 'Sandbox successfully started')
 })
 
