@@ -6,42 +6,26 @@ on:
       - master
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build app
+        uses: architect/action-build@v3
+
   deploy:
-    name: Deploy to production
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Deploy app
+        uses: architect/action-deploy@v1
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-2
-
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run linting
-      run: npm run lint
-
-    - name: Run tests
-      env:
-        ROOT_URL: http://localhost:4444/
-        MEDIA_ENDPOINT_URL: http://localhost:3333/
-      run: npm test
-
-    - name: Deploy
-      run: |-
-        npm install @architect/architect
-        npx arc deploy --production
-
-    - name: Pushover notification
-      if: ${{ always() }}
-      uses: desiderati/github-action-pushover@v1
-      with:
-        job-status: ${{ job.status }}
-        pushover-api-token: ${{ secrets.PUSHOVER_API_TOKEN }}
-        pushover-user-key: ${{ secrets.PUSHOVER_USER_KEY }}
+      - name: Pushover notification
+        uses: desiderati/github-action-pushover@v1
+        with:
+          job-status: ${{ job.status }}
+          pushover-api-token: ${{ secrets.PUSHOVER_API_TOKEN }}
+          pushover-user-key: ${{ secrets.PUSHOVER_USER_KEY }}
