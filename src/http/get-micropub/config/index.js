@@ -23,7 +23,7 @@ const q = [
   'channels',
   'contact'
 ]
-console.log(process.env)
+
 const config = {
   'media-endpoint': process.env.MEDIA_ENDPOINT_URL,
   'post-types': postTypes,
