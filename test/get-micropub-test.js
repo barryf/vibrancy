@@ -7,7 +7,12 @@ const micropubUrl = 'http://localhost:3333/micropub'
 
 test('start', async t => {
   t.plan(1)
-  const env = { ROOT_URL: process.env.ROOT_URL }
+  // need to pass through env because the sandbox doesn't seem to inherit the
+  // env variables when run on GitHub Actions
+  const env = {
+    ROOT_URL: process.env.ROOT_URL,
+    MEDIA_ENDPOINT_URL: process.env.MEDIA_ENDPOINT_URL
+  }
   const result = await sandbox.start({ env })
   t.equal(result, 'Sandbox successfully started')
 })
@@ -39,8 +44,6 @@ test('querying for post returns correct data', async t => {
   const url = `${micropubUrl}?q=source&url=http://localhost:4444/2020/10/example`
   const response = await fetch(url)
   const post = await response.json()
-  console.log('test ROOT_URL', process.env.ROOT_URL)
-  console.log(post)
   const found = post.properties.content[0] === 'example'
   t.ok(found, "Returns content property with value 'example'")
 })

@@ -8,7 +8,6 @@ const { setWebmentions } = require('./webmentions')
 const { setContexts } = require('./contexts')
 
 async function getPost (params, scopes) {
-  console.log('ROOT_URL', process.env.ROOT_URL)
   const url = params.url.replace(process.env.ROOT_URL, '')
   const postData = await query.getPost(url, scopes)
   if (postData === undefined) {
