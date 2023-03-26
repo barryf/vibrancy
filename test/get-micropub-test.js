@@ -7,11 +7,11 @@ const micropubUrl = 'http://localhost:3333/micropub'
 
 test('start', async t => {
   t.plan(1)
-  // need to pass through env because the sandbox doesn't seem to inherit the
-  // env variables when run on GitHub Actions
+  // the sandbox under GitHub Actions doesn't see the Arc env vars, so we need
+  // to manually pass them for tests to work locally and on GHA
   const env = {
-    ROOT_URL: process.env.ROOT_URL,
-    MEDIA_ENDPOINT_URL: process.env.MEDIA_ENDPOINT_URL
+    ROOT_URL: 'http://localhost:4444/',
+    MEDIA_ENDPOINT_URL: 'http://localhost:3333/media'
   }
   const result = await sandbox.start({ env })
   t.equal(result, 'Sandbox successfully started')
