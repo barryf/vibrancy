@@ -21,6 +21,8 @@ async function putPostsPublic (post) {
 function setHomepageFlag (post) {
   const postTypes = ['article', 'note', 'photo']
   post.homepage = postTypes.includes(post['post-type']) ? 1 : 0
+  // weeknotes can be excluded because there's a dedicated section for them
+  if (post.properties.category.includes('weeknotes')) post.homepage = 0
 }
 
 async function put (post) {
