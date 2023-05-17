@@ -32,7 +32,8 @@ function syndicateTo (postType = null) {
       ]
     case 'reply':
       return [
-        { ...twitter }
+        { ...twitter },
+        { ...mastodon }
       ]
     case 'repost':
       return [
