@@ -3,6 +3,7 @@ const fetch = require('node-fetch')
 const brevity = require('brevity')
 const Twit = require('twit')
 const logger = require('@architect/shared/logger')
+const { generateContent, appendSpecialCategories } = require('./text-helpers.js')
 
 // adapted from @grantcodes' Postr's syndicator-twitter
 // https://github.com/grantcodes/postr/blob/master/packages/syndicator-twitter/index.js
@@ -45,17 +46,9 @@ async function postStatus (status) {
 
 function generateStatus (post, mediaIds = []) {
   const absoluteUrl = new URL(post.url, process.env.ROOT_URL).href
-  let content = null
-  if (post.properties.summary) {
-    content = post.properties.summary[0] + ' ' + absoluteUrl
-  } else if (post.properties.name) {
-    content = post.properties.name[0] + ' ' + absoluteUrl
-  } else if (post.properties.content &&
-    typeof post.properties.content[0] === 'string') {
-    content = post.properties.content[0]
-  } else if (post.properties['repost-of']) {
-    content = post.properties['repost-of'][0]
-  }
+
+  let content = generateContent(post)
+  content += appendSpecialCategories(post)
 
   const status = {
     status: content

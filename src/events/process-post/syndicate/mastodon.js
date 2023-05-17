@@ -1,6 +1,7 @@
 const fetch = require('node-fetch')
 const crypto = require('crypto')
 const logger = require('@architect/shared/logger')
+const { generateContent, appendSpecialCategories } = require('./text-helpers.js')
 
 const statusIdFromUrl = url => {
   const statusId = url.split('/').pop()
@@ -8,16 +9,8 @@ const statusIdFromUrl = url => {
 }
 
 function generateStatus (post) {
-  const absoluteUrl = new URL(post.url, process.env.ROOT_URL).href
-  let content = ''
-  if (post.properties.summary) {
-    content = post.properties.summary[0] + ' ' + absoluteUrl
-  } else if (post.properties.name) {
-    content = post.properties.name[0] + ' ' + absoluteUrl
-  } else if (post.properties.content &&
-    typeof post.properties.content[0] === 'string') {
-    content = post.properties.content[0]
-  }
+  let content = generateContent(post)
+  content += appendSpecialCategories(post)
 
   const status = {
     status: content

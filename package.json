@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@architect/functions": "^5.4.0",
+    "@atproto/api": "^0.3.3",
     "@gitbeaker/node": "^31.1.0",
     "@octokit/rest": "^18.12.0",
     "brevity": "^0.2.9",
