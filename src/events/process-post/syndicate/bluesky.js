@@ -1,3 +1,4 @@
+const fetch = require('node-fetch') // eslint-disable-line
 const { BskyAgent, RichText } = require('@atproto/api')
 const { generateContent, appendSpecialCategories } = require('./text-helpers')
 
