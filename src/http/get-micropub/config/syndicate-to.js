@@ -11,11 +11,16 @@ function syndicateTo (postType = null) {
     uid: process.env.MASTODON_URL,
     name: 'Mastodon'
   }
+  const bluesky = {
+    uid: 'bluesky-process.env.BLUESKY_IDENTIFIER',
+    name: 'Bluesky'
+  }
   switch (postType) {
     case 'note':
       return [
         { ...twitter, checked: true },
-        { ...mastodon, checked: true }
+        { ...mastodon, checked: true },
+        { ...bluesky, checked: true }
       ]
     case 'bookmark':
       return [
@@ -24,7 +29,8 @@ function syndicateTo (postType = null) {
     case 'article':
       return [
         { ...twitter, checked: true },
-        { ...mastodon, checked: true }
+        { ...mastodon, checked: true },
+        { ...bluesky, checked: true }
       ]
     case 'like':
       return [

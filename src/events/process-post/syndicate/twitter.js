@@ -3,7 +3,7 @@ const fetch = require('node-fetch')
 const brevity = require('brevity')
 const Twit = require('twit')
 const logger = require('@architect/shared/logger')
-const { generateContent, appendSpecialCategories } = require('./text-helpers.js')
+const { generateContent, appendSpecialCategories } = require('./text-helpers')
 
 // adapted from @grantcodes' Postr's syndicator-twitter
 // https://github.com/grantcodes/postr/blob/master/packages/syndicator-twitter/index.js

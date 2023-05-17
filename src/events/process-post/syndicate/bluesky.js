@@ -1,5 +1,5 @@
 const { BskyAgent } = require('@atproto/api')
-const { generateContent, appendSpecialCategories } = require('./text-helpers.js')
+const { generateContent, appendSpecialCategories } = require('./text-helpers')
 
 async function syndicate (post) {
   let content = generateContent(post)

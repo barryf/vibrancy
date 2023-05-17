@@ -1,6 +1,7 @@
 const twitter = require('./twitter')
 const mastodon = require('./mastodon')
 const pinboard = require('./pinboard')
+const bluesky = require('./bluesky')
 const logger = require('@architect/shared/logger')
 
 async function syndicate (post, syndicateTo) {
@@ -27,6 +28,9 @@ async function syndicate (post, syndicateTo) {
       await pinboard.syndicate(post)
       logger.info('Syndicated to Pinboard')
       // no return value :(
+    } else if (syndication.indexOf('bluesky-') > -1) {
+      url = await bluesky.syndicate(post)
+      if (url) logger.info(`Syndicated to Bluesky ${url}`)
     }
     if (url) post.properties.syndication.push(url)
   }
