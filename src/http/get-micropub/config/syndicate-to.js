@@ -12,7 +12,7 @@ function syndicateTo (postType = null) {
     name: 'Mastodon'
   }
   const bluesky = {
-    uid: 'bluesky-process.env.BLUESKY_IDENTIFIER',
+    uid: `bluesky-${process.env.BLUESKY_IDENTIFIER}`,
     name: 'Bluesky'
   }
   switch (postType) {
