@@ -10,7 +10,7 @@ async function syndicate (post) {
   const agent = new BskyAgent({ service: 'https://bsky.social' })
   await agent.login({ identifier, password })
 
-  const richText = new RichText({ content })
+  const richText = new RichText({ text: content })
   await richText.detectFacets(agent)
 
   const res = await agent.post({
