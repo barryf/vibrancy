@@ -8,7 +8,7 @@
     "lint": "standard"
   },
   "dependencies": {
-    "@architect/functions": "^5.4.0",
+    "@architect/functions": "^5.4.1",
     "@atproto/api": "^0.3.3",
     "@gitbeaker/node": "^31.1.0",
     "@octokit/rest": "^18.12.0",
@@ -21,7 +21,7 @@
     "twit": "^2.2.11"
   },
   "devDependencies": {
-    "@architect/architect": "^10.10.3",
+    "@architect/architect": "^10.12.5",
     "standard": "^16.0.4",
     "tape": "^5.3.1"
   },

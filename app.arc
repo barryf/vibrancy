@@ -3,6 +3,7 @@ vibrancy
 
 @aws
 region eu-west-2
+runtime nodejs18.x
 
 @http
 get /
