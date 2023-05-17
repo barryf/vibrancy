@@ -1,4 +1,4 @@
-const { BskyAgent } = require('@atproto/api')
+const { BskyAgent, RichText } = require('@atproto/api')
 const { generateContent, appendSpecialCategories } = require('./text-helpers')
 
 async function syndicate (post) {
@@ -10,7 +10,13 @@ async function syndicate (post) {
   const agent = new BskyAgent({ service: 'https://bsky.social' })
   await agent.login({ identifier, password })
 
-  const res = await agent.post({ text: content })
+  const richText = new RichText({ content })
+  await richText.detectFacets(agent)
+
+  const res = await agent.post({
+    text: richText.text,
+    facets: richText.facets
+  })
   const id = res.uri.split('/').slice(-1)[0]
   // this is the current staging url and is likely to change when public
   const url = `https://staging.bsky.app/profile/${identifier}/post/${id}`
