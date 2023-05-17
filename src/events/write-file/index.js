@@ -1,6 +1,5 @@
 const arc = require('@architect/functions')
 const logger = require('@architect/shared/logger')
-const fetch = require('node-fetch')
 
 let provider
 if (process.env.FILE_PROVIDER === 'gitlab') {

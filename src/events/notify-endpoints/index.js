@@ -1,4 +1,3 @@
-const fetch = require('node-fetch')
 const logger = require('@architect/shared/logger')
 
 exports.handler = async function subscribe (event) {

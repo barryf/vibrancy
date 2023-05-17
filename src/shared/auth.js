@@ -1,5 +1,4 @@
 const arc = require('@architect/functions')
-const fetch = require('node-fetch')
 const logger = require('./logger')
 
 const tokenEndpoint = process.env.TOKEN_ENDPOINT ||

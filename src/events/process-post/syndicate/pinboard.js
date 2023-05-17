@@ -1,4 +1,3 @@
-const fetch = require('node-fetch')
 const { isValidURL } = require('@architect/shared/utils')
 
 async function syndicate (post) {

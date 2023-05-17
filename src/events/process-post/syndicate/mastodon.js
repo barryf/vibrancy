@@ -1,4 +1,3 @@
-const fetch = require('node-fetch')
 const crypto = require('crypto')
 const logger = require('@architect/shared/logger')
 const { generateContent, appendSpecialCategories } = require('./text-helpers')

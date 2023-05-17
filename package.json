@@ -2,6 +2,9 @@
   "name": "vibrancy",
   "version": "0.1.0",
   "description": "Personal website Micropub server",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "npx arc sandbox",
     "test": "tape test/*-test.js",
@@ -16,13 +19,12 @@
     "cheerio": "^1.0.0-rc.6",
     "cloudinary": "^1.27.1",
     "lambda-multipart-parser": "0.0.2",
-    "node-fetch": "^2.6.9",
     "open-graph-scraper": "^4.9.2",
     "twit": "^2.2.11"
   },
   "devDependencies": {
     "@architect/architect": "^10.12.5",
-    "standard": "^16.0.4",
+    "standard": "^17.0.0",
     "tape": "^5.3.1"
   },
   "repository": {

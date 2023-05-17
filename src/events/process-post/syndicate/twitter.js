@@ -1,5 +1,4 @@
 const path = require('path')
-const fetch = require('node-fetch')
 const brevity = require('brevity')
 const Twit = require('twit')
 const logger = require('@architect/shared/logger')

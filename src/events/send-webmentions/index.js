@@ -1,5 +1,4 @@
 const cheerio = require('cheerio')
-const fetch = require('node-fetch')
 const logger = require('@architect/shared/logger')
 const { isValidURL } = require('@architect/shared/utils')
 
