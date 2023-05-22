@@ -18,8 +18,7 @@ async function syndicate (post) {
     facets: richText.facets
   })
   const id = res.uri.split('/').slice(-1)[0]
-  // this is the current staging url and is likely to change when public
-  const url = `https://staging.bsky.app/profile/${identifier}/post/${id}`
+  const url = `https://bsky.app/profile/${identifier}/post/${id}`
   return url
 }
 
