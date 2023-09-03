@@ -23,11 +23,12 @@ exports.handler = async function subscribe (event) {
   }
 
   // fire webmentions asynchronously
-  const links = await findLinks(url)
+  const absoluteUrl = new URL(url, process.env.ROOT_URL).href
+  const links = await findLinks(absoluteUrl)
   for (const link of links) {
     await arc.events.publish({
       name: 'send-webmention',
-      payload: { url, link }
+      payload: { source: absoluteUrl, target: link }
     })
   }
 
