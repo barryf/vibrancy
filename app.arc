@@ -16,7 +16,7 @@ post /webmention
 
 @events
 process-post
-send-webmentions
+send-webmention
 write-file
 fetch-context
 notify-push

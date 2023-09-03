@@ -3,6 +3,7 @@ const dataPosts = require('@architect/shared/data-posts')
 const { findContexts } = require('@architect/shared/utils')
 const syndicate = require('./syndicate')
 const updateCategories = require('./update-categories')
+const findLinks = require('./find-links')
 
 exports.handler = async function subscribe (event) {
   const data = await arc.tables()
@@ -22,10 +23,13 @@ exports.handler = async function subscribe (event) {
   }
 
   // fire webmentions asynchronously
-  await arc.events.publish({
-    name: 'send-webmentions',
-    payload: { url }
-  })
+  const links = await findLinks(url)
+  for (const link of links) {
+    await arc.events.publish({
+      name: 'send-webmention',
+      payload: { url, link }
+    })
+  }
 
   // write file to github/other
   await arc.events.publish({
