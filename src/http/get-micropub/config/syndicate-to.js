@@ -18,9 +18,9 @@ function syndicateTo (postType = null) {
   switch (postType) {
     case 'note':
       return [
-        { ...twitter, checked: true },
-        { ...mastodon, checked: true },
-        { ...bluesky, checked: true }
+        { ...twitter },
+        { ...mastodon },
+        { ...bluesky }
       ]
     case 'bookmark':
       return [
@@ -28,9 +28,9 @@ function syndicateTo (postType = null) {
       ]
     case 'article':
       return [
-        { ...twitter, checked: true },
-        { ...mastodon, checked: true },
-        { ...bluesky, checked: true }
+        { ...twitter },
+        { ...mastodon },
+        { ...bluesky }
       ]
     case 'like':
       return [
