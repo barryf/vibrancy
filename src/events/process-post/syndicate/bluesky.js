@@ -24,18 +24,17 @@ async function syndicate (post) {
       const url = (typeof photo === 'string') ? photo : photo.value
       const alt = (typeof photo === 'string') ? '' : photo.alt
       const response = await fetch(url)
-      if (!response.ok) continue
+      // if (!response.ok) continue
       const arrayBuffer = await response.arrayBuffer()
       const buffer = Buffer.from(arrayBuffer)
       const { data } = await agent.uploadBlob(
         buffer,
-        { encoding: 'image/jpeg' })
-      if (data) {
-        images.push({
-          alt,
-          image: data.blob
-        })
-      }
+        { encoding: 'image/jpeg' }
+      )
+      images.push({
+        alt,
+        image: data.blob
+      })
     }
   }
   if (images.length) {
@@ -44,6 +43,7 @@ async function syndicate (post) {
       images
     }
   }
+  console.log('richPost', richPost)
 
   const response = await agent.post(richPost)
   if (!response.ok) return
