@@ -22,9 +22,13 @@ async function syndicate (post) {
     const photos = post.properties.photo.slice(0, 4) // max 4
     for (const photo of photos) {
       const url = (typeof photo === 'string') ? photo : photo.value
+      const starts = 'https://res.cloudinary.com/barryf/image/upload/'
+      if (url.startsWith(starts)) {
+        url.replace(starts, `${starts}h_768/`)
+      }
       const alt = (typeof photo === 'string') ? '' : photo.alt
       const response = await fetch(url)
-      // if (!response.ok) continue
+      if (!response.ok) continue
       const arrayBuffer = await response.arrayBuffer()
       const buffer = Buffer.from(arrayBuffer)
       const { data } = await agent.uploadBlob(
@@ -43,7 +47,6 @@ async function syndicate (post) {
       images
     }
   }
-  console.log('richPost', richPost)
 
   const response = await agent.post(richPost)
   if (!response.ok) return
