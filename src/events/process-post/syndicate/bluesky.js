@@ -21,10 +21,10 @@ async function syndicate (post) {
   if ('photo' in post.properties) {
     const photos = post.properties.photo.slice(0, 4) // max 4
     for (const photo of photos) {
-      const url = (typeof photo === 'string') ? photo : photo.value
+      let url = (typeof photo === 'string') ? photo : photo.value
       const starts = 'https://res.cloudinary.com/barryf/image/upload/'
       if (url.startsWith(starts)) {
-        url.replace(starts, `${starts}h_768/`)
+        url = url.replace(starts, `${starts}h_768/`)
       }
       const alt = (typeof photo === 'string') ? '' : photo.alt
       const response = await fetch(url)
