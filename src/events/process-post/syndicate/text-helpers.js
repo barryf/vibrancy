@@ -18,7 +18,7 @@ function appendSpecialCategories (post) {
   if (process.env.SYNDICATION_CATEGORIES) {
     const cats = process.env.SYNDICATION_CATEGORIES.split(',')
     for (const cat of cats) {
-      if (cat in post.properties.category) {
+      if (post.properties.category.includes(cat)) {
         content += ' #' + cat
       }
     }
