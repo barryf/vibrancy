@@ -14,6 +14,9 @@ async function log (type, message, description) {
     description,
     expires
   }
+  if (process.env.ARC_ROLE && process.env.ARC_ROLE === 'SandboxRole') {
+    console.log(JSON.stringify(log))
+  }
   await data.logs.put(log)
 }
 
