@@ -21,24 +21,47 @@ async function syndicate (post) {
   if ('photo' in post.properties) {
     const photos = post.properties.photo.slice(0, 4) // max 4
     for (const photo of photos) {
-      let url = (typeof photo === 'string') ? photo : photo.value
-      const starts = 'https://res.cloudinary.com/barryf/image/upload/'
-      if (url.startsWith(starts)) {
-        url = url.replace(starts, `${starts}h_768/`)
+      try {
+        let url = (typeof photo === 'string') ? photo : photo.value
+        const starts = 'https://res.cloudinary.com/barryf/image/upload/'
+        if (url.startsWith(starts)) {
+          // Constrain both width and height for Bluesky
+          url = url.replace(starts, `${starts}c_fit,w_1000,h_1000/`)
+        }
+        const alt = (typeof photo === 'string') ? '' : photo.alt
+        
+        console.log(`Fetching image from: ${url}`)
+        const response = await fetch(url)
+        if (!response.ok) {
+          console.error(`Failed to fetch image: ${response.status} ${response.statusText}`)
+          continue
+        }
+
+        // Get content type from response headers
+        const contentType = response.headers.get('content-type')
+        if (!contentType || !['image/jpeg', 'image/png'].includes(contentType.toLowerCase())) {
+          console.error(`Unsupported image format: ${contentType}`)
+          continue
+        }
+
+        const arrayBuffer = await response.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+        
+        console.log(`Uploading image to Bluesky (${contentType}, ${buffer.length} bytes)`)
+        const { data } = await agent.uploadBlob(
+          buffer,
+          { encoding: contentType }
+        )
+        
+        images.push({
+          alt,
+          image: data.blob
+        })
+        console.log('Image upload successful')
+      } catch (error) {
+        console.error('Error processing image:', error)
+        continue
       }
-      const alt = (typeof photo === 'string') ? '' : photo.alt
-      const response = await fetch(url)
-      if (!response.ok) continue
-      const arrayBuffer = await response.arrayBuffer()
-      const buffer = Buffer.from(arrayBuffer)
-      const { data } = await agent.uploadBlob(
-        buffer,
-        { encoding: 'image/jpeg' }
-      )
-      images.push({
-        alt,
-        image: data.blob
-      })
     }
   }
   if (images.length) {
@@ -49,7 +72,10 @@ async function syndicate (post) {
   }
 
   const response = await agent.post(richPost)
-  if (!response.ok) return
+  if (!response.validationStatus === 'valid') {
+    console.error('Error when syndicating to Bluesky', response)
+    return
+  }
   const id = response.uri.split('/').slice(-1)[0]
   const url = `https://bsky.app/profile/${identifier}/post/${id}`
   return url
