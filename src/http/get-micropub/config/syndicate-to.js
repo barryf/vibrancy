@@ -1,8 +1,4 @@
 function syndicateTo (postType = null) {
-  const twitter = {
-    uid: `https://twitter.com/${process.env.TWITTER_ACCOUNT}`,
-    name: 'Twitter'
-  }
   const pinboard = {
     uid: `https://pinboard.in/${process.env.PINBOARD_ACCOUNT}`,
     name: 'Pinboard'
@@ -18,7 +14,6 @@ function syndicateTo (postType = null) {
   switch (postType) {
     case 'note':
       return [
-        { ...twitter },
         { ...mastodon },
         { ...bluesky }
       ]
@@ -28,30 +23,24 @@ function syndicateTo (postType = null) {
       ]
     case 'article':
       return [
-        { ...twitter },
         { ...mastodon },
         { ...bluesky }
       ]
     case 'like':
-      return [
-        { ...twitter }
-      ]
+      return []
     case 'reply':
       return [
-        { ...twitter },
         { ...mastodon }
       ]
     case 'repost':
-      return [
-        { ...twitter }
-      ]
+      return []
     case 'photo':
       return [
-        { ...twitter }
+        { ...mastodon },
+        { ...bluesky }
       ]
     default:
       return [
-        twitter,
         pinboard
       ]
   }

@@ -1,4 +1,3 @@
-const twitter = require('./twitter')
 const mastodon = require('./mastodon')
 const pinboard = require('./pinboard')
 const bluesky = require('./bluesky')
@@ -18,10 +17,7 @@ async function syndicate (post, syndicateTo) {
       break
     }
     // ok to syndicate
-    if (syndication.indexOf('https://twitter.com') > -1) {
-      url = await twitter.syndicate(post)
-      if (url) logger.info(`Syndicated to Twitter ${url}`)
-    } else if (syndication.indexOf('https://mastodon') > -1) {
+    if (syndication.indexOf('https://mastodon') > -1) {
       url = await mastodon.syndicate(post)
       if (url) logger.info(`Syndicated to Mastodon ${url}`)
     } else if (syndication.indexOf('https://pinboard.in') > -1) {

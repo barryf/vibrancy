@@ -19,8 +19,7 @@
     "cheerio": "^1.0.0-rc.6",
     "cloudinary": "^1.27.1",
     "lambda-multipart-data-parser": "^1.0.4",
-    "open-graph-scraper": "^4.9.2",
-    "twit": "^2.2.11"
+    "open-graph-scraper": "^4.9.2"
   },
   "devDependencies": {
     "@architect/architect": "^11.3.0",
