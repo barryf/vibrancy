@@ -23,6 +23,13 @@
   },
   "devDependencies": {
     "@architect/architect": "^11.3.0",
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.908.0",
+    "@aws-sdk/client-dynamodb": "^3.908.0",
+    "@aws-sdk/client-s3": "^3.908.0",
+    "@aws-sdk/client-sns": "^3.908.0",
+    "@aws-sdk/client-sqs": "^3.908.0",
+    "@aws-sdk/client-ssm": "^3.908.0",
+    "@aws-sdk/lib-dynamodb": "^3.908.0",
     "standard": "^17.0.0",
     "tape": "^5.3.1"
   },
