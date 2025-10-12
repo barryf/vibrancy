@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Personal website Micropub server",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "scripts": {
     "start": "npx arc sandbox",
@@ -11,10 +11,10 @@
     "lint": "standard"
   },
   "dependencies": {
-    "@architect/functions": "^5.4.1",
+    "@architect/functions": "^8.1.9",
     "@atproto/api": "^0.3.3",
     "@gitbeaker/node": "^31.1.0",
-    "@octokit/rest": "^18.12.0",
+    "@octokit/rest": "^22.0.0",
     "brevity": "^0.2.9",
     "cheerio": "^1.0.0-rc.6",
     "cloudinary": "^1.27.1",
@@ -23,7 +23,7 @@
     "twit": "^2.2.11"
   },
   "devDependencies": {
-    "@architect/architect": "^10.12.5",
+    "@architect/architect": "^11.3.0",
     "standard": "^17.0.0",
     "tape": "^5.3.1"
   },
