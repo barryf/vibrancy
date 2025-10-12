@@ -1,7 +1,7 @@
 const cloudinary = require('cloudinary').v2
 const arc = require('@architect/functions')
 const logger = require('@architect/shared/logger')
-const parser = require('lambda-multipart-parser')
+const parser = require('lambda-multipart-data-parser')
 const { requireScopes } = require('@architect/shared/auth')
 
 cloudinary.config({
