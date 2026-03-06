@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Personal website Micropub server",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "start": "npx arc sandbox",
