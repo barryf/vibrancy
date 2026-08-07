@@ -1,6 +1,10 @@
 const ogs = require('open-graph-scraper')
 const logger = require('@architect/shared/logger')
 
+function name () {
+  return 'OpenGraph'
+}
+
 function setName (result, properties) {
   if (result.ogTitle) {
     properties.name = [result.ogTitle]
@@ -61,4 +65,4 @@ async function fetchContext (url) {
   return properties
 }
 
-module.exports = { fetchContext }
+module.exports = { name, fetchContext }

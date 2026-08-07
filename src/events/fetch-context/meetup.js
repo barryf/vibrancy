@@ -1,5 +1,9 @@
 const logger = require('@architect/shared/logger')
 
+function name () {
+  return 'Meetup'
+}
+
 function isMeetupUrl (url) {
   return ((url.indexOf('https://meetup.com') > -1) ||
     (url.indexOf('https://www.meetup.com') > -1))
@@ -26,6 +30,7 @@ async function fetchContext (url) {
 }
 
 module.exports = {
+  name,
   isMeetupUrl,
   fetchContext
 }
